@@ -16,3 +16,5 @@
 *.zip
 *.tar.gz
 .rar
+
+.idea/workspace.xml
