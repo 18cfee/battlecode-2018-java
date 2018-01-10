@@ -1,4 +1,4 @@
-package code;
+package firstplayer;
 
 import bc.*;
 
