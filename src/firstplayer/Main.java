@@ -12,7 +12,7 @@ public class Main {
 
         // Direction is a normal java enum.
         Direction[] directions = Direction.values();
-        Path p = new Path();
+        //Path p = new Path();
 
         while (true) {
             System.out.println("Current round: "+gc.round());
@@ -27,7 +27,7 @@ public class Main {
                 }
             }
             // Submit the actions we've done, and wait for our next turn.
-            p.calculateTotalKripOnEarth();
+            //p.calculateTotalKripOnEarth();
             gc.nextTurn();
         }
     }
