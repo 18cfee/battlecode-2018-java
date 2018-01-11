@@ -1,6 +1,7 @@
 import bc.*;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Stack;
 
@@ -8,8 +9,6 @@ public class Player {
     public static void main(String args[]){
         GameController gc = new GameController();
         // Direction is a normal java enum.
-        int q = Math.abs(-4);
-        System.out.println(q);
         Direction[] directions = Direction.values();
         System.out.println("num of directions: "+ directions.length);
         Path p = new Path(gc);
@@ -21,18 +20,42 @@ public class Player {
             army[i].setRoute(p.genShortestRouteBFS(army[i].curLoc(),new MapLocation(Planet.Earth,10,10)));
         }
         //try{
+        int blueId = 20;
+        int[] blueprints = new int[500];
+        int numAThings = 0;
             while (true) {
                 System.out.println();
                 System.out.println("Current round Carl test aaa: "+gc.round());
-                for (int i = 0; i < army.length; i++) {
+                units = gc.units();
+                int idBlueprint = 0;
+                for (int i = 0; i < units.size(); i++) {
                     Unit unit = units.get(i);
-                    Troop tr = army[i];
-                    // Most methods on gc take unit IDs, instead of the unit objects themselves.
-                    int a = (int)(Math.random()*8);
-                    tr.tryMoveNextRoute();
-                    Debug.printCoords(tr.curLoc());
+                    if(unit.unitType() == UnitType.Factory){
+                        idBlueprint = unit.id();
+                        if (gc.canProduceRobot(idBlueprint,UnitType.Ranger));
+                    }
                 }
-
+                for (int i = 0; i < units.size(); i++) {
+                    Unit unit = units.get(i);
+                    int id = unit.id();
+                    // Most methods on gc take unit IDs, instead of the unit objects themselves.
+                    int a = (int) (Math.random() * 8);
+                    Direction rand = directions[a];
+                    if(gc.isMoveReady(id) && gc.canMove(id,rand)) gc.moveRobot(id,rand);
+                    //Debug.printCoords(tr.curLoc());
+                    if(gc.canReplicate(id,rand) && numAThings < 10){
+                        System.out.println("replicate worker");
+                        gc.replicate(id,rand);
+                        numAThings++;
+                    }
+                    else if(gc.canBlueprint(id,UnitType.Factory,rand) && numAThings == 10){
+                        System.out.println("blue factory");
+                        gc.blueprint(id,UnitType.Factory,rand);
+                        numAThings++;
+                    } else if(gc.canBuild(id,idBlueprint)){
+                        gc.build(id,idBlueprint);
+                    }
+                }
                 // Submit the actions we've done, and wait for our next turn.
                 //long k = p.calculateTotalKripOnEarth();
                 //System.out.println("krip on earth" + k);
@@ -43,6 +66,7 @@ public class Player {
         //}
     }
 }
+
 
 
 

@@ -21,8 +21,8 @@ public class Path {
         // remove the direction none
 //        Direction[] temp = Direction.values();
 //        directions = new Direction[8];
-//        for (int i = 0; i < directions.length; i++) {
-//            directions[i] = temp[i];
+//        for (int i = 1; i <= directions.length; i++) {
+//            directions[i - 1] = temp[i];
 //        }
     }
     public long calculateTotalKripOnEarth(){
