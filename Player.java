@@ -30,7 +30,7 @@ public class Player {
                     // Most methods on gc take unit IDs, instead of the unit objects themselves.
                     int a = (int)(Math.random()*8);
                     tr.tryMoveNextRoute();
-                    debug.printCords(tr.curLoc());
+                    Debug.printCoords(tr.curLoc());
                 }
 
                 // Submit the actions we've done, and wait for our next turn.
@@ -80,12 +80,6 @@ class Troop {
         return (route == null || route.isEmpty());
     }
 
-}
-
-class debug {
-    static void printCords(MapLocation a){
-        System.out.println("X: " + a.getX() + " Y: " + a.getY());
-    }
 }
 
 class Group {

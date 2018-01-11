@@ -3,7 +3,7 @@ import bc.Planet;
 
 public class Debug {
 
-    static void printCoords(MapLocation a){
+    public static void printCoords(MapLocation a){
         System.out.println("X: " + a.getX() + " Y: " + a.getY());
     }
 //    long totalCarbs = 0;

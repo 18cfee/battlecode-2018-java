@@ -16,12 +16,14 @@ public class Path {
         System.out.println("made it here");
         earth = gc.startingMap(Planet.Earth);
         earthSize = (int)earth.getHeight();
+        directions = Direction.values();
+        //todo the following code was making an infinite loop
         // remove the direction none
-        Direction[] temp = Direction.values();
-        directions = new Direction[8];
-        for (int i = 0; i < directions.length; i++) {
-            directions[i] = temp[i];
-        }
+//        Direction[] temp = Direction.values();
+//        directions = new Direction[8];
+//        for (int i = 0; i < directions.length; i++) {
+//            directions[i] = temp[i];
+//        }
     }
     public long calculateTotalKripOnEarth(){
         long totalCarbs = 0;
@@ -47,8 +49,8 @@ public class Path {
         outerLoop:
         while(!toCheck.isEmpty()){
             MapLocation cur = toCheck.removeFirst();
-            System.out.println("vitit:");
-            debug.printCords(cur);
+            System.out.println("visit:");
+            Debug.printCoords(cur);
             for(Direction d : directions){
                 MapLocation newLoc = cur.add(d);
                 if(shouldBeCheckedLater(newLoc,visited)){
@@ -80,13 +82,13 @@ public class Path {
     Stack<MapLocation> generateStack(MapLocation[][] from, MapLocation end){
         System.out.println("Stack");
         MapLocation cur = end;
-        debug.printCords(cur);
+        Debug.printCoords(cur);
         MapLocation cameFrom = from[cur.getX()][cur.getY()];
         Stack<MapLocation> route = new Stack<MapLocation>();
         while(!cur.equals(cameFrom)){
             route.add(cur);
             cur = cameFrom;
-            debug.printCords(cur);
+            Debug.printCoords(cur);
             cameFrom = from[cur.getX()][cur.getY()];
         }
         return route;
