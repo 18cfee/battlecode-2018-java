@@ -20,6 +20,7 @@ public class Player {
                 //Place Units into their groups
                 VecUnit units = gc.myUnits();
                 for (int i = 0; i < units.size(); i++) {
+                    // todo assign units to groups
                     Unit unit = units.get(i);
                     if(unit.unitType() == UnitType.Worker){
                         workers.addWorker(unit.id());
