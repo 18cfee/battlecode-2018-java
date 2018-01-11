@@ -40,7 +40,6 @@ public class Workers {
         index = 0;
     }
     void contBuildingFactory(){
-        
     }
     boolean doneBuildingFactory(){
         return false;
