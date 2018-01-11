@@ -13,52 +13,21 @@ public class Player {
         System.out.println("num of directions: "+ directions.length);
         Path p = new Path(gc);
         VecUnit units = gc.myUnits();
-        Troop[] army = new Troop[(int)units.size()];
+        Workers workers = new Workers(gc);
         for (int i = 0; i < units.size(); i++) {
             Unit unit = units.get(i);
             army[i] = new Troop(gc,unit);
             army[i].setRoute(p.genShortestRouteBFS(army[i].curLoc(),new MapLocation(Planet.Earth,10,10)));
         }
-        //try{
-        int blueId = 20;
-        int[] blueprints = new int[500];
-        int numAThings = 0;
+
+        for (int i = 0; i < ; i++) {
+
+        }
+
             while (true) {
                 System.out.println();
-                System.out.println("Current round Carl test aaa: "+gc.round());
-                units = gc.units();
-                int idBlueprint = 0;
-                for (int i = 0; i < units.size(); i++) {
-                    Unit unit = units.get(i);
-                    if(unit.unitType() == UnitType.Factory){
-                        idBlueprint = unit.id();
-                        if (gc.canProduceRobot(idBlueprint,UnitType.Ranger));
-                    }
-                }
-                for (int i = 0; i < units.size(); i++) {
-                    Unit unit = units.get(i);
-                    int id = unit.id();
-                    // Most methods on gc take unit IDs, instead of the unit objects themselves.
-                    int a = (int) (Math.random() * 8);
-                    Direction rand = directions[a];
-                    if(gc.isMoveReady(id) && gc.canMove(id,rand)) gc.moveRobot(id,rand);
-                    //Debug.printCoords(tr.curLoc());
-                    if(gc.canReplicate(id,rand) && numAThings < 10){
-                        System.out.println("replicate worker");
-                        gc.replicate(id,rand);
-                        numAThings++;
-                    }
-                    else if(gc.canBlueprint(id,UnitType.Factory,rand) && numAThings == 10){
-                        System.out.println("blue factory");
-                        gc.blueprint(id,UnitType.Factory,rand);
-                        numAThings++;
-                    } else if(gc.canBuild(id,idBlueprint)){
-                        gc.build(id,idBlueprint);
-                    }
-                }
-                // Submit the actions we've done, and wait for our next turn.
-                //long k = p.calculateTotalKripOnEarth();
-                //System.out.println("krip on earth" + k);
+                System.out.println("Current round: "+gc.round());
+
                 gc.nextTurn();
             }
         //} catch(Exception e){
