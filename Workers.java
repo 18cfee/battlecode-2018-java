@@ -30,16 +30,17 @@ public class Workers {
     }
     public void factoryProduce(){
         UnitType production = UnitType.Ranger;
+        //todo, get this from path and also make it an available direction
+        Direction[] d = Direction.values();
+        int rand = (int)(Math.random()*9);
+        Direction random = d[rand];
         for (int i = 0; i < builtFactIndex; i++) {
             if(gc.canProduceRobot(builtFactary[i],production)){
                 System.out.println("factory made a unit");
                 gc.produceRobot(builtFactary[i],production);
             }
-        }
-        for (int i = 0; i < unbuiltIndex; i++) {
-            if(gc.canProduceRobot(unbuiltFactory[i],production)){
-                System.out.println("unfactory made a unit");
-                gc.produceRobot(unbuiltFactory[i],production);
+            if(gc.canUnload(builtFactary[i],random)){
+                gc.unload(builtFactary[i],random);
             }
         }
     }
