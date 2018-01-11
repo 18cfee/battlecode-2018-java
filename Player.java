@@ -12,31 +12,53 @@ public class Player {
         Workers workers = new Workers(gc);
         workers.setState(WorkerStates.Replicate);
         while (true) {
-            System.out.println();
-            System.out.println("Current round: "+gc.round());
-            //Place Units into their groups
-            VecUnit units = gc.myUnits();
-            for (int i = 0; i < units.size(); i++) {
-                Unit unit = units.get(i);
-                if(unit.unitType() == UnitType.Worker){
-                    workers.addWorker(unit.id());
+            if(gc.planet() != Planet.Earth) {
+            } else {
+                System.out.println();
+                System.out.println("Current round: "+gc.round());
+                System.out.println(workers.state);
+                //Place Units into their groups
+                VecUnit units = gc.myUnits();
+                for (int i = 0; i < units.size(); i++) {
+                    Unit unit = units.get(i);
+                    if(unit.unitType() == UnitType.Worker){
+                        workers.addWorker(unit.id());
+                    }
+                    if(unit.unitType() == UnitType.Factory){
+                        workers.addFactory(unit);
+                    }
                 }
-            }
-            if(workers.state == WorkerStates.Replicate){
-                if (workers.doneReplicating()){
-                    workers.setState(WorkerStates.BuildFactory);
-                } else {
-                    workers.contReplicating();
+                if(workers.state == WorkerStates.Replicate){
+                    if (workers.doneReplicating()){
+                        workers.setState(WorkerStates.BuildFactory);
+                    } else {
+                        workers.contReplicating();
+                    }
                 }
-            }
-            if(workers.state == WorkerStates.BuildFactory){
-                if (workers.doneBuildingFactory()){
-                    workers.setState(WorkerStates.GatherKryptonite);
-                } else {
-                    workers.contBuildingFactory();
+                // todo right now not complete
+                if(workers.state == WorkerStates.BuildFactory){
+                    if (workers.doneBuildingFactory()){
+                        workers.setState(WorkerStates.GatherKryptonite);
+                    } else {
+                        workers.contBuildingFactory();
+                    }
                 }
+                // todo have the workers get krypt
+
+                //todo this should churn out units
+                workers.factoryProduce();
+                workers.resetWorkerIndexCount();
+
+                // here is a section to start doing research
+                //todo
+
+                //here is a section to start rocket stuff
+                //todo
+
+                // othere groups after this
+                //todo make stuff shoot
             }
-            workers.resetWorkerIndexCount();
+
             gc.nextTurn();
         }
     }
