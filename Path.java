@@ -2,28 +2,34 @@ import bc.*;
 
 import java.util.ArrayDeque;
 import java.util.BitSet;
+import java.util.Random;
 import java.util.Stack;
 
 public class Path {
     private PlanetMap earth;
     GameController gc;
     int earthSize;
-    // Direction is a normal java enum.
-    //todo check that there is an array with only 8 directions not 9
-    Direction[] directions;
+    public Direction[] directions;
+    private Random random;
     public Path(GameController gc){
         this.gc = gc;
-        System.out.println("made it here");
+        random = new Random();
+        random.setSeed(724);
+        System.out.println("made it to Path");
         earth = gc.startingMap(Planet.Earth);
         earthSize = (int)earth.getHeight();
         directions = Direction.values();
         //todo the following code was making an infinite loop
         // remove the direction none
-//        Direction[] temp = Direction.values();
-//        directions = new Direction[8];
-//        for (int i = 1; i <= directions.length; i++) {
-//            directions[i - 1] = temp[i];
-//        }
+        Direction[] temp = Direction.values();
+        directions = new Direction[8];
+        for (int i = 1; i <= directions.length; i++) {
+            directions[i - 1] = temp[i];
+        }
+    }
+    public Direction getRandDirection(){
+        int a = random.nextInt(8);
+        return directions[a];
     }
     public long calculateTotalKripOnEarth(){
         long totalCarbs = 0;

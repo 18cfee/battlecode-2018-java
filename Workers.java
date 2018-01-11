@@ -13,9 +13,11 @@ public class Workers {
     int index = 0;
     int totalHp = 0;
     GameController gc;
+    Path p;
     public WorkerStates state;
-    public Workers(GameController gc){
+    public Workers(GameController gc, Path p){
         this.gc = gc;
+        this.p = p;
     }
     public void addFactory(Unit fact){
         if(fact.structureIsBuilt() == 1){
@@ -30,10 +32,7 @@ public class Workers {
     }
     public void factoryProduce(){
         UnitType production = UnitType.Ranger;
-        //todo, get this from path and also make it an available direction
-        Direction[] d = Direction.values();
-        int rand = (int)(Math.random()*9);
-        Direction random = d[rand];
+        Direction random = p.getRandDirection();
         for (int i = 0; i < builtFactIndex; i++) {
             if(gc.canProduceRobot(builtFactary[i],production)){
                 System.out.println("factory made a unit");
@@ -49,10 +48,7 @@ public class Workers {
         index++;
     }
     public void contReplicating(){
-        //todo, get this from path and also make it an available direction
-        Direction[] d = Direction.values();
-        int rand = (int)(Math.random()*9);
-        Direction random = d[rand];
+        Direction random = p.getRandDirection();
         for (int i = 0; i < index; i++) {
             if(gc.canMove(ids[i],random)){
                 gc.canMove(ids[i],random);
@@ -76,10 +72,7 @@ public class Workers {
         unbuiltIndex = 0;
     }
     void contBuildingFactory(){
-        //todo, get this from path and also make it an available direction
-        Direction[] d = Direction.values();
-        int rand = (int)(Math.random()*9);
-        Direction random = d[rand];
+        Direction random = p.getRandDirection();
         for (int i = 0; i < index; i++) {
             if(gc.isMoveReady(ids[i]) && gc.canMove(ids[i],random)){
                 gc.moveRobot(ids[i],random);

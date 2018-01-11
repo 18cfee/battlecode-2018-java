@@ -1,3 +1,4 @@
+import bc.Direction;
 import bc.GameController;
 
 public class Rangers {
@@ -5,7 +6,9 @@ public class Rangers {
     GameController gc;
     int [] ids = new int[MAX_ARMY_SIZE];
     int index = 0;
-    Rangers(GameController gc){
+    Path p;
+    Rangers(GameController gc, Path p){
+        this.p = p;
         this.gc = gc;
     }
     public void add(int id){
@@ -14,6 +17,12 @@ public class Rangers {
         }
     }
     void conductTurn(){
-
+        for (int i = 0; i < index; i++) {
+            int id = ids[i];
+            Direction toMove = p.getRandDirection();
+            if(gc.isMoveReady(id) && gc.canMove(id,toMove)){
+                gc.moveRobot(id,toMove);
+            }
+        }
     }
 }

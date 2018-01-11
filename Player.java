@@ -10,9 +10,9 @@ public class Player {
         Direction[] directions = Direction.values();
         System.out.println("num of directions: "+ directions.length);
         Path p = new Path(gc);
-        Workers workers = new Workers(gc);
+        Workers workers = new Workers(gc,p);
         workers.setState(WorkerStates.Replicate);
-        Rangers carlsRangers = new Rangers(gc);
+        Rangers carlsRangers = new Rangers(gc,p);
         while (true) {
             if(gc.planet() != Planet.Earth) {
             } else {
