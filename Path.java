@@ -10,12 +10,18 @@ public class Path {
     int earthSize;
     // Direction is a normal java enum.
     //todo check that there is an array with only 8 directions not 9
-    Direction[] directions = Direction.values();
+    Direction[] directions;
     public Path(GameController gc){
         this.gc = gc;
         System.out.println("made it here");
         earth = gc.startingMap(Planet.Earth);
         earthSize = (int)earth.getHeight();
+        // remove the direction none
+        Direction[] temp = Direction.values();
+        directions = new Direction[8];
+        for (int i = 0; i < directions.length; i++) {
+            directions[i] = temp[i];
+        }
     }
     public long calculateTotalKripOnEarth(){
         long totalCarbs = 0;
