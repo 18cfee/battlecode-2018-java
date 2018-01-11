@@ -5,8 +5,18 @@ import java.util.BitSet;
 import java.util.Stack;
 
 public class Player {
+
+    GameController gc = new GameController();
+
     public static void main(String args[]){
-        GameController gc = new GameController();
+
+    }
+
+    public Player() {
+        run();
+    }
+
+    void run(){
         // Direction is a normal java enum.
         int q = Math.abs(-4);
         System.out.println(q);
@@ -21,28 +31,29 @@ public class Player {
             army[i].setRoute(p.genShortestRouteBFS(army[i].curLoc(),new MapLocation(Planet.Earth,10,10)));
         }
         //try{
-            while (true) {
-                System.out.println();
-                System.out.println("Current round Carl test aaa: "+gc.round());
-                for (int i = 0; i < army.length; i++) {
-                    Unit unit = units.get(i);
-                    Troop tr = army[i];
+        while (true) {
+            System.out.println();
+            System.out.println("Current round Carl test aaa: "+gc.round());
+            for (int i = 0; i < army.length; i++) {
+                Unit unit = units.get(i);
+                Troop tr = army[i];
 
-                    // Most methods on gc take unit IDs, instead of the unit objects themselves.
-                    int a = (int)(Math.random()*8);
-                    tr.tryMoveNextRoute();
-                    debug.printCords(tr.curLoc());
-                }
-
-                // Submit the actions we've done, and wait for our next turn.
-                //long k = p.calculateTotalKripOnEarth();
-                //System.out.println("krip on earth" + k);
-                gc.nextTurn();
+                // Most methods on gc take unit IDs, instead of the unit objects themselves.
+                int a = (int)(Math.random()*8);
+                tr.tryMoveNextRoute();
+                Debug.printCoords(tr.curLoc());
             }
+
+            // Submit the actions we've done, and wait for our next turn.
+            //long k = p.calculateTotalKripOnEarth();
+            //System.out.println("krip on earth" + k);
+            gc.nextTurn();
+        }
         //} catch(Exception e){
-          //  System.out.println("Exception thrown by 724");
+        //  System.out.println("Exception thrown by 724");
         //}
     }
+
 }
 
 class Path {
@@ -83,7 +94,7 @@ class Path {
         while(!toCheck.isEmpty()){
             MapLocation cur = toCheck.removeFirst();
             System.out.println("vitit:");
-            debug.printCords(cur);
+            Debug.printCoords(cur);
             for(Direction d : directions){
                 MapLocation newLoc = cur.add(d);
                 if(shouldBeCheckedLater(newLoc,visited)){
@@ -115,13 +126,13 @@ class Path {
     Stack<MapLocation> generateStack(MapLocation[][] from, MapLocation end){
         System.out.println("Stack");
         MapLocation cur = end;
-        debug.printCords(cur);
+        Debug.printCoords(cur);
         MapLocation cameFrom = from[cur.getX()][cur.getY()];
         Stack<MapLocation> route = new Stack<MapLocation>();
         while(!cur.equals(cameFrom)){
             route.add(cur);
             cur = cameFrom;
-            debug.printCords(cur);
+            Debug.printCoords(cur);
             cameFrom = from[cur.getX()][cur.getY()];
         }
         return route;
@@ -162,12 +173,6 @@ class Troop {
         return (route == null || route.isEmpty());
     }
 
-}
-
-class debug {
-    static void printCords(MapLocation a){
-        System.out.println("X: " + a.getX() + " Y: " + a.getY());
-    }
 }
 
 class Group {
