@@ -80,8 +80,8 @@ public class Workers {
         int rand = (int)(Math.random()*9);
         Direction random = d[rand];
         for (int i = 0; i < index; i++) {
-            if(gc.canMove(ids[i],random)){
-                gc.canMove(ids[i],random);
+            if(gc.isMoveReady(ids[i]) && gc.canMove(ids[i],random)){
+                gc.moveRobot(ids[i],random);
             }
         }
         if(unbuiltIndex == 0){
