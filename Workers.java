@@ -93,9 +93,9 @@ public class Workers {
         } else{
             System.out.println("trying to build fact");
             for (int i = 0; i < index; i++) {
-                if(gc.canBuild(ids[i], factBlueId) && totalHp < 300){
+                if(gc.canBuild(ids[i], factBlueId)){
                     totalHp += 5;
-                    gc.canBuild(ids[i], factBlueId);
+                    gc.build(ids[i], factBlueId);
                 }
             }
             System.out.println("this many bots tried: " + index);
