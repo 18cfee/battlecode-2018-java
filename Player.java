@@ -14,25 +14,21 @@ public class Player {
         Path p = new Path(gc);
         VecUnit units = gc.myUnits();
         Workers workers = new Workers(gc);
-        for (int i = 0; i < units.size(); i++) {
-            Unit unit = units.get(i);
-            army[i] = new Troop(gc,unit);
-            army[i].setRoute(p.genShortestRouteBFS(army[i].curLoc(),new MapLocation(Planet.Earth,10,10)));
-        }
-
-        for (int i = 0; i < ; i++) {
-
-        }
-
-            while (true) {
-                System.out.println();
-                System.out.println("Current round: "+gc.round());
-
-                gc.nextTurn();
+        while (true) {
+            for (int i = 0; i < units.size(); i++) {
+                Unit unit = units.get(i);
+                army[i] = new Troop(gc,unit);
+                army[i].setRoute(p.genShortestRouteBFS(army[i].curLoc(),new MapLocation(Planet.Earth,10,10)));
             }
-        //} catch(Exception e){
-          //  System.out.println("Exception thrown by 724");
-        //}
+
+            for (int i = 0; i < ; i++) {
+
+            }
+            System.out.println();
+            System.out.println("Current round: "+gc.round());
+
+            gc.nextTurn();
+        }
     }
 }
 
