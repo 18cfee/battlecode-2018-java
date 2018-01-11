@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/battlecode-2018-java.iml" filepath="$PROJECT_DIR$/battlecode-2018-java.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/examplefuncsplayer-java.iml" filepath="$PROJECT_DIR$/.idea/examplefuncsplayer-java.iml" />
     </modules>
   </component>
 </project>
