@@ -26,7 +26,7 @@ public class Player {
         while (true) {
             System.out.println();
             System.out.println("Current round Carl test aaa: "+gc.round());
-            units = gc.units();
+            units = gc.myUnits();
             int idBlueprint = 0;
             for (int i = 0; i < units.size(); i++) {
                 Unit unit = units.get(i);
@@ -55,8 +55,8 @@ public class Player {
                     numAThings++;
                 } else if(gc.canBuild(id,idBlueprint)){
                     gc.build(id,idBlueprint);
-                } else if(gc.round() > 150 && numAThings > 5){
-                    //gc.disintegrateUnit(id);
+                } else if(gc.round() > 150 && numAThings > 8){
+                    gc.disintegrateUnit(id);
                     numAThings--;
                 }
             }
