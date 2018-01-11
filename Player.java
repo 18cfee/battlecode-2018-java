@@ -3,6 +3,7 @@ import bc.*;
 import java.util.Stack;
 
 public class Player {
+    static final boolean CarlTests = true;
     public static void main(String args[]){
         GameController gc = new GameController();
         // Direction is a normal java enum.
@@ -11,6 +12,7 @@ public class Player {
         Path p = new Path(gc);
         Workers workers = new Workers(gc);
         workers.setState(WorkerStates.Replicate);
+        Rangers carlsRangers = new Rangers(gc);
         while (true) {
             if(gc.planet() != Planet.Earth) {
             } else {
@@ -28,6 +30,10 @@ public class Player {
                     if(unit.unitType() == UnitType.Factory){
                         workers.addFactory(unit);
                     }
+                    if(CarlTests && unit.unitType() == UnitType.Ranger){
+                        carlsRangers.add(unit.id());
+                    }
+                    //todo keegan - set the CArltest to false if you want to snag the rangers for your testing
                 }
                 if(workers.state == WorkerStates.Replicate){
                     if (workers.doneReplicating()){
