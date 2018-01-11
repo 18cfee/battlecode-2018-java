@@ -61,7 +61,7 @@ public class Workers {
         }
     }
     public boolean doneReplicating(){
-        return(index > 30);
+        return(index > 3);
     }
     void setState(WorkerStates state){
         this.state = state;

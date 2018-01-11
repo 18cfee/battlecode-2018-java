@@ -19,7 +19,7 @@ public class Path {
         earth = gc.startingMap(Planet.Earth);
         earthSize = (int)earth.getHeight();
         directions = Direction.values();
-        //todo the following code was making an infinite loop
+        //todo the following code was making an infinite loop on bfs possibly
         // remove the direction none
         Direction[] temp = Direction.values();
         directions = new Direction[8];

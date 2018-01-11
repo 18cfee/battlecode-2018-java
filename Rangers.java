@@ -7,9 +7,11 @@ public class Rangers {
     int [] ids = new int[MAX_ARMY_SIZE];
     int index = 0;
     Path p;
+    CStates state;
     Rangers(GameController gc, Path p){
         this.p = p;
         this.gc = gc;
+        state = CStates.RandomMove;
     }
     public void add(int id){
         if(index != MAX_ARMY_SIZE){
@@ -17,6 +19,12 @@ public class Rangers {
         }
     }
     void conductTurn(){
+        if(state == CStates.RandomMove){
+            roamRandom();
+        }
+        index = 0;
+    }
+    private void roamRandom(){
         for (int i = 0; i < index; i++) {
             int id = ids[i];
             Direction toMove = p.getRandDirection();
@@ -25,4 +33,11 @@ public class Rangers {
             }
         }
     }
+    boolean shouldContinueRoamingRandomly(){
+        return gc.round() < 100;
+    }
+}
+
+enum CStates {
+    RandomMove, Not;
 }
