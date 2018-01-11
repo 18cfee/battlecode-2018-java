@@ -64,6 +64,9 @@ public class Player {
 
                 // othere groups after this
                 //todo make stuff shoot
+
+
+                carlsRangers.conductTurn();
             }
 
             gc.nextTurn();
