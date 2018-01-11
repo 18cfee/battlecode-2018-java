@@ -1,8 +1,5 @@
 import bc.*;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.Stack;
 
 public class Player {
@@ -12,21 +9,34 @@ public class Player {
         Direction[] directions = Direction.values();
         System.out.println("num of directions: "+ directions.length);
         Path p = new Path(gc);
-        VecUnit units = gc.myUnits();
         Workers workers = new Workers(gc);
+        workers.setState(WorkerStates.Replicate);
         while (true) {
-            for (int i = 0; i < units.size(); i++) {
-                Unit unit = units.get(i);
-                army[i] = new Troop(gc,unit);
-                army[i].setRoute(p.genShortestRouteBFS(army[i].curLoc(),new MapLocation(Planet.Earth,10,10)));
-            }
-
-            for (int i = 0; i < ; i++) {
-
-            }
             System.out.println();
             System.out.println("Current round: "+gc.round());
-
+            //Place Units into their groups
+            VecUnit units = gc.myUnits();
+            for (int i = 0; i < units.size(); i++) {
+                Unit unit = units.get(i);
+                if(unit.unitType() == UnitType.Worker){
+                    workers.addWorker(unit.id());
+                }
+            }
+            if(workers.state == WorkerStates.Replicate){
+                if (workers.doneReplicating()){
+                    workers.setState(WorkerStates.BuildFactory);
+                } else {
+                    workers.contReplicating();
+                }
+            }
+            if(workers.state == WorkerStates.BuildFactory){
+                if (workers.doneBuildingFactory()){
+                    workers.setState(WorkerStates.GatherKryptonite);
+                } else {
+                    workers.contBuildingFactory();
+                }
+            }
+            workers.resetWorkerIndexCount();
             gc.nextTurn();
         }
     }
