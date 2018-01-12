@@ -12,7 +12,9 @@ public class Path {
     public Direction[] directions;
     private Random random;
     public MapLocation closestStartLocation;
+    Planet planet;
     public Path(GameController gc,Planet planet){
+        this.planet = planet;
         this.gc = gc;
         random = new Random();
         random.setSeed(724);
@@ -37,7 +39,7 @@ public class Path {
         int oldY = loc.getY();
         int newX = planetSize - 1 - oldX;
         int newY = planetSize - 1 - oldY;
-        return new MapLocation(new)
+        return new MapLocation(newX,newY,planet);
     }
     public Direction getRandDirection(){
         int a = random.nextInt(8);
