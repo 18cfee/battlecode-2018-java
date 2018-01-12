@@ -1,5 +1,7 @@
 import bc.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 public class Player {
@@ -12,7 +14,9 @@ public class Player {
         Path p = new Path(gc,gc.planet());
         Workers workers = new Workers(gc,p);
         workers.setState(WorkerStates.Replicate);
-        Group carlsGroup = new Group(gc,p);
+        Group carlsRangers = new CarlRangers(gc,p);
+        ArrayList<Group> army = new ArrayList<>();
+        army.add(carlsRangers);
         while (true) {
             if(gc.planet() != Planet.Earth) {
             } else {
@@ -31,7 +35,7 @@ public class Player {
                         workers.addFactory(unit);
                     }
                     if(CarlTests && unit.unitType() == UnitType.Ranger && !unit.location().isInGarrison()){
-                        carlsGroup.add(unit.id());
+                        carlsRangers.add(unit.id());
                     }
                     //todo keegan - set the CArltest to false if you want to snag the rangers for your testing
                 }
@@ -64,9 +68,9 @@ public class Player {
 
                 // othere groups after this
                 //todo make stuff shoot
-
-
-                carlsGroup.conductTurn();
+                for(Group group: army){
+                    group.conductTurn();
+                }
             }
 
             gc.nextTurn();
