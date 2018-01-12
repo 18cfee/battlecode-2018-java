@@ -17,7 +17,7 @@ public class Path {
         random = new Random();
         random.setSeed(724);
         System.out.println("made it to Path");
-        map = gc.startingMap(Planet.Earth);
+        map = gc.startingMap(planet);
         planetSize = (int) map.getHeight();
         directions = Direction.values();
         //todo the following code was making an infinite loop on bfs possibly
@@ -27,19 +27,17 @@ public class Path {
         for (int i = 1; i <= directions.length; i++) {
             directions[i - 1] = temp[i];
         }
-        closestStartLocation = findClosestStartLoc();
+        closestStartLocation = findClosestEnemyStartLoc();
     }
-    private MapLocation findClosestStartLoc(){
-        return new MapLocation(Planet.Earth,)
+    private MapLocation findClosestEnemyStartLoc(){
+        return f
     }
     private MapLocation flippLocDiag(MapLocation loc){
         int oldX = loc.getX();
         int oldY = loc.getY();
-
-        if(loc.getPlanet() == Planet.Earth){
-
-        }
-        int newX = planetSize;
+        int newX = planetSize - 1 - oldX;
+        int newY = planetSize - 1 - oldY;
+        return new MapLocation(new)
     }
     public Direction getRandDirection(){
         int a = random.nextInt(8);
@@ -55,7 +53,7 @@ public class Path {
         }
         return totalCarbs;
     }
-    public Stack<MapLocation> genShortestRouteBFSEarth(MapLocation start, MapLocation end){
+    public Stack<MapLocation> genShortestRouteBFS(MapLocation start, MapLocation end){
         BitSet[] visited = new BitSet[planetSize];
         for (int i = 0; i < planetSize; i++) {
             BitSet set = new BitSet(planetSize);
