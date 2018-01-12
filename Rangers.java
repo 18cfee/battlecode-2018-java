@@ -1,5 +1,6 @@
 import bc.Direction;
 import bc.GameController;
+import bc.MapLocation;
 
 public class Rangers {
     static final int MAX_ARMY_SIZE = 100;
@@ -7,6 +8,7 @@ public class Rangers {
     int [] ids = new int[MAX_ARMY_SIZE];
     int index = 0;
     Path p;
+    MapLocation target;
     CStates state;
     Rangers(GameController gc, Path p){
         this.p = p;
@@ -20,7 +22,16 @@ public class Rangers {
     }
     void conductTurn(){
         if(state == CStates.RandomMove){
-            roamRandom();
+            if(shouldContinueRoamingRandomly()){
+                roamRandom();
+            } else{
+                state = CStates.TargetDestination;
+                target = p.closestStartLocation;
+                aquireIndividualPaths();
+            }
+        }
+        if(state == CStates.TargetDestination){
+            moveToTarget();
         }
         index = 0;
     }
@@ -36,8 +47,9 @@ public class Rangers {
     boolean shouldContinueRoamingRandomly(){
         return gc.round() < 100;
     }
+
 }
 
 enum CStates {
-    RandomMove, Not;
+    RandomMove, Not, TargetDestination;
 }

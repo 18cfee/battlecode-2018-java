@@ -6,18 +6,19 @@ import java.util.Random;
 import java.util.Stack;
 
 public class Path {
-    private PlanetMap earth;
+    private PlanetMap map;
     GameController gc;
-    int earthSize;
+    int planetSize;
     public Direction[] directions;
     private Random random;
-    public Path(GameController gc){
+    public MapLocation closestStartLocation;
+    public Path(GameController gc,Planet planet){
         this.gc = gc;
         random = new Random();
         random.setSeed(724);
         System.out.println("made it to Path");
-        earth = gc.startingMap(Planet.Earth);
-        earthSize = (int)earth.getHeight();
+        map = gc.startingMap(Planet.Earth);
+        planetSize = (int) map.getHeight();
         directions = Direction.values();
         //todo the following code was making an infinite loop on bfs possibly
         // remove the direction none
@@ -26,6 +27,19 @@ public class Path {
         for (int i = 1; i <= directions.length; i++) {
             directions[i - 1] = temp[i];
         }
+        closestStartLocation = findClosestStartLoc();
+    }
+    private MapLocation findClosestStartLoc(){
+        return new MapLocation(Planet.Earth,)
+    }
+    private MapLocation flippLocDiag(MapLocation loc){
+        int oldX = loc.getX();
+        int oldY = loc.getY();
+
+        if(loc.getPlanet() == Planet.Earth){
+
+        }
+        int newX = planetSize;
     }
     public Direction getRandDirection(){
         int a = random.nextInt(8);
@@ -33,21 +47,21 @@ public class Path {
     }
     public long calculateTotalKripOnEarth(){
         long totalCarbs = 0;
-        for (int i = 0; i < earthSize; i++) {
-            for (int j = 0; j < earthSize; j++) {
+        for (int i = 0; i < planetSize; i++) {
+            for (int j = 0; j < planetSize; j++) {
                 MapLocation loc = new MapLocation(Planet.Earth,i,j);
-                totalCarbs += earth.initialKarboniteAt(loc);
+                totalCarbs += map.initialKarboniteAt(loc);
             }
         }
         return totalCarbs;
     }
-    public Stack<MapLocation> genShortestRouteBFS(MapLocation start, MapLocation end){
-        BitSet[] visited = new BitSet[earthSize];
-        for (int i = 0; i < earthSize; i++) {
-            BitSet set = new BitSet(earthSize);
+    public Stack<MapLocation> genShortestRouteBFSEarth(MapLocation start, MapLocation end){
+        BitSet[] visited = new BitSet[planetSize];
+        for (int i = 0; i < planetSize; i++) {
+            BitSet set = new BitSet(planetSize);
             visited[i] = set;
         }
-        MapLocation[][] from = new MapLocation[earthSize][earthSize];
+        MapLocation[][] from = new MapLocation[planetSize][planetSize];
         ArrayDeque<MapLocation> toCheck = new ArrayDeque<MapLocation>();
         toCheck.addLast(start);
         recordFrom(start,start,from);
@@ -76,7 +90,7 @@ public class Path {
         }
     }
     boolean shouldBeCheckedLater(MapLocation a, BitSet[] checked){
-        return(earth.onMap(a) && !checked[a.getY()].get(a.getX()) && earth.isPassableTerrainAt(a) == 1);
+        return(map.onMap(a) && !checked[a.getY()].get(a.getX()) && map.isPassableTerrainAt(a) == 1);
     }
     void markVisited(BitSet[] vis, MapLocation cur){
         BitSet set = vis[cur.getY()];
