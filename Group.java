@@ -56,9 +56,10 @@ public class Group {
     }
     private void moveToTarget(){
         for (int i = 0; i < index; i++) {
-
             int id = ids[i];
-            tryMoveNextRoute(id);
+            if(!tryMoveNextRoute(id)){
+
+            }
         }
     }
     private boolean tryMoveNextRoute(int id){

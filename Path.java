@@ -47,6 +47,15 @@ public class Path {
         int newY = planetSize - 1 - oldY;
         return new MapLocation(planet,newX,newY);
     }
+    public boolean moveInRandomAvailableDirection(Unit unit){
+        int id = unit.id();
+        for (int i = 0; i < 8; i++) {
+            Direction d = directions[i];
+            if(gc.isMoveReady(id) && gc.canMove(id,d)){
+                gc.moveRobot(id,d);
+            }
+        }
+    }
     public Direction getRandDirection(){
         int a = random.nextInt(8);
         return directions[a];
