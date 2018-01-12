@@ -12,7 +12,7 @@ public class Player {
         Path p = new Path(gc,gc.planet());
         Workers workers = new Workers(gc,p);
         workers.setState(WorkerStates.Replicate);
-        Rangers carlsRangers = new Rangers(gc,p);
+        Group carlsGroup = new Group(gc,p);
         while (true) {
             if(gc.planet() != Planet.Earth) {
             } else {
@@ -30,8 +30,8 @@ public class Player {
                     if(unit.unitType() == UnitType.Factory){
                         workers.addFactory(unit);
                     }
-                    if(CarlTests && unit.unitType() == UnitType.Ranger){
-                        carlsRangers.add(unit.id());
+                    if(CarlTests && unit.unitType() == UnitType.Ranger && !unit.location().isInGarrison()){
+                        carlsGroup.add(unit.id());
                     }
                     //todo keegan - set the CArltest to false if you want to snag the rangers for your testing
                 }
@@ -66,7 +66,7 @@ public class Player {
                 //todo make stuff shoot
 
 
-                carlsRangers.conductTurn();
+                carlsGroup.conductTurn();
             }
 
             gc.nextTurn();
@@ -111,9 +111,4 @@ class Troop {
         return (route == null || route.isEmpty());
     }
 
-}
-
-class Group {
-    public Unit[] bots;
-    Group(){}
 }

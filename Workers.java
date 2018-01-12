@@ -32,13 +32,14 @@ public class Workers {
     }
     public void factoryProduce(){
         UnitType production = UnitType.Ranger;
-        Direction random = p.getRandDirection();
+        //Direction random = p.getRandDirection();
+        Direction random = Direction.Northwest;
         for (int i = 0; i < builtFactIndex; i++) {
             if(gc.canProduceRobot(builtFactary[i],production)){
                 System.out.println("factory made a unit");
                 gc.produceRobot(builtFactary[i],production);
             }
-            if(gc.canUnload(builtFactary[i],random)){
+            if(gc.canUnload(builtFactary[i],random) ){ // && !gc.hasUnitAtLocation(gc.unit(builtFactary[i]).location().mapLocation().add(random))
                 gc.unload(builtFactary[i],random);
             }
         }

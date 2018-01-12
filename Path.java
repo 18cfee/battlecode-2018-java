@@ -31,15 +31,21 @@ public class Path {
         }
         closestStartLocation = findClosestEnemyStartLoc();
     }
+    //only meant for earth
     private MapLocation findClosestEnemyStartLoc(){
-        return f
+        //todo maybe find as crow flies for shooting or actual movement necesary
+        //just a mirror of one for now
+        if(planet == Planet.Earth){
+            return flippLocDiag(gc.myUnits().get(0).location().mapLocation());
+        } else return new MapLocation(Planet.Mars,0,0);
+
     }
     private MapLocation flippLocDiag(MapLocation loc){
         int oldX = loc.getX();
         int oldY = loc.getY();
         int newX = planetSize - 1 - oldX;
         int newY = planetSize - 1 - oldY;
-        return new MapLocation(newX,newY,planet);
+        return new MapLocation(planet,newX,newY);
     }
     public Direction getRandDirection(){
         int a = random.nextInt(8);
@@ -69,8 +75,8 @@ public class Path {
         outerLoop:
         while(!toCheck.isEmpty()){
             MapLocation cur = toCheck.removeFirst();
-            System.out.println("visit:");
-            Debug.printCoords(cur);
+            //System.out.println("visit:");
+            //Debug.printCoords(cur);
             for(Direction d : directions){
                 MapLocation newLoc = cur.add(d);
                 if(shouldBeCheckedLater(newLoc,visited)){
@@ -89,26 +95,26 @@ public class Path {
             return generateStack(from,end);
         }
     }
-    boolean shouldBeCheckedLater(MapLocation a, BitSet[] checked){
+    private boolean shouldBeCheckedLater(MapLocation a, BitSet[] checked){
         return(map.onMap(a) && !checked[a.getY()].get(a.getX()) && map.isPassableTerrainAt(a) == 1);
     }
-    void markVisited(BitSet[] vis, MapLocation cur){
+    private void markVisited(BitSet[] vis, MapLocation cur){
         BitSet set = vis[cur.getY()];
         set.set(cur.getX());
     }
-    void recordFrom(MapLocation cur, MapLocation newLoc, MapLocation[][] from){
+    private void recordFrom(MapLocation cur, MapLocation newLoc, MapLocation[][] from){
         from[newLoc.getX()][newLoc.getY()] = cur;
     }
-    Stack<MapLocation> generateStack(MapLocation[][] from, MapLocation end){
+    private Stack<MapLocation> generateStack(MapLocation[][] from, MapLocation end){
         System.out.println("Stack");
         MapLocation cur = end;
-        Debug.printCoords(cur);
+        //Debug.printCoords(cur);
         MapLocation cameFrom = from[cur.getX()][cur.getY()];
         Stack<MapLocation> route = new Stack<MapLocation>();
         while(!cur.equals(cameFrom)){
             route.add(cur);
             cur = cameFrom;
-            Debug.printCoords(cur);
+            //Debug.printCoords(cur);
             cameFrom = from[cur.getX()][cur.getY()];
         }
         return route;
