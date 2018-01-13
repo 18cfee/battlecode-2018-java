@@ -57,7 +57,7 @@ public class Group {
     private void moveToTarget(){
         for (int i = 0; i < index; i++) {
             int id = ids[i];
-            if(!tryMoveNextRoute(id)){
+            if(!tryMoveNextRoute(id) && gc.isMoveReady(id)){
                 p.moveInRandomAvailableDirection(id);
                 Stack<MapLocation> unitPath = p.genShortestRouteBFS(gc.unit(id).location().mapLocation(),
                         p.closestStartLocation);
@@ -72,7 +72,7 @@ public class Group {
         }
         MapLocation durGoal = route.peek();
         Direction curDirection = gc.unit(id).location().mapLocation().directionTo(durGoal);
-        System.out.println("cur direction: " + curDirection);
+        //System.out.println("cur direction: " + curDirection);
         if(!gc.canMove(id,curDirection)){
             return false;
         } else {

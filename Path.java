@@ -117,7 +117,7 @@ public class Path {
         from[newLoc.getX()][newLoc.getY()] = cur;
     }
     private Stack<MapLocation> generateStack(MapLocation[][] from, MapLocation end){
-        System.out.println("Stack");
+        //System.out.println("Stack");
         MapLocation cur = end;
         //Debug.printCoords(cur);
         MapLocation cameFrom = from[cur.getX()][cur.getY()];
