@@ -19,7 +19,7 @@ public class Path {
         this.planet = planet;
         this.gc = gc;
         random = new Random();
-        random.setSeed(734);
+        random.setSeed(724);
         System.out.println("made it to Path");
         map = gc.startingMap(planet);
         planetSize = (int) map.getHeight();
