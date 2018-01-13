@@ -13,11 +13,13 @@ public class Path {
     private Random random;
     public MapLocation closestStartLocation;
     Planet planet;
+    final static short greatestPathNum = 3000;
+    short[][] hillToBase;
     public Path(GameController gc,Planet planet){
         this.planet = planet;
         this.gc = gc;
         random = new Random();
-        random.setSeed(724);
+        random.setSeed(734);
         System.out.println("made it to Path");
         map = gc.startingMap(planet);
         planetSize = (int) map.getHeight();
@@ -29,7 +31,10 @@ public class Path {
         for (int i = 1; i <= directions.length; i++) {
             directions[i - 1] = temp[i];
         }
-        closestStartLocation = findClosestEnemyStartLoc();
+        if(false){
+            closestStartLocation = findClosestEnemyStartLoc();
+            hillToBase = generateHill(gc.myUnits().get(0).location().mapLocation());
+        }
     }
     //only meant for earth
     private MapLocation findClosestEnemyStartLoc(){
@@ -57,6 +62,33 @@ public class Path {
             }
         }
         return false;
+    }
+    public short[][] generateHill(MapLocation destination){
+        short hill[][] = new short[planetSize][planetSize];
+        hill[destination.getX()][destination.getY()] = 1;
+        ArrayDeque<MapLocation> toCheck = new ArrayDeque<MapLocation>();
+        toCheck.addLast(destination);
+        while(!toCheck.isEmpty()){
+            MapLocation cur = toCheck.removeFirst();
+            short dis = hill[cur.getY()][cur.getY()];
+            for(Direction d : directions){
+                MapLocation newLoc = cur.add(d);
+                if(previouslyUncheckedMapLoc(newLoc,hill)){
+                    if(map.isPassableTerrainAt(newLoc) != 1){
+                        //mark as unreachable
+                        hill[newLoc.getX()][newLoc.getY()] = greatestPathNum;
+                    } else {
+                        toCheck.addLast(newLoc);
+                        hill[newLoc.getX()][newLoc.getY()] = (short)(dis + 1);
+                    }
+                }
+            }
+        }
+        // todo smaller versions need to know if a path was found
+        return hill;
+    }
+    private boolean previouslyUncheckedMapLoc(MapLocation a, short[][] hill){
+        return(map.onMap(a) && hill[a.getY()][a.getY()] == 0);
     }
     public Direction getRandDirection(){
         int a = random.nextInt(8);
@@ -91,13 +123,14 @@ public class Path {
             for(Direction d : directions){
                 MapLocation newLoc = cur.add(d);
                 if(shouldBeCheckedLater(newLoc,visited)){
+                    Debug.printCoords(newLoc);
                     toCheck.addLast(newLoc);
                     recordFrom(cur,newLoc,from);
                     markVisited(visited,newLoc);
-                }
-                if(newLoc.equals(end)){
-                    found = true;
-                    break outerLoop;
+                    if(newLoc.getY() == end.getY() && newLoc.getX() == end.getX()){
+                        found = true;
+                        break outerLoop;
+                    }
                 }
             }
         }
@@ -107,7 +140,7 @@ public class Path {
         }
     }
     private boolean shouldBeCheckedLater(MapLocation a, BitSet[] checked){
-        return(map.onMap(a) && !checked[a.getY()].get(a.getX()) && map.isPassableTerrainAt(a) == 1);
+        return(a != null && map.onMap(a) && !checked[a.getY()].get(a.getX()) && map.isPassableTerrainAt(a) == 1);
     }
     private void markVisited(BitSet[] vis, MapLocation cur){
         BitSet set = vis[cur.getY()];
