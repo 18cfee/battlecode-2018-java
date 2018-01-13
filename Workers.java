@@ -45,6 +45,7 @@ public class Workers {
         }
     }
     public void addWorker(int id){
+        if(index >= ids.length) return; //todo be able expand to have more troops?
         ids[index] = id;
         index++;
     }
@@ -62,7 +63,7 @@ public class Workers {
         }
     }
     public boolean doneReplicating(){
-        return(index > 3);
+        return(index > 120);
     }
     void setState(WorkerStates state){
         this.state = state;

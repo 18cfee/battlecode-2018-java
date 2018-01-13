@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Stack;
 
 public class Group {
-    static final int MAX_ARMY_SIZE = 100;
+    static final int MAX_ARMY_SIZE = 200;
     GameController gc;
     int [] ids = new int[MAX_ARMY_SIZE];
     int index = 0;
@@ -29,6 +29,7 @@ public class Group {
         paths = new HashMap<>();
     }
     void conductTurn(){
+        System.out.println("number of rangers this turn: " + index);
         if(state == GenericStates.RandomMove){
             if(shouldContinueRoamingRandomly()){
                 roamRandom();
@@ -91,7 +92,7 @@ public class Group {
         }
     }
     private boolean shouldContinueRoamingRandomly(){
-        return gc.round() < 300;
+        return gc.round() < 740;
     }
 
 }
