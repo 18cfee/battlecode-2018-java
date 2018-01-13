@@ -58,7 +58,10 @@ public class Group {
         for (int i = 0; i < index; i++) {
             int id = ids[i];
             if(!tryMoveNextRoute(id)){
-
+                p.moveInRandomAvailableDirection(id);
+                Stack<MapLocation> unitPath = p.genShortestRouteBFS(gc.unit(id).location().mapLocation(),
+                        p.closestStartLocation);
+                paths.put(id,unitPath);
             }
         }
     }
