@@ -9,6 +9,8 @@ public class Group {
     static final int MAX_ARMY_SIZE = 100;
     GameController gc;
     int [] ids = new int[MAX_ARMY_SIZE];
+    int [] moveAbles = new int[MAX_ARMY_SIZE];
+    int movableIndex = 0;
     int index = 0;
     Path p;
     MapLocation target;
@@ -21,14 +23,17 @@ public class Group {
     public void add(int id){
         if(index != MAX_ARMY_SIZE){
             ids[index++] = id;
+            if(gc.isMoveReady(id)){
+                moveAbles[movableIndex++] = id;
+            }
         }
     }
-    private void changeToTargetDestinationState(MapLocation target){
+    protected void changeToTargetDestinationState(MapLocation target){
         state = GenericStates.TargetDestination;
         this.target = target;
         paths = new HashMap<>();
     }
-    void conductTurn(){
+    public void conductTurn(){
         if(state == GenericStates.RandomMove){
             if(shouldContinueRoamingRandomly()){
                 roamRandom();
@@ -42,8 +47,8 @@ public class Group {
         }
         index = 0;
     }
-    private HashMap<Integer,Stack<MapLocation>> paths;
-    private void aquireIndividualPaths(){
+    protected HashMap<Integer,Stack<MapLocation>> paths;
+    protected void aquireIndividualPaths(){
         for (int i = 0; i < index; i++) {
             int id = ids[i];
             // add the ones not already calculated
@@ -54,7 +59,7 @@ public class Group {
             }
         }
     }
-    private void moveToTarget(){
+    protected void moveToTarget(){
         for (int i = 0; i < index; i++) {
             int id = ids[i];
             if(!tryMoveNextRoute(id)){
@@ -65,7 +70,7 @@ public class Group {
             }
         }
     }
-    private boolean tryMoveNextRoute(int id){
+    protected boolean tryMoveNextRoute(int id){
         Stack<MapLocation> route = paths.get(id);
         if(route == null || route.empty() || !gc.isMoveReady(id)){
             return false;
@@ -81,7 +86,7 @@ public class Group {
             return true;
         }
     }
-    private void roamRandom(){
+    protected void roamRandom(){
         for (int i = 0; i < index; i++) {
             int id = ids[i];
             Direction toMove = p.getRandDirection();
@@ -90,7 +95,7 @@ public class Group {
             }
         }
     }
-    private boolean shouldContinueRoamingRandomly(){
+    protected boolean shouldContinueRoamingRandomly(){
         return gc.round() < 300;
     }
 

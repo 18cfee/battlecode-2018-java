@@ -13,8 +13,9 @@ public class Path {
     private Random random;
     public MapLocation closestStartLocation;
     Planet planet;
-    final static short greatestPathNum = 3000;
+    public final static short greatestPathNum = 3000;
     short[][] hillToBase;
+    public int[][] numsDirections = {{}};
     public Path(GameController gc,Planet planet){
         this.planet = planet;
         this.gc = gc;
@@ -28,8 +29,9 @@ public class Path {
         // remove the direction none
         Direction[] temp = Direction.values();
         directions = new Direction[8];
-        for (int i = 1; i <= directions.length; i++) {
-            directions[i - 1] = temp[i];
+        for (int i = 0; i < directions.length; i++) {
+            directions[i] = temp[i];
+            System.out.println(directions[i]);
         }
         if(false){
             closestStartLocation = findClosestEnemyStartLoc();
