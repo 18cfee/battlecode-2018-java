@@ -74,11 +74,11 @@ public class Workers {
     }
     void contBuildingFactory(){
         Direction random = p.getRandDirection();
-        for (int i = 0; i < index; i++) {
-            if(gc.isMoveReady(ids[i]) && gc.canMove(ids[i],random)){
-                gc.moveRobot(ids[i],random);
-            }
-        }
+//        for (int i = 0; i < index; i++) {
+//            if(gc.isMoveReady(ids[i]) && gc.canMove(ids[i],random)){
+//                gc.moveRobot(ids[i],random);
+//            }
+//        }
         if(unbuiltIndex == 0){
             for (int i = 0; i < index; i++) {
                 if(gc.canBlueprint(ids[i], UnitType.Factory,random)){
