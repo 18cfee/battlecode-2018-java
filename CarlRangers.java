@@ -14,7 +14,9 @@ public class CarlRangers extends Group {
             if(shouldContinueRoamingRandomly()){
                 roamRandom();
             } else{
-                changeToTargetMap(p.hillToBase);
+                short[][] toEnemy = p.generateHill(p.closestStartLocation);
+                Debug.printHill(toEnemy);
+                changeToTargetMap(toEnemy);
             }
         }
         if(state == GenericStates.TargetDestination){
@@ -26,6 +28,7 @@ public class CarlRangers extends Group {
     protected void changeToTargetMap(short[][] hill){
         state = GenericStates.TargetDestination;
         this.hill = hill;
+        System.out.println(hill[4][3]);
     }
     @Override
     protected void moveToTarget(){
@@ -34,23 +37,26 @@ public class CarlRangers extends Group {
             moveDownHill(id);
         }
     }
+    // calling this basically has units move to the set target
     protected void moveDownHill(int id){
         Unit unit = gc.unit(id);
         MapLocation cur = unit.location().mapLocation();
+        short dirVal = hill[cur.getX()][cur.getY()];
         short min = p.greatestPathNum;
         Direction topChoice = null;
         for (int i = 0; i < 8; i++) {
             Direction dir = p.directions[i];
             if(gc.canMove(id,dir)){
-                MapLocation newLoc = cur.add(dir);
+                int[] dirR = p.numsDirections[i];
+                MapLocation newLoc = new MapLocation(p.planet,dirR[0]+ cur.getX(),dirR[1]+cur.getY());
                 short grad = hill[newLoc.getX()][newLoc.getY()];
                 if (grad < min) {
-                    grad = min;
+                    min = grad;
                     topChoice = dir;
                 }
             }
         }
-        if(topChoice != null){
+        if(topChoice != null){ //min <= dirVal
             gc.moveRobot(id,topChoice);
         }
     }

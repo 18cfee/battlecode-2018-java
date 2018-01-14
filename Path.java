@@ -15,7 +15,7 @@ public class Path {
     Planet planet;
     public final static short greatestPathNum = 3000;
     short[][] hillToBase;
-    public int[][] numsDirections = {{}};
+    public int[][] numsDirections = {{0,1},{1,1},{1,0},{1,-1},{0,-1},{-1,-1},{-1,0},{-1,1}};
     public Path(GameController gc,Planet planet){
         this.planet = planet;
         this.gc = gc;
@@ -31,11 +31,11 @@ public class Path {
         directions = new Direction[8];
         for (int i = 0; i < directions.length; i++) {
             directions[i] = temp[i];
-            System.out.println(directions[i]);
         }
-        if(false){
+        if(planet == Planet.Earth){
             closestStartLocation = findClosestEnemyStartLoc();
             hillToBase = generateHill(gc.myUnits().get(0).location().mapLocation());
+            Debug.printHill(hillToBase);
         }
     }
     //only meant for earth
@@ -72,7 +72,8 @@ public class Path {
         toCheck.addLast(destination);
         while(!toCheck.isEmpty()){
             MapLocation cur = toCheck.removeFirst();
-            short dis = hill[cur.getY()][cur.getY()];
+            short dis = hill[cur.getX()][cur.getY()];
+            System.out.println(dis);
             for(Direction d : directions){
                 MapLocation newLoc = cur.add(d);
                 if(previouslyUncheckedMapLoc(newLoc,hill)){
@@ -90,7 +91,7 @@ public class Path {
         return hill;
     }
     private boolean previouslyUncheckedMapLoc(MapLocation a, short[][] hill){
-        return(map.onMap(a) && hill[a.getY()][a.getY()] == 0);
+        return(map.onMap(a) && hill[a.getX()][a.getY()] == (short)0);
     }
     public Direction getRandDirection(){
         int a = random.nextInt(8);

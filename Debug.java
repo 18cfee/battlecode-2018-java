@@ -6,6 +6,15 @@ public class Debug {
     public static void printCoords(MapLocation a){
         System.out.println(a.getPlanet() +"X: " + a.getX() + " Y: " + a.getY());
     }
+    public static void printHill(short[][]hill){
+        System.out.println("hill");
+        for (int i = hill.length - 1; i >= 0; i--) {
+            for (int j = 0; j < hill.length; j++) {
+                System.out.print(hill[j][i] + " ");
+            }
+            System.out.println();
+        }
+    }
 //    long totalCarbs = 0;
 //        for (int i = 0; i < planetSize; i++) {
 //        for (int j = 0; j < planetSize; j++) {
