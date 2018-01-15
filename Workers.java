@@ -1,21 +1,19 @@
-import bc.Direction;
-import bc.GameController;
-import bc.Unit;
-import bc.UnitType;
+import bc.*;
 
-public class Workers {
-    int [] ids = new int[100];
+public class Workers extends Group{
     int [] unbuiltFactory = new int [5];
     int unbuiltIndex = 0;
     int builtFactIndex = 0;
     int [] builtFactary = new int [50];
     int factBlueId = -1;
-    int index = 0;
     int totalHp = 0;
     GameController gc;
     Path p;
+    int[] individuals = new int[10];
     public WorkerStates state;
+
     public Workers(GameController gc, Path p){
+        super(gc, p);
         this.gc = gc;
         this.p = p;
     }
@@ -30,6 +28,7 @@ public class Workers {
             factBlueId = fact.id();
         }
     }
+
     public void factoryProduce(){
         UnitType production = UnitType.Ranger;
         //Direction random = p.getRandDirection();
@@ -44,11 +43,19 @@ public class Workers {
             }
         }
     }
-    public void addWorker(int id){
-        //todo this should inherit from group or be changed
-        ids[index] = id;
-        index++;
+
+    public MapLocation setBlueprint(){
+        Direction rand = p.getRandDirection();
+        for(int i = 0; i <= index; i++){
+            if(gc.canBlueprint(ids[i], UnitType.Factory, rand)){
+                gc.blueprint(ids[i], UnitType.Factory, rand);
+                VecUnit unit = gc.senseNearbyUnitsByType(gc.unit(ids[i]).location().mapLocation(), 50, UnitType.Factory);
+                return unit.get(0).location().mapLocation();
+            }
+        }
+        return null;
     }
+
     public void contReplicating(){
         Direction random = p.getRandDirection();
         for (int i = 0; i < index; i++) {

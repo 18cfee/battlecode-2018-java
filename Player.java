@@ -52,7 +52,7 @@ public class Player {
                 // todo right now not complete
                 if(workers.state == WorkerStates.BuildFactory){
                     if (workers.doneBuildingFactory()){
-                        workers.setState(WorkerStates.GatherKryptonite);
+                        workers.setState(WorkerStates.GatherKarbonite);
                     } else {
                         workers.contBuildingFactory();
                     }

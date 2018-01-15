@@ -16,6 +16,9 @@ public class Path {
     public final static short greatestPathNum = 3000;
     short[][] hillToBase;
     public int[][] numsDirections = {{0,1},{1,1},{1,0},{1,-1},{0,-1},{-1,-1},{-1,0},{-1,1}};
+    int[] factories = new int[10];
+    int factIndex = 0;
+
     public Path(GameController gc,Planet planet){
         this.planet = planet;
         this.gc = gc;
@@ -37,6 +40,10 @@ public class Path {
             hillToBase = generateHill(gc.myUnits().get(0).location().mapLocation());
             Debug.printHill(hillToBase);
         }
+    }
+
+    public int getNumFactories(){
+        return factIndex;
     }
     //only meant for earth
     private MapLocation findClosestEnemyStartLoc(){
