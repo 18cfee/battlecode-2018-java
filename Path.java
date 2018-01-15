@@ -55,8 +55,8 @@ public class Path {
         }
     }
     public MapLocation getLocBetween(MapLocation a, MapLocation b){
-        int x = (a.getX() + b.getX())/2;
-        int y = (a.getY() + b.getY())/2;
+        int x = (a.getX()*2 + b.getX())/3;
+        int y = (a.getY()*2 + b.getY())/3;
         return new MapLocation(planet,x,y);
     }
     public boolean passable(MapLocation location){

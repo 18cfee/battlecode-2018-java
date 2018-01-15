@@ -28,7 +28,7 @@ public class Player {
                         // todo assign units to groups
                         Unit unit = units.get(i);
                         int id = unit.id();
-                        if(unit.team() != myTeam){
+                        if(unit.team() != myTeam && !unit.location().isInGarrison()){
                             sprint.addEnemyUnit(id);
                         }
                         else if(unit.unitType() == UnitType.Worker){
