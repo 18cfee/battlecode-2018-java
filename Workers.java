@@ -64,6 +64,7 @@ public class Workers extends Group{
                 System.out.println("This is the unit found nearby: " + unit.toString());
                 factBlueId = unit.get(0).id();
                 System.out.println("Factory blueprint set: ID " + factBlueId);
+                unbuiltIndex++;
                 return unit.get(0).location().mapLocation();
             }
         }
@@ -97,9 +98,12 @@ public class Workers extends Group{
     public void conductTurn(){
         System.out.println("Worker turn conducting");
         for(int i = 0; i < index; i++){
+            /*
             if(gc.canBuild(ids[i], factBlueId)){
                 gc.build(ids[i], factBlueId);
-            }
+            }*/
+            System.out.println("About to continue to build factory");
+            contBuildingFactory();
         }
         moveToTarget(hill);
         movableIndex = 0;
@@ -117,19 +121,8 @@ public class Workers extends Group{
         unbuiltIndex = 0;
     }
     void contBuildingFactory(){
-        Direction random = p.getRandDirection();
-//        for (int i = 0; i < index; i++) {
-//            if(gc.isMoveReady(ids[i]) && gc.canMove(ids[i],random)){
-//                gc.moveRobot(ids[i],random);
-//            }
-//        }
-        if(unbuiltIndex == 0){
-            for (int i = 0; i < index; i++) {
-                if(gc.canBlueprint(ids[i], UnitType.Factory,random)){
-                    gc.blueprint(ids[i], UnitType.Factory,random);
-                }
-            }
-        } else{
+        System.out.println("UnbuiltIndex = " + unbuiltIndex);
+        if(unbuiltIndex != 0){
             System.out.println("trying to build fact");
             for (int i = 0; i < index; i++) {
                 if(gc.canBuild(ids[i], factBlueId)){

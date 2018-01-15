@@ -39,6 +39,7 @@ public class Workforce{
             workerGroups[i].conductTurn();
         }
 
+        idleIndex = 0;
     }
 
     public void createGroup(){
@@ -47,6 +48,7 @@ public class Workforce{
     }
 
     public void addWorker(int id){
+        /*use this code later
         boolean present = false;
         for(int i = 0; i <= idleIndex; i++){
             if(idle[i] == id){
@@ -59,6 +61,8 @@ public class Workforce{
             System.out.println("Adding worker to the idle list");
             idle[idleIndex] = id;
             idleIndex++;
-        }
+        }*/
+        idle[idleIndex] = id;
+        idleIndex++;
     }
 }
