@@ -7,6 +7,7 @@ public class Fighter extends Group {
     int[] canShoot = new int[MAX_ARMY_SIZE];
     int indexShooters = 0;
     int[] enemy = new int[MAX_ARMY_SIZE];
+    int[] enemyClone = new int[MAX_ARMY_SIZE];
     int indexEnemy = 0;
     Fighter(GameController gc, Path p){
         super(gc,p);
@@ -20,6 +21,7 @@ public class Fighter extends Group {
     }
     @Override
     public boolean add(int id){
+
         if(super.add(id)) {
             if(gc.isAttackReady(id)){
                 canShoot[indexShooters++] = id;
@@ -28,6 +30,7 @@ public class Fighter extends Group {
         }
         return false;
     }
+    static int oldEnIndex = 0;
     @Override
     public void conductTurn(){
         if(state == GenericStates.RandomMove){
@@ -43,7 +46,9 @@ public class Fighter extends Group {
             moveToTarget(hill);// the hill is set above, in p.generateHill(MapLocation);
         }
         shootAtSomething();
+        enemyClone = enemy;
         indexShooters = 0;
+        indexEnemy = 0;
         movableIndex = 0;
         index = 0;
     }
@@ -51,7 +56,6 @@ public class Fighter extends Group {
         for (int i = 0; i < indexShooters; i++) {
             for (int j = 0; j < indexEnemy; j++) {
                 if(gc.canAttack(canShoot[i],enemy[j])){
-                    System.out.println("supposedely shooting");
                     gc.attack(canShoot[i],enemy[j]);
                     break;
                 }
