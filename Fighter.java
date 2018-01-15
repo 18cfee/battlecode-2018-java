@@ -46,7 +46,6 @@ public class Fighter extends Group {
             moveToTarget(hill);// the hill is set above, in p.generateHill(MapLocation);
         }
         shootAtSomething();
-        enemyClone = enemy;
         indexShooters = 0;
         indexEnemy = 0;
         movableIndex = 0;
