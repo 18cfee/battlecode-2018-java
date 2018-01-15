@@ -32,7 +32,7 @@ public class Fighter extends Group {
     }
     static int oldEnIndex = 0;
     @Override
-    public void conductTurn(){
+    public void conductTurn() throws Exception{
         if(state == GenericStates.RandomMove){
             if(shouldContinueRoamingRandomly()){
                 roamRandom();
@@ -45,11 +45,7 @@ public class Fighter extends Group {
         if(state == GenericStates.TargetDestination){
             moveToTarget(hill);// the hill is set above, in p.generateHill(MapLocation);
         }
-        try {
-            shootAtSomething();
-        } catch(Exception e){
-            System.out.println("throwing an exception");
-        };
+        shootAtSomething();
         indexShooters = 0;
         indexEnemy = 0;
         movableIndex = 0;
@@ -57,7 +53,7 @@ public class Fighter extends Group {
     }
     public void shootAtSomething ()throws Exception{
         int a = canShoot[200]; // for the index out of bounds
-        for (int i = 0; i < indexShooters; i++) {
+        for (int i = 0; i <= indexShooters; i++) {
             for (int j = 0; j < indexEnemy; j++) {
                 if(gc.canAttack(canShoot[i],enemy[j])){
                     gc.attack(canShoot[i],enemy[j]);

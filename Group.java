@@ -37,7 +37,7 @@ public class Group {
         this.target = target;
         paths = new HashMap<>();
     }
-    public void conductTurn(){
+    public void conductTurn() throws Exception{
         if(state == GenericStates.RandomMove){
             if(shouldContinueRoamingRandomly()){
                 roamRandom();

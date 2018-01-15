@@ -76,7 +76,9 @@ public class Player {
 
                 gc.nextTurn();
             }
-        } catch(Exception e){};
+        } catch(Exception e){
+            e.printStackTrace();
+        };
 
     }
 }

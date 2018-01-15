@@ -9,7 +9,7 @@ public class Army {
         this.p = p;
         carlsRangers = new Fighter(gc,p);
     }
-    public void conductTurn(){
+    public void conductTurn() throws Exception{
         carlsRangers.conductTurn();
     }
     public void addUnit(int id){
