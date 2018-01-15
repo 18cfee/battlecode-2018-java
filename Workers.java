@@ -45,9 +45,18 @@ public class Workers extends Group{
     }
 
     public MapLocation setBlueprint(){
+        /*working code
+        System.out.println("Trying to place blueprint");
+            for (int i = 0; i < index; i++) {
+                if(gc.canBlueprint(ids[i], UnitType.Factory,random)){
+                    gc.blueprint(ids[i], UnitType.Factory,random);
+                    System.out.println("blueprint placed");
+                }
+            }
+         */
         Direction rand = p.getRandDirection();
         for(int i = 0; i <= index; i++){
-            System.out.println("Trying to find blueprint loc");
+            System.out.println("Trying to find blueprint loc, worker attempting: " + gc.unit(ids[i]).toString());
             if(gc.canBlueprint(ids[i], UnitType.Factory, rand)){
                 System.out.println("I found a spot to place it");
                 gc.blueprint(ids[i], UnitType.Factory, rand);

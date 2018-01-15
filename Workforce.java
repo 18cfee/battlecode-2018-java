@@ -18,8 +18,9 @@ public class Workforce {
         if(groupIndex == 0){
             createGroup();
         }
-        while(idleIndex < 0){
+        while(idleIndex > 0){
             workerGroups[0].add(idleIndex-1);
+            idleIndex--;
         }
         if(p.getNumFactories() == 0){
             System.out.println("There aren't any factories yet");
@@ -41,9 +42,10 @@ public class Workforce {
         workerGroups[groupIndex] = new Workers(gc, p);
         groupIndex++;
     }
+    
     public void addWorker(int id){
         boolean present = false;
-        for(int i = 0; i < idleIndex; i++){
+        for(int i = 0; i <= idleIndex; i++){
             if(idle[i] == id){
                 present = true;
                 break;
