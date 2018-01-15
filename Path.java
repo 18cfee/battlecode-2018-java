@@ -53,7 +53,7 @@ public class Path {
         }
     }
     public MapLocation getLocBetween(MapLocation a, MapLocation b){
-        
+        int x = (a.getX() +
     }
     public boolean passable(MapLocation location){
         return passable[location.getX()].get(location.getY());
