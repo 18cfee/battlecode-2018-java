@@ -38,17 +38,7 @@ public class Group {
         paths = new HashMap<>();
     }
     public void conductTurn() throws Exception{
-        if(state == GenericStates.RandomMove){
-            if(shouldContinueRoamingRandomly()){
-                roamRandom();
-            } else{
-                changeToTargetDestinationState(p.closestStartLocation);
-            }
-        }
-        if(state == GenericStates.TargetDestination){
-            aquireIndividualPaths();
-            moveToTarget();
-        }
+        roamRandom();
         index = 0;
     }
     protected HashMap<Integer,Stack<MapLocation>> paths;
