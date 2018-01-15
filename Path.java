@@ -18,6 +18,9 @@ public class Path {
     public int[][] numsDirections = {{0,1},{1,1},{1,0},{1,-1},{0,-1},{-1,-1},{-1,0},{-1,1}};
     BitSet[] passable;
     MapLocation startLoc;
+    int[] factories = new int[10];
+    int factIndex = 0;
+
     public Path(GameController gc,Planet planet){
         this.planet = planet;
         this.gc = gc;
@@ -53,6 +56,10 @@ public class Path {
             }
             passable[i] = cur;
         }
+    }
+
+    public int getNumFactories(){
+        return factIndex;
     }
     public MapLocation getLocBetween(MapLocation a, MapLocation b){
         int x = (a.getX()*2 + b.getX())/3;

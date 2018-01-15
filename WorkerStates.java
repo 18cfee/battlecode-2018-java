@@ -1,3 +1,3 @@
 public enum WorkerStates {
-    Replicate, BuildFactory, Run, BuildRocket, GatherKryptonite;
+    Replicate, BuildFactory, Run, BuildRocket, GatherKarbonite;
 }
