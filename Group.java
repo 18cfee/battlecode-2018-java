@@ -40,6 +40,7 @@ public class Group {
     public void conductTurn() throws Exception{
         roamRandom();
         index = 0;
+        movableIndex = 0;
     }
     protected HashMap<Integer,Stack<MapLocation>> paths;
     protected void aquireIndividualPaths(){
@@ -81,8 +82,8 @@ public class Group {
         }
     }
     protected void roamRandom(){
-        for (int i = 0; i < index; i++) {
-            int id = ids[i];
+        for (int i = 0; i < movableIndex; i++) {
+            int id = moveAbles[i];
             Direction toMove = p.getRandDirection();
             if(gc.isMoveReady(id) && gc.canMove(id,toMove)){
                 gc.moveRobot(id,toMove);

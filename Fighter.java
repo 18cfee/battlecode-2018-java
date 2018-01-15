@@ -30,18 +30,7 @@ public class Fighter extends Group {
     static int oldEnIndex = 0;
     @Override
     public void conductTurn() throws Exception{
-        if(state == GenericStates.RandomMove){
-            if(shouldContinueRoamingRandomly()){
-                roamRandom();
-            } else{
-                short[][] toEnemy = p.generateHill(new MapLocation(Planet.Earth,10,10));
-                Debug.printHill(toEnemy);
-                changeToTargetMap(toEnemy);
-            }
-        }
-        if(state == GenericStates.TargetDestination){
-            moveToTarget(hill);// the hill is set above, in p.generateHill(MapLocation);
-        }
+        roamRandom();
         shootAtSomething();
         indexShooters = 0;
         indexEnemy = 0;

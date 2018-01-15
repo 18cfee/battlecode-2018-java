@@ -7,7 +7,7 @@ public class Army {
     public Army(GameController gc, Path p){
         this.gc = gc;
         this.p = p;
-        carlsRangers = new Fighter(gc,p);
+        carlsRangers = new RangersTargetNextUnit(gc,p);
     }
     public void conductTurn() throws Exception{
         carlsRangers.conductTurn();

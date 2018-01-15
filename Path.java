@@ -16,6 +16,7 @@ public class Path {
     public final static short greatestPathNum = 3000;
     short[][] hillToBase;
     public int[][] numsDirections = {{0,1},{1,1},{1,0},{1,-1},{0,-1},{-1,-1},{-1,0},{-1,1}};
+    BitSet[] passable;
     public Path(GameController gc,Planet planet){
         this.planet = planet;
         this.gc = gc;
@@ -37,7 +38,24 @@ public class Path {
             hillToBase = generateHill(gc.myUnits().get(0).location().mapLocation());
             Debug.printHill(hillToBase);
         }
+        generatePassable();
     }
+    private void generatePassable(){
+        passable = new BitSet[planetSize];
+        for (int i = 0; i < planetSize; i++) {
+            BitSet cur = new BitSet(planetSize);
+            for (int j = 0; j < planetSize; j++) {
+                if (map.isPassableTerrainAt(new MapLocation(planet,i,j)) == 1){
+                    cur.set(j);
+                }
+            }
+            passable[i] = cur;
+        }
+    }
+    public boolean passable(MapLocation location){
+        return passable[location.getX()].get(location.getY());
+    }
+    
     //only meant for earth
     private MapLocation findClosestEnemyStartLoc(){
         //todo maybe find as crow flies for shooting or actual movement necesary
@@ -47,6 +65,11 @@ public class Path {
         } else return new MapLocation(Planet.Mars,0,0);
 
     }
+
+    public MapLocation getClosestStartLocation() {
+        return closestStartLocation;
+    }
+
     private MapLocation flippLocDiag(MapLocation loc){
         int oldX = loc.getX();
         int oldY = loc.getY();
