@@ -92,9 +92,9 @@ public class Workers extends Group{
             }
         }
     }
+    @Override
     public void conductTurn(){
         System.out.println("Worker turn conducting");
-        super.conductTurn();
     }
     public boolean doneReplicating(){
         return(index > 3);

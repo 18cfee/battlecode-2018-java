@@ -19,7 +19,7 @@ public class Workforce {
             createGroup();
         }
         while(idleIndex > 0){
-            workerGroups[0].add(idleIndex-1);
+            workerGroups[0].add(idle[idleIndex-1]);
             idleIndex--;
         }
         if(p.getNumFactories() == 0){
@@ -42,7 +42,7 @@ public class Workforce {
         workerGroups[groupIndex] = new Workers(gc, p);
         groupIndex++;
     }
-    
+
     public void addWorker(int id){
         boolean present = false;
         for(int i = 0; i <= idleIndex; i++){
@@ -51,7 +51,9 @@ public class Workforce {
                 break;
             }
         }
+
         if(!present){
+            System.out.println("Adding worker to the idle list");
             idle[idleIndex] = id;
             idleIndex++;
         }
