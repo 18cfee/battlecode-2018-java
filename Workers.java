@@ -45,6 +45,7 @@ public class Workers {
         }
     }
     public void addWorker(int id){
+        //todo this should inherit from group or be changed
         ids[index] = id;
         index++;
     }
