@@ -42,21 +42,7 @@ public class Player {
                         sprint.addUnit(id);
                     }
                 }
-                if(workers.state == WorkerStates.Replicate){
-                    if (workers.doneReplicating()){
-                        workers.setState(WorkerStates.BuildFactory);
-                    } else {
-                        workers.contReplicating();
-                    }
-                }
-                // todo right now not complete
-                if(workers.state == WorkerStates.BuildFactory){
-                    if (workers.doneBuildingFactory()){
-                        workers.setState(WorkerStates.GatherKarbonite);
-                    } else {
-                        workers.contBuildingFactory();
-                    }
-                }
+                workforce.conductTurn();
                 // todo have the workers get krypt
 
                 //todo this should churn out units

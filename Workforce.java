@@ -22,10 +22,17 @@ public class Workforce {
             workerGroups[0].add(idleIndex-1);
         }
         if(p.getNumFactories() == 0){
+            System.out.println("There aren't any factories yet");
             MapLocation blueLoc = workerGroups[0].setBlueprint();
             if(blueLoc != null){
                 workerGroups[0].changeToTargetDestinationState(blueLoc);
             }
+            System.out.println("Could not start a factory this turn.");
+        }
+
+        for(int i = 0; i < groupIndex; i++){
+            System.out.println("Workforce turn conducting");
+            workerGroups[i].conductTurn();
         }
 
     }

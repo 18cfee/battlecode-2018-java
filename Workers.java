@@ -47,15 +47,29 @@ public class Workers extends Group{
     public MapLocation setBlueprint(){
         Direction rand = p.getRandDirection();
         for(int i = 0; i <= index; i++){
+            System.out.println("Trying to find blueprint loc");
             if(gc.canBlueprint(ids[i], UnitType.Factory, rand)){
+                System.out.println("I found a spot to place it");
                 gc.blueprint(ids[i], UnitType.Factory, rand);
                 VecUnit unit = gc.senseNearbyUnitsByType(gc.unit(ids[i]).location().mapLocation(), 50, UnitType.Factory);
+                System.out.println("This is the unit found nearby: " + unit.toString());
+                factBlueId = unit.get(0).id();
+                System.out.println("Factory blueprint set: ID " + factBlueId);
                 return unit.get(0).location().mapLocation();
             }
         }
         return null;
     }
 
+    public void changeToTargetDestinationState(MapLocation loc){
+        for(int i = 0; i < index; i++){
+            if(gc.canBuild(ids[i], factBlueId)){
+                gc.build(ids[i], factBlueId);
+            }else{
+                super.changeToTargetDestinationState(loc);
+            }
+        }
+    }
     public void contReplicating(){
         Direction random = p.getRandDirection();
         for (int i = 0; i < index; i++) {
@@ -68,6 +82,10 @@ public class Workers extends Group{
                 gc.replicate(ids[i],random);
             }
         }
+    }
+    public void conductTurn(){
+        System.out.println("Worker turn conducting");
+        super.conductTurn();
     }
     public boolean doneReplicating(){
         return(index > 3);
