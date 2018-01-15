@@ -77,6 +77,7 @@ public class Player {
                 e.printStackTrace();
                 System.exit(0);
             };
+            System.out.println(gc.getTimeLeftMs());
             gc.nextTurn();
         }
 
