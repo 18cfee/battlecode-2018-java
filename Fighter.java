@@ -42,6 +42,7 @@ public class Fighter extends Group {
         if(state == GenericStates.TargetDestination){
             moveToTarget(hill);// the hill is set above, in p.generateHill(MapLocation);
         }
+        shootAtSomething();
         indexShooters = 0;
         movableIndex = 0;
         index = 0;
@@ -49,7 +50,6 @@ public class Fighter extends Group {
     public void shootAtSomething(){
         for (int i = 0; i < indexShooters; i++) {
             for (int j = 0; j < indexEnemy; j++) {
-                System.out.println("checking to shoot");
                 if(gc.canAttack(canShoot[i],enemy[j])){
                     System.out.println("supposedely shooting");
                     gc.attack(canShoot[i],enemy[j]);

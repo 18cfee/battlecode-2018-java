@@ -73,7 +73,6 @@ public class Path {
         while(!toCheck.isEmpty()){
             MapLocation cur = toCheck.removeFirst();
             short dis = hill[cur.getX()][cur.getY()];
-            System.out.println(dis);
             for(Direction d : directions){
                 MapLocation newLoc = cur.add(d);
                 if(previouslyUncheckedMapLoc(newLoc,hill)){
