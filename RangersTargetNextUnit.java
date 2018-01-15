@@ -1,4 +1,5 @@
 import bc.GameController;
+import bc.MapLocation;
 
 public class RangersTargetNextUnit extends Fighter{
     RangersTargetNextUnit(GameController gc, Path p){
@@ -10,7 +11,9 @@ public class RangersTargetNextUnit extends Fighter{
     public void conductTurn() throws Exception{
         if(seesEnemy == false && indexEnemy != 0){
             seesEnemy = true;
-            baseHill = p.generateHill(gc.unit(enemy[0]).location().mapLocation());
+            MapLocation a = gc.unit(enemy[0]).location().mapLocation();
+            MapLocation b = 
+            baseHill = p.generateHill(;
         }
         moveToTarget(baseHill);
         shootAtSomething();
