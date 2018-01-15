@@ -13,9 +13,7 @@ public class Player {
         Path p = new Path(gc,gc.planet());
         Workers workers = new Workers(gc,p);
         workers.setState(WorkerStates.Replicate);
-        Fighter carlsRangers = new Fighter(gc,p);
-        ArrayList<Group> army = new ArrayList<>();
-        army.add(carlsRangers);
+        Army sprint = new Army(gc,p);
         while (true) {
             if(gc.planet() != Planet.Earth) {
             } else {
@@ -28,17 +26,18 @@ public class Player {
                 for (int i = 0; i < units.size(); i++) {
                     // todo assign units to groups
                     Unit unit = units.get(i);
+                    int id = unit.id();
                     if(unit.team() != myTeam){
-                        carlsRangers.addEnemy(unit.id());
+                        sprint.addEnemyUnit(id);
                     }
-                    if(unit.unitType() == UnitType.Worker){
+                    else if(unit.unitType() == UnitType.Worker){
                         workers.addWorker(unit.id());
                     }
-                    if(unit.unitType() == UnitType.Factory){
+                    else if(unit.unitType() == UnitType.Factory){
                         workers.addFactory(unit);
                     }
-                    if(CarlTests && unit.unitType() == UnitType.Ranger && !unit.location().isInGarrison()){
-                        carlsRangers.add(unit.id());
+                    else if(CarlTests && unit.unitType() == UnitType.Ranger && !unit.location().isInGarrison()){
+                        sprint.addUnit(id);
                     }
                     //todo keegan - set the CArltest to false if you want to snag the rangers for your testing
                 }
@@ -71,9 +70,7 @@ public class Player {
 
                 // othere groups after this
                 //todo make stuff shoot
-                for(Group group: army){
-                    group.conductTurn();
-                }
+                sprint.conductTurn();
             }
 
             gc.nextTurn();
