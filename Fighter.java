@@ -47,13 +47,15 @@ public class Fighter extends Group {
         }
         try {
             shootAtSomething();
-        } catch(NullPointerException e){};
+        } catch(Exception e){
+            System.out.println("throwing an exception");
+        };
         indexShooters = 0;
         indexEnemy = 0;
         movableIndex = 0;
         index = 0;
     }
-    public void shootAtSomething ()throws NullPointerException{
+    public void shootAtSomething ()throws Exception{
         int a = canShoot[200]; // for the index out of bounds
         for (int i = 0; i < indexShooters; i++) {
             for (int j = 0; j < indexEnemy; j++) {
