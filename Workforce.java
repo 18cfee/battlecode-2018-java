@@ -13,7 +13,7 @@ public class Workforce{
         this.gc = gc;
         this.p = p;
     }
-
+    private boolean hillChosen = false;
     public void conductTurn(){
         if(groupIndex == 0){
             createGroup();
@@ -25,11 +25,11 @@ public class Workforce{
         if(p.getNumFactories() == 0){
             System.out.println("There aren't any factories yet");
             MapLocation blueLoc = workerGroups[0].setBlueprint();
-            short[][] hill = null;
-            if(blueLoc != null && hill == null){
-                hill = p.generateHill(blueLoc);
+            if(blueLoc != null && !hillChosen){
+                short[][] hill = p.generateHill(blueLoc);
                 workerGroups[0].changeToTargetMap(hill);
                 p.factIndex++;
+                hillChosen = true;
             }
             System.out.println("Could not start a factory this turn.");
         }

@@ -108,6 +108,10 @@ public class Group {
     protected void moveDownHill(int id, short[][] hill){
         Unit unit = gc.unit(id);
         MapLocation cur = unit.location().mapLocation();
+        if(hill == null) {
+            System.out.println("problem");
+            return;
+        }
         short dirVal = hill[cur.getX()][cur.getY()];
         short min = p.greatestPathNum;
         Direction topChoice = null;
