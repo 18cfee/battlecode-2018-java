@@ -14,6 +14,8 @@ public class Player {
         Workers workers = new Workers(gc,p);
         workers.setState(WorkerStates.Replicate);
         Army sprint = new Army(gc,p);
+        Workforce workforce = new Workforce(gc, p);
+
         while (true) {
             if(gc.planet() != Planet.Earth) {
             } else {
@@ -30,8 +32,8 @@ public class Player {
                     if(unit.team() != myTeam){
                         sprint.addEnemyUnit(id);
                     }
-                    else if(unit.unitType() == UnitType.Worker){
-                        workers.addWorker(unit.id());
+                    else if(unit.unitType() == UnitType.Worker && unit.team() == myTeam){
+                        workforce.addWorker(id);
                     }
                     else if(unit.unitType() == UnitType.Factory){
                         workers.addFactory(unit);
@@ -39,7 +41,6 @@ public class Player {
                     else if(CarlTests && unit.unitType() == UnitType.Ranger && !unit.location().isInGarrison()){
                         sprint.addUnit(id);
                     }
-                    //todo keegan - set the CArltest to false if you want to snag the rangers for your testing
                 }
                 if(workers.state == WorkerStates.Replicate){
                     if (workers.doneReplicating()){
