@@ -17,6 +17,7 @@ public class Path {
     short[][] hillToBase;
     public int[][] numsDirections = {{0,1},{1,1},{1,0},{1,-1},{0,-1},{-1,-1},{-1,0},{-1,1}};
     BitSet[] passable;
+    MapLocation startLoc;
     public Path(GameController gc,Planet planet){
         this.planet = planet;
         this.gc = gc;
@@ -35,7 +36,8 @@ public class Path {
         }
         if(planet == Planet.Earth){
             closestStartLocation = findClosestEnemyStartLoc();
-            hillToBase = generateHill(gc.myUnits().get(0).location().mapLocation());
+            startLoc = gc.myUnits().get(0).location().mapLocation();
+            hillToBase = generateHill(startLoc);
             Debug.printHill(hillToBase);
         }
         generatePassable();
