@@ -70,6 +70,7 @@ public class Workers extends Group{
         return null;
     }
 
+    /*
     public void changeToTargetDestinationState(MapLocation loc){
         for(int i = 0; i < index; i++){
             if(gc.canBuild(ids[i], factBlueId)){
@@ -78,7 +79,7 @@ public class Workers extends Group{
                 super.changeToTargetDestinationState(loc);
             }
         }
-    }
+    }*/
     public void contReplicating(){
         Direction random = p.getRandDirection();
         for (int i = 0; i < index; i++) {
@@ -95,6 +96,11 @@ public class Workers extends Group{
     @Override
     public void conductTurn(){
         System.out.println("Worker turn conducting");
+        for(int i = 0; i < index; i++){
+            if(gc.canBuild(ids[i], factBlueId)){
+                gc.build(ids[i], factBlueId);
+            }
+        }
         moveToTarget(hill);
         movableIndex = 0;
         index = 0;

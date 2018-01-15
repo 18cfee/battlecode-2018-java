@@ -29,6 +29,7 @@ public class Workforce{
             if(blueLoc != null && hill == null){
                 hill = p.generateHill(blueLoc);
                 workerGroups[0].changeToTargetMap(hill);
+                p.factIndex++;
             }
             System.out.println("Could not start a factory this turn.");
         }
