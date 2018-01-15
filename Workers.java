@@ -21,17 +21,19 @@ public class Workers extends Group{
         if(fact.structureIsBuilt() == 1){
             System.out.println("a factory is built");
             builtFactary[builtFactIndex++] = fact.id();
+        } else {
+            unbuiltFactory[unbuiltIndex++] = fact.id();
+            System.out.println("blue id: " + fact.id());
+            //System.out.println("factory health: " + gc.ha);
+            factBlueId = fact.id();
         }
     }
 
     public void factoryProduce(){
         UnitType production = UnitType.Ranger;
         //Direction random = p.getRandDirection();
-        Direction random = p.getRandDirection();
-        System.out.println("Attempting to make a unit");
-        System.out.println("builtFactIndex = " + builtFactIndex);
+        Direction random = Direction.Northwest;
         for (int i = 0; i < builtFactIndex; i++) {
-
             if(gc.canProduceRobot(builtFactary[i],production)){
                 System.out.println("factory made a unit");
                 gc.produceRobot(builtFactary[i],production);
@@ -54,7 +56,7 @@ public class Workers extends Group{
          */
         Direction rand = p.getRandDirection();
         for(int i = 0; i <= index; i++){
-            System.out.println("Trying to find blueprint loc, worker attempting: " + ids[i]);
+            System.out.println("Trying to find blueprint loc, worker attempting: " + gc.unit(ids[i]).toString());
             if(gc.canBlueprint(ids[i], UnitType.Factory, rand)){
                 System.out.println("I found a spot to place it");
                 gc.blueprint(ids[i], UnitType.Factory, rand);
@@ -100,15 +102,8 @@ public class Workers extends Group{
             if(gc.canBuild(ids[i], factBlueId)){
                 gc.build(ids[i], factBlueId);
             }*/
-
-            if(builtFactIndex > 0){
-                System.out.println("Factory complete");
-                setState(WorkerStates.GatherKarbonite);
-            }else{
-                System.out.println("About to continue to build factory");
-                contBuildingFactory();
-            }
-
+            System.out.println("About to continue to build factory");
+            contBuildingFactory();
         }
         moveToTarget(hill);
         movableIndex = 0;
