@@ -14,8 +14,8 @@ public class Player {
         Workers workers = new Workers(gc,p);
         workers.setState(WorkerStates.Replicate);
         Army sprint = new Army(gc,p);
-        try {
-            while (true) {
+        while (true) {
+            try {
                 if(gc.planet() != Planet.Earth) {
                 } else {
                     System.out.println();
@@ -73,12 +73,12 @@ public class Player {
                     //todo make stuff shoot
                     sprint.conductTurn();
                 }
-
-                gc.nextTurn();
-            }
-        } catch(Exception e){
-            e.printStackTrace();
-        };
+            } catch(Exception e){
+                e.printStackTrace();
+                System.exit(0);
+            };
+            gc.nextTurn();
+        }
 
     }
 }
