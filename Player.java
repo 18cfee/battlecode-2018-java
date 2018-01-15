@@ -1,7 +1,6 @@
 import bc.*;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
 
 public class Player {
@@ -14,7 +13,7 @@ public class Player {
         Path p = new Path(gc,gc.planet());
         Workers workers = new Workers(gc,p);
         workers.setState(WorkerStates.Replicate);
-        Group carlsRangers = new CarlRangers(gc,p);
+        Group carlsRangers = new Fighter(gc,p);
         ArrayList<Group> army = new ArrayList<>();
         army.add(carlsRangers);
         while (true) {
@@ -24,10 +23,14 @@ public class Player {
                 System.out.println("Current round: "+gc.round());
                 System.out.println(workers.state);
                 //Place Units into their groups
-                VecUnit units = gc.myUnits();
+                VecUnit units = gc.units();
+                Team myTeam = gc.team();
                 for (int i = 0; i < units.size(); i++) {
                     // todo assign units to groups
                     Unit unit = units.get(i);
+                    if(unit.team() != myTeam){
+                        carlsRangers.addEnemy(unit.id());
+                    }
                     if(unit.unitType() == UnitType.Worker){
                         workers.addWorker(unit.id());
                     }

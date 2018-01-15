@@ -22,13 +22,15 @@ public class Group {
         this.gc = gc;
         state = GenericStates.RandomMove;
     }
-    public void add(int id){
+    public boolean add(int id){
         if(index != MAX_ARMY_SIZE){
             ids[index++] = id;
             if(gc.isMoveReady(id)){
                 moveAbles[movableIndex++] = id;
             }
+            return true;
         }
+        return false;
     }
     protected void changeToTargetDestinationState(MapLocation target){
         state = GenericStates.TargetDestination;
