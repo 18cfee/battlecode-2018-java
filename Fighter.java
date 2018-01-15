@@ -1,7 +1,4 @@
-import bc.Direction;
-import bc.GameController;
-import bc.MapLocation;
-import bc.Unit;
+import bc.*;
 
 public class Fighter extends Group {
     int[] canShoot = new int[MAX_ARMY_SIZE];
@@ -37,7 +34,7 @@ public class Fighter extends Group {
             if(shouldContinueRoamingRandomly()){
                 roamRandom();
             } else{
-                short[][] toEnemy = p.generateHill(p.closestStartLocation);
+                short[][] toEnemy = p.generateHill(new MapLocation(Planet.Earth,10,10));
                 Debug.printHill(toEnemy);
                 changeToTargetMap(toEnemy);
             }
@@ -50,6 +47,10 @@ public class Fighter extends Group {
         indexEnemy = 0;
         movableIndex = 0;
         index = 0;
+    }
+    @Override
+    protected boolean shouldContinueRoamingRandomly(){
+        return (indexEnemy == 0);
     }
     public void shootAtSomething ()throws Exception{
         for (int i = 0; i < indexShooters; i++) {

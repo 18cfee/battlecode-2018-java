@@ -100,7 +100,7 @@ public class Group {
         }
     }
     protected boolean shouldContinueRoamingRandomly(){
-        return gc.round() < 300;
+        return gc.round() < 100;
     }
     protected void changeToTargetMap(short[][] hill){
         state = GenericStates.TargetDestination;
