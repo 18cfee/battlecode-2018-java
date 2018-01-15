@@ -17,6 +17,7 @@ public class Group {
     MapLocation target;
     GenericStates state;
     protected short[][] hill;
+
     Group(GameController gc, Path p){
         this.p = p;
         this.gc = gc;
