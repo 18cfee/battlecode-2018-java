@@ -1,21 +1,19 @@
-import bc.Direction;
-import bc.GameController;
-import bc.Unit;
-import bc.UnitType;
+import bc.*;
 
-public class Workers {
-    int [] ids = new int[100];
+public class Workers extends Group{
     int [] unbuiltFactory = new int [5];
     int unbuiltIndex = 0;
     int builtFactIndex = 0;
     int [] builtFactary = new int [50];
     int factBlueId = -1;
-    int index = 0;
     int totalHp = 0;
     GameController gc;
     Path p;
+    int[] individuals = new int[10];
     public WorkerStates state;
+
     public Workers(GameController gc, Path p){
+        super(gc, p);
         this.gc = gc;
         this.p = p;
     }
@@ -23,18 +21,17 @@ public class Workers {
         if(fact.structureIsBuilt() == 1){
             System.out.println("a factory is built");
             builtFactary[builtFactIndex++] = fact.id();
-        } else {
-            unbuiltFactory[unbuiltIndex++] = fact.id();
-            System.out.println("blue id: " + fact.id());
-            //System.out.println("factory health: " + gc.ha);
-            factBlueId = fact.id();
         }
     }
+
     public void factoryProduce(){
         UnitType production = UnitType.Ranger;
         //Direction random = p.getRandDirection();
-        Direction random = Direction.Northwest;
+        Direction random = p.getRandDirection();
+        System.out.println("Attempting to make a unit");
+        System.out.println("builtFactIndex = " + builtFactIndex);
         for (int i = 0; i < builtFactIndex; i++) {
+
             if(gc.canProduceRobot(builtFactary[i],production)){
                 System.out.println("factory made a unit");
                 gc.produceRobot(builtFactary[i],production);
@@ -44,11 +41,44 @@ public class Workers {
             }
         }
     }
-    public void addWorker(int id){
-        //todo this should inherit from group or be changed
-        ids[index] = id;
-        index++;
+
+    public MapLocation setBlueprint(){
+        /*working code
+        System.out.println("Trying to place blueprint");
+            for (int i = 0; i < index; i++) {
+                if(gc.canBlueprint(ids[i], UnitType.Factory,random)){
+                    gc.blueprint(ids[i], UnitType.Factory,random);
+                    System.out.println("blueprint placed");
+                }
+            }
+         */
+        Direction rand = p.getRandDirection();
+        for(int i = 0; i <= index; i++){
+            System.out.println("Trying to find blueprint loc, worker attempting: " + ids[i]);
+            if(gc.canBlueprint(ids[i], UnitType.Factory, rand)){
+                System.out.println("I found a spot to place it");
+                gc.blueprint(ids[i], UnitType.Factory, rand);
+                VecUnit unit = gc.senseNearbyUnitsByType(gc.unit(ids[i]).location().mapLocation(), 50, UnitType.Factory);
+                System.out.println("This is the unit found nearby: " + unit.toString());
+                factBlueId = unit.get(0).id();
+                System.out.println("Factory blueprint set: ID " + factBlueId);
+                unbuiltIndex++;
+                return unit.get(0).location().mapLocation();
+            }
+        }
+        return null;
     }
+
+    /*
+    public void changeToTargetDestinationState(MapLocation loc){
+        for(int i = 0; i < index; i++){
+            if(gc.canBuild(ids[i], factBlueId)){
+                gc.build(ids[i], factBlueId);
+            }else{
+                super.changeToTargetDestinationState(loc);
+            }
+        }
+    }*/
     public void contReplicating(){
         Direction random = p.getRandDirection();
         for (int i = 0; i < index; i++) {
@@ -62,6 +92,28 @@ public class Workers {
             }
         }
     }
+    @Override
+    public void conductTurn(){
+        System.out.println("Worker turn conducting");
+        for(int i = 0; i < index; i++){
+            /*
+            if(gc.canBuild(ids[i], factBlueId)){
+                gc.build(ids[i], factBlueId);
+            }*/
+
+            if(builtFactIndex > 0){
+                System.out.println("Factory complete");
+                setState(WorkerStates.GatherKarbonite);
+            }else{
+                System.out.println("About to continue to build factory");
+                contBuildingFactory();
+            }
+
+        }
+        moveToTarget(hill);
+        movableIndex = 0;
+        index = 0;
+    }
     public boolean doneReplicating(){
         return(index > 3);
     }
@@ -74,19 +126,8 @@ public class Workers {
         unbuiltIndex = 0;
     }
     void contBuildingFactory(){
-        Direction random = p.getRandDirection();
-//        for (int i = 0; i < index; i++) {
-//            if(gc.isMoveReady(ids[i]) && gc.canMove(ids[i],random)){
-//                gc.moveRobot(ids[i],random);
-//            }
-//        }
-        if(unbuiltIndex == 0){
-            for (int i = 0; i < index; i++) {
-                if(gc.canBlueprint(ids[i], UnitType.Factory,random)){
-                    gc.blueprint(ids[i], UnitType.Factory,random);
-                }
-            }
-        } else{
+        System.out.println("UnbuiltIndex = " + unbuiltIndex);
+        if(unbuiltIndex != 0){
             System.out.println("trying to build fact");
             for (int i = 0; i < index; i++) {
                 if(gc.canBuild(ids[i], factBlueId)){
