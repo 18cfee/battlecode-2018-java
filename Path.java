@@ -52,10 +52,13 @@ public class Path {
             passable[i] = cur;
         }
     }
+    public MapLocation getLocBetween(MapLocation a, MapLocation b){
+        
+    }
     public boolean passable(MapLocation location){
         return passable[location.getX()].get(location.getY());
     }
-    
+
     //only meant for earth
     private MapLocation findClosestEnemyStartLoc(){
         //todo maybe find as crow flies for shooting or actual movement necesary
