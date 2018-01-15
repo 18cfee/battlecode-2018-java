@@ -93,7 +93,7 @@ public class Workers extends Group{
         }
     }
     @Override
-    public void conductTurn(){
+    public void conductTurn() throws Exception{
         System.out.println("Worker turn conducting");
         for(int i = 0; i < index; i++){
             /*

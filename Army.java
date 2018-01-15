@@ -12,7 +12,7 @@ public class Army {
     public void conductTurn() throws Exception{
         carlsRangers.conductTurn();
     }
-    public void addUnit(int id){
+    public void addUnit(int id) throws Exception{
         carlsRangers.add(id);
     }
     public void addEnemyUnit(int id){

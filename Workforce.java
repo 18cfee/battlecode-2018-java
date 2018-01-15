@@ -14,7 +14,7 @@ public class Workforce{
         this.p = p;
     }
     private boolean hillChosen = false;
-    public void conductTurn(){
+    public void conductTurn() throws Exception{
         if(groupIndex == 0){
             createGroup();
         }
@@ -42,7 +42,7 @@ public class Workforce{
         idleIndex = 0;
     }
 
-    public void createGroup(){
+    public void createGroup() throws Exception{
         workerGroups[groupIndex] = new Workers(gc, p);
         groupIndex++;
     }

@@ -23,7 +23,7 @@ public class Group {
         this.gc = gc;
         state = GenericStates.RandomMove;
     }
-    public boolean add(int id){
+    public boolean add(int id) throws Exception{
         if(index != MAX_ARMY_SIZE){
             ids[index++] = id;
             if(gc.isMoveReady(id)){
@@ -55,7 +55,7 @@ public class Group {
             }
         }
     }
-    protected void moveToTarget(){
+    protected void moveToTarget() throws Exception{
         for (int i = 0; i < index; i++) {
             int id = ids[i];
             if(!tryMoveNextRoute(id)){
@@ -66,7 +66,7 @@ public class Group {
             }
         }
     }
-    protected boolean tryMoveNextRoute(int id){
+    protected boolean tryMoveNextRoute(int id) throws Exception{
         Stack<MapLocation> route = paths.get(id);
         if(route == null || route.empty() || !gc.isMoveReady(id)){
             return false;
@@ -94,18 +94,18 @@ public class Group {
     protected boolean shouldContinueRoamingRandomly(){
         return gc.round() < 100;
     }
-    protected void changeToTargetMap(short[][] hill){
+    protected void changeToTargetMap(short[][] hill) throws Exception{
         state = GenericStates.TargetDestination;
         this.hill = hill;
     }
-    protected void moveToTarget(short[][] hill){
+    protected void moveToTarget(short[][] hill) throws Exception{
         for (int i = 0; i < movableIndex; i++) {
             int id = moveAbles[i];
             moveDownHill(id,hill);
         }
     }
     // calling this basically has units move to the set target
-    protected void moveDownHill(int id, short[][] hill){
+    protected void moveDownHill(int id, short[][] hill) throws Exception{
         Unit unit = gc.unit(id);
         MapLocation cur = unit.location().mapLocation();
         if(hill == null) {

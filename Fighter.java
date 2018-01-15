@@ -17,7 +17,7 @@ public class Fighter extends Group {
         return false;
     }
     @Override
-    public boolean add(int id){
+    public boolean add(int id) throws Exception{
 
         if(super.add(id)) {
             if(gc.isAttackReady(id)){
