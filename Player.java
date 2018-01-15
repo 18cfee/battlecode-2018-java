@@ -14,67 +14,70 @@ public class Player {
         Workers workers = new Workers(gc,p);
         workers.setState(WorkerStates.Replicate);
         Army sprint = new Army(gc,p);
-        while (true) {
-            if(gc.planet() != Planet.Earth) {
-            } else {
-                System.out.println();
-                System.out.println("Current round: "+gc.round());
-                System.out.println(workers.state);
-                //Place Units into their groups
-                VecUnit units = gc.units();
-                Team myTeam = gc.team();
-                for (int i = 0; i < units.size(); i++) {
-                    // todo assign units to groups
-                    Unit unit = units.get(i);
-                    int id = unit.id();
-                    if(unit.team() != myTeam){
-                        sprint.addEnemyUnit(id);
+        try {
+            while (true) {
+                if(gc.planet() != Planet.Earth) {
+                } else {
+                    System.out.println();
+                    System.out.println("Current round: "+gc.round());
+                    System.out.println(workers.state);
+                    //Place Units into their groups
+                    VecUnit units = gc.units();
+                    Team myTeam = gc.team();
+                    for (int i = 0; i < units.size(); i++) {
+                        // todo assign units to groups
+                        Unit unit = units.get(i);
+                        int id = unit.id();
+                        if(unit.team() != myTeam){
+                            sprint.addEnemyUnit(id);
+                        }
+                        else if(unit.unitType() == UnitType.Worker){
+                            workers.addWorker(unit.id());
+                        }
+                        else if(unit.unitType() == UnitType.Factory){
+                            workers.addFactory(unit);
+                        }
+                        else if(CarlTests && unit.unitType() == UnitType.Ranger && !unit.location().isInGarrison()){
+                            sprint.addUnit(id);
+                        }
+                        //todo keegan - set the CArltest to false if you want to snag the rangers for your testing
                     }
-                    else if(unit.unitType() == UnitType.Worker){
-                        workers.addWorker(unit.id());
+                    if(workers.state == WorkerStates.Replicate){
+                        if (workers.doneReplicating()){
+                            workers.setState(WorkerStates.BuildFactory);
+                        } else {
+                            workers.contReplicating();
+                        }
                     }
-                    else if(unit.unitType() == UnitType.Factory){
-                        workers.addFactory(unit);
+                    // todo right now not complete
+                    if(workers.state == WorkerStates.BuildFactory){
+                        if (workers.doneBuildingFactory()){
+                            workers.setState(WorkerStates.GatherKryptonite);
+                        } else {
+                            workers.contBuildingFactory();
+                        }
                     }
-                    else if(CarlTests && unit.unitType() == UnitType.Ranger && !unit.location().isInGarrison()){
-                        sprint.addUnit(id);
-                    }
-                    //todo keegan - set the CArltest to false if you want to snag the rangers for your testing
+                    // todo have the workers get krypt
+
+                    //todo this should churn out units
+                    workers.factoryProduce();
+                    workers.resetWorkerIndexCount();
+
+                    // here is a section to start doing research
+                    //todo
+
+                    //here is a section to start rocket stuff
+                    //todo
+
+                    // othere groups after this
+                    //todo make stuff shoot
+                    sprint.conductTurn();
                 }
-                if(workers.state == WorkerStates.Replicate){
-                    if (workers.doneReplicating()){
-                        workers.setState(WorkerStates.BuildFactory);
-                    } else {
-                        workers.contReplicating();
-                    }
-                }
-                // todo right now not complete
-                if(workers.state == WorkerStates.BuildFactory){
-                    if (workers.doneBuildingFactory()){
-                        workers.setState(WorkerStates.GatherKryptonite);
-                    } else {
-                        workers.contBuildingFactory();
-                    }
-                }
-                // todo have the workers get krypt
 
-                //todo this should churn out units
-                workers.factoryProduce();
-                workers.resetWorkerIndexCount();
-
-                // here is a section to start doing research
-                //todo
-
-                //here is a section to start rocket stuff
-                //todo
-
-                // othere groups after this
-                //todo make stuff shoot
-                sprint.conductTurn();
+                gc.nextTurn();
             }
+        } catch(Exception e){};
 
-            gc.nextTurn();
-        }
     }
 }
 
