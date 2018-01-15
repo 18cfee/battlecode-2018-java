@@ -95,6 +95,9 @@ public class Workers extends Group{
     @Override
     public void conductTurn(){
         System.out.println("Worker turn conducting");
+        moveToTarget(hill);
+        movableIndex = 0;
+        index = 0;
     }
     public boolean doneReplicating(){
         return(index > 3);

@@ -1,7 +1,7 @@
 import bc.GameController;
 import bc.MapLocation;
 
-public class Workforce {
+public class Workforce{
     GameController gc;
     Path p;
     int[] idle = new int[100];
@@ -25,8 +25,10 @@ public class Workforce {
         if(p.getNumFactories() == 0){
             System.out.println("There aren't any factories yet");
             MapLocation blueLoc = workerGroups[0].setBlueprint();
-            if(blueLoc != null){
-                workerGroups[0].changeToTargetDestinationState(blueLoc);
+            short[][] hill = null;
+            if(blueLoc != null && hill == null){
+                hill = p.generateHill(blueLoc);
+                workerGroups[0].changeToTargetMap(hill);
             }
             System.out.println("Could not start a factory this turn.");
         }
