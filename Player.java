@@ -13,7 +13,7 @@ public class Player {
         Path p = new Path(gc,gc.planet());
         Workers workers = new Workers(gc,p);
         workers.setState(WorkerStates.Replicate);
-        Group carlsRangers = new Fighter(gc,p);
+        Fighter carlsRangers = new Fighter(gc,p);
         ArrayList<Group> army = new ArrayList<>();
         army.add(carlsRangers);
         while (true) {
