@@ -27,7 +27,6 @@ public class Player {
                     VecUnit units = gc.units();
                     Team myTeam = gc.team();
                     for (int i = 0; i < units.size(); i++) {
-                        // todo assign units to groups
                         Unit unit = units.get(i);
                         Location loc = unit.location();
                         int id = unit.id();
@@ -43,21 +42,11 @@ public class Player {
                         }
                     }
                     workforce.conductTurn();
-                    // todo have the workers get krypt
-
-                    //todo this should churn out units
                     workers.factoryProduce();
                     workers.resetWorkerIndexCount();
-
+                    sprint.conductTurn();
                     // here is a section to start doing research
                     //todo
-
-                    //here is a section to start rocket stuff
-                    //todo
-
-                    // othere groups after this
-                    //todo make stuff shoot
-                    sprint.conductTurn();
                 }
             } catch (Exception e){
                 e.printStackTrace();
