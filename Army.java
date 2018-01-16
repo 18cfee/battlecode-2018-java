@@ -14,7 +14,7 @@ public class Army {
         this.gc = gc;
         this.p = p;
         carlsRangers = new RangersTargetNextUnit(gc,p);
-        baseProtection = new RangersTargetNextUnit(gc,p);
+        baseProtection = new Defenders(gc,p);
     }
     public void conductTurn() throws Exception{
         carlsRangers.conductTurn();
@@ -29,6 +29,7 @@ public class Army {
     }
     public void addEnemyUnit(int id){
         carlsRangers.addEnemy(id);
+        baseProtection.addEnemy(id);
     }
     public void addFact(Unit fact){
         if(p.builtFactIndex < p.MAX_NUM_FACTS){

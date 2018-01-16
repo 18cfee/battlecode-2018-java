@@ -7,20 +7,26 @@ public class RangersTargetNextUnit extends Fighter{
     }
     private short[][] baseHill = null;
     private MapLocation base = null;
+    private short[][] baseHillDef = null;
+    private MapLocation baseDef = null;
     private boolean seesEnemy = false;
     private short groupTargetCooldown = 0;
     @Override
     public void conductTurn() throws Exception{
-        if(base == null){
+        if(baseDef == null){
             //not ready to go
             if(p.baseLoc == null){
                 return;
             } else {
-                base = p.baseLoc;
-                baseHill = p.generateHill(base);
+                baseDef = p.baseLoc;
+                baseHillDef = p.generateHill(baseDef);
             }
         }
-        if(seesEnemy == false && indexEnemy != 0 && groupTargetCooldown == 0){
+        // disallows a longer trail of soldiers on bigger maps
+        if(index < p.planetSize/2){
+            base = baseDef;
+            baseHill = baseHillDef;
+        } else if(seesEnemy == false && indexEnemy != 0 && groupTargetCooldown == 0){
             seesEnemy = true;
             MapLocation a = gc.unit(enemy[0]).location().mapLocation();
             MapLocation target = p.getLocBetween(base,a);
