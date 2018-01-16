@@ -57,10 +57,7 @@ public class Player {
                             sprint.addUnit(id);
                         }
                     }
-
-                    if(sprint.getArmySize() <= 10) {
-                        workforce.factoryProduce();
-                    }
+                    workforce.factoryProduce();
                     workforce.conductTurn();
                     sprint.conductTurn();
                     // here is a section to start doing research
