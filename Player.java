@@ -47,6 +47,7 @@ public class Player {
                         int id = unit.id();
                         if(loc.isInGarrison() || loc.isInSpace()){ // do nothing with unit
                         } else if(unit.team() != myTeam){
+                            if(unit.unitType() == UnitType.Rocket) System.out.println("is this wsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfi");
                             sprint.addEnemyUnit(id);
                         } else if (unit.unitType() == UnitType.Worker) {
                             workforce.addWorker(id);
@@ -55,7 +56,6 @@ public class Player {
                                 sprint.addFact(unit);
                             }
                         } else if (unit.unitType() == UnitType.Rocket) {
-                            System.out.println("still adding rocket into the mix of things");
                             if(unit.structureIsBuilt() != 0){
                                 sprint.addRocket(unit);
                             } else {
@@ -74,8 +74,8 @@ public class Player {
                     //todo
                 }
             } catch (Exception e){
-                e.printStackTrace();
-                System.exit(0);
+//                e.printStackTrace();
+//                System.exit(0);
             }
 
             //not working
