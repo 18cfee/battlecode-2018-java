@@ -92,7 +92,7 @@ public class Workers extends Group{
             }*/
             if(p.builtFactIndex == p.NUM_FACTORIES_WANTED){
                 System.out.println("Factory complete");
-                if(unbuiltRocketIndex > 0){
+                if(p.rocketIndex > 0){
                     System.out.println("About to continue building a rocket");
                     contBuilding(UnitType.Rocket);
                 }else{
@@ -133,9 +133,11 @@ public class Workers extends Group{
                 }
             }
         }else{
-            System.out.println("Unbuilt rockets: " + unbuiltRocketIndex);
-            if(unbuiltRocketIndex != 0){
+            System.out.println("Unbuilt rockets: " + p.rocketIndex);
+            System.out.println();
+            if(p.rocketIndex != 0){
                 for(int i = 0; i < index; i++){
+                    System.out.println("worker " + ids[i] + " trying to build " + rocketBlueId);
                     if(gc.canBuild(ids[i], rocketBlueId)){
                         gc.build(ids[i], rocketBlueId);
                     }

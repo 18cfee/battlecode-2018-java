@@ -28,6 +28,8 @@ public class Path {
     int rocketIndex = 0;
     int[] rockets = new int[10];
     public MapLocation baseLoc = null;
+    public MapLocation firstRocket;
+    public short[][] firstRocketLocHill = null;
     public Path(GameController gc,Planet planet){
         this.planet = planet;
         this.gc = gc;

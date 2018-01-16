@@ -1,14 +1,12 @@
-import bc.Direction;
-import bc.GameController;
-import bc.Unit;
-import bc.UnitType;
+import bc.*;
 
 public class Army {
     GameController gc;
     Path p;
     Fighter carlsRangers;
-    Fighter baseProtection;
+    Defenders baseProtection;
     int size = 0;
+    private int rocketId = -1;
 
     public Army(GameController gc, Path p){
         this.gc = gc;
@@ -17,10 +15,13 @@ public class Army {
         baseProtection = new Defenders(gc,p);
     }
     public void conductTurn() throws Exception{
+        if(gc.round()%4 == 0)
         carlsRangers.conductTurn();
         baseProtection.conductTurn();
         factoryProduce();
+        rocketShouldLaunchIfItCan();
         resetSize();
+        rocketId = -1;
     }
     public void addUnit(int id) throws Exception{
         if(id%2 == 0) carlsRangers.add(id);
@@ -37,16 +38,23 @@ public class Army {
             p.builtFactary[p.builtFactIndex++] = fact.id();
         }
     }
+    public void addRocket(Unit unit){
+        rocketId = unit.id();
+        baseProtection.rocket = rocketId;
+        System.out.println("rocket garrison: " + unit.structureGarrison().size());
+    }
+    public void rocketShouldLaunchIfItCan(){
+        if(rocketId == -1) return;
+        if(gc.unit(rocketId).structureGarrison().size() == 8 && gc.canLaunchRocket(rocketId, new MapLocation(Planet.Mars,10,10))){
+            gc.launchRocket(rocketId, new MapLocation(Planet.Mars,10,10));
+        }
+    }
     public void factoryProduce(){
         UnitType production = UnitType.Ranger;
-        //Direction random = p.getRandDirection();
         Direction random = p.getRandDirection();
-        System.out.println("Attempting to make a unit");
-        System.out.println("builtFactIndex = " + p.builtFactIndex);
         for (int i = 0; i < p.builtFactIndex; i++) {
             System.out.println("Num in garrison: " + gc.unit(p.builtFactary[i]).structureGarrison().size());
             if(gc.canProduceRobot(p.builtFactary[i],production)){
-                System.out.println("factory made a unit");
                 gc.produceRobot(p.builtFactary[i],production);
             }
             if(gc.canUnload(p.builtFactary[i],random) ){ // && !gc.hasUnitAtLocation(gc.unit(builtFactary[i]).location().mapLocation().add(random))

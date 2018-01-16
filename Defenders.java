@@ -5,6 +5,7 @@ public class Defenders extends Fighter {
     Defenders(GameController gc, Path p){
         super(gc,p);
     }
+    public int rocket;
     private short[][] baseHill = null;
     private MapLocation base = null;
     @Override
@@ -18,15 +19,23 @@ public class Defenders extends Fighter {
                 baseHill = p.generateHill(base);
             }
         }
-        moveToTarget(baseHill);
+        if(gc.round()%4 == 0) moveToTarget(baseHill);
+        else loadRocketIfPossible(rocket);
         shootAtSomething();
         indexShooters = 0;
         indexEnemy = 0;
         movableIndex = 0;
         index = 0;
     }
-    public void loadRocetIfPossible(int rocketId){
+    public void loadRocketIfPossible(int rocketId){
+        if(rocketId == -1 ) return;
+        System.out.println("gathering around rocket");
+        baseHill = p.firstRocketLocHill;
         for (int i = 0; i < movableIndex; i++) {
+            if (gc.canLoad(rocketId,moveAbles[i])){
+                gc.load(rocketId,moveAbles[i]);
+            }
         }
+        index = 0;
     }
 }

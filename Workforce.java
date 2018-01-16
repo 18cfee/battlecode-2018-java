@@ -48,6 +48,7 @@ public class Workforce{
             MapLocation blueLoc = workerGroups[0].setBlueprint(UnitType.Rocket);
             if(blueLoc != null){
                 short[][] hill = p.generateHill(blueLoc);
+                p.firstRocketLocHill = hill;
                 workerGroups[0].changeToTargetMap(hill);
                 p.rocketIndex++;
                 //hillChosen = true;

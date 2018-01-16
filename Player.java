@@ -54,7 +54,11 @@ public class Player {
                                 sprint.addFact(unit);
                             }
                         } else if (unit.unitType() == UnitType.Rocket) {
-                            workforce.addRocket(unit);
+                            if(unit.structureIsBuilt() != 0){
+                                sprint.addRocket(unit);
+                            } else {
+                                System.out.println("un built rocket");
+                            }
                         }else{
                             sprint.addUnit(id);
                         }
