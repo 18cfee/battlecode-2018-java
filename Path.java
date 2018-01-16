@@ -20,6 +20,8 @@ public class Path {
     MapLocation startLoc;
     int[] factories = new int[10];
     int factIndex = 0;
+    int rocketIndex = 0;
+    int[] rockets = new int[10];
 
     public Path(GameController gc,Planet planet){
         this.planet = planet;
@@ -60,6 +62,9 @@ public class Path {
 
     public int getNumFactories(){
         return factIndex;
+    }
+    public int getNumRockets(){
+        return rocketIndex;
     }
     public MapLocation getLocBetween(MapLocation a, MapLocation b){
         int x = (a.getX()*4 + b.getX())/5;

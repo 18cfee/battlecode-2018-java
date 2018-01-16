@@ -1,5 +1,6 @@
 import bc.GameController;
 import bc.MapLocation;
+import bc.Unit;
 import bc.UnitType;
 
 public class Workforce{
@@ -11,18 +12,22 @@ public class Workforce{
     int groupIndex = 0;
     boolean canBuildRocket = false;
 
-    public Workforce(GameController gc, Path p){
+    public Workforce(GameController gc, Path p) {
         this.gc = gc;
         this.p = p;
+        createGroup();
     }
     private boolean hillChosen = false;
     public void conductTurn() throws Exception{
+
         if(groupIndex == 0){
             createGroup();
         }
         while(idleIndex > 0){
             workerGroups[0].add(idle[idleIndex--]);
         }
+
+        System.out.println("p.numFactories = " + p.getNumFactories());
         if(p.getNumFactories() == 0){
             System.out.println("There aren't any factories yet");
             MapLocation blueLoc = workerGroups[0].setBlueprint(UnitType.Factory);
@@ -32,7 +37,18 @@ public class Workforce{
                 p.factIndex++;
                 hillChosen = true;
             }
-            System.out.println("Could not start a factory this turn.");
+        }
+
+        System.out.println("p.RocketIndex = " + p.getNumRockets());
+        if(canBuildRocket && p.getNumRockets() == 0){
+            System.out.println("Let's build a rocket!");
+            MapLocation blueLoc = workerGroups[0].setBlueprint(UnitType.Rocket);
+            if(blueLoc != null){
+                short[][] hill = p.generateHill(blueLoc);
+                workerGroups[0].changeToTargetMap(hill);
+                p.rocketIndex++;
+                hillChosen = true;
+            }
         }
 
         for(int i = 0; i < groupIndex; i++){
@@ -40,14 +56,26 @@ public class Workforce{
             workerGroups[i].conductTurn();
         }
 
-        /*
+
         for(int i = 0; i < groupIndex; i++){
             workerGroups[i].resetWorkerIndexCount();
-        }*/
+        }
         idleIndex = 0;
     }
 
-    public void createGroup() throws Exception{
+    public void factoryProduce(){
+        workerGroups[0].factoryProduce();
+    }
+
+    public void addFactory(Unit unit){
+        workerGroups[0].addFactory(unit);
+    }
+
+    public void addRocket(Unit unit){
+        workerGroups[0].addRocket(unit);
+    }
+
+    public void createGroup(){
         workerGroups[groupIndex] = new Workers(gc, p);
         groupIndex++;
     }

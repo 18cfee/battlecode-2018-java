@@ -50,18 +50,18 @@ public class Player {
                         } else if (unit.unitType() == UnitType.Worker) {
                             workforce.addWorker(id);
                         } else if (unit.unitType() == UnitType.Factory) {
-                            workers.addFactory(unit);
+                            workforce.addFactory(unit);
                         } else if (unit.unitType() == UnitType.Rocket) {
-                            workers.addRocket(unit);
+                            workforce.addRocket(unit);
                         }else{
                             sprint.addUnit(id);
                         }
                     }
-                    workforce.conductTurn();
+
                     if(sprint.getArmySize() <= 10) {
-                        workers.factoryProduce();
+                        workforce.factoryProduce();
                     }
-                    workers.resetWorkerIndexCount();
+                    workforce.conductTurn();
                     sprint.conductTurn();
                     // here is a section to start doing research
                     //todo
