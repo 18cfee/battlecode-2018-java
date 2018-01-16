@@ -7,6 +7,8 @@ public class Army {
     GameController gc;
     Path p;
     Fighter carlsRangers;
+    int size = 0;
+
     public Army(GameController gc, Path p){
         this.gc = gc;
         this.p = p;
@@ -15,9 +17,11 @@ public class Army {
     public void conductTurn() throws Exception{
         carlsRangers.conductTurn();
         factoryProduce();
+        resetSize();
     }
     public void addUnit(int id) throws Exception{
         carlsRangers.add(id);
+        size++;
     }
     public void addEnemyUnit(int id){
         carlsRangers.addEnemy(id);
@@ -44,5 +48,12 @@ public class Army {
                 gc.unload(p.builtFactary[i],random);
             }
         }
+    }
+
+    public int getArmySize(){
+        return size;
+    }
+    public void resetSize(){
+        size = 0;
     }
 }

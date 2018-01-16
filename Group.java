@@ -128,7 +128,7 @@ public class Group {
             }
         }
         if(topChoice != null){ //min <= dirVal
-            gc.moveRobot(id,topChoice);
+            if(gc.isMoveReady(id)) gc.moveRobot(id,topChoice);
         }
     }
 }

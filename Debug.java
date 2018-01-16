@@ -15,6 +15,12 @@ public class Debug {
             System.out.println();
         }
     }
+
+    public static void attention(){
+        for (int i = 0; i < 100; i++) {
+            System.out.println("GEt my attention bit ttiiiiiiiiiiiiiiiiiiiiiiiiiiime");
+        }
+    }
 //    long totalCarbs = 0;
 //        for (int i = 0; i < planetSize; i++) {
 //        for (int j = 0; j < planetSize; j++) {

@@ -1,5 +1,7 @@
 import bc.GameController;
 import bc.MapLocation;
+import bc.Unit;
+import bc.UnitType;
 
 public class Workforce{
     GameController gc;
@@ -8,28 +10,27 @@ public class Workforce{
     int idleIndex = 0;
     Workers[] workerGroups = new Workers[10];
     int groupIndex = 0;
+    boolean canBuildRocket = false;
 
-    public Workforce(GameController gc, Path p){
+    public Workforce(GameController gc, Path p) {
         this.gc = gc;
         this.p = p;
+        createGroup();
     }
     public void conductTurn() throws Exception{
+
         if(groupIndex == 0){
             createGroup();
         }
         while(idleIndex > 0){
-            workerGroups[0].add(idle[idleIndex-1]);
-            idleIndex--;
+            workerGroups[0].add(idle[idleIndex--]);
         }
         System.out.println("built: " + p.builtFactIndex);
         System.out.println("unbuilt: " + p.getNumFactories());
-        if(p.getNumFactories() == p.builtFactIndex && p.getNumFactories() < p.NUM_FACTORIES_WANTED){
+        if(p.unbuiltFactIndex == p.builtFactIndex && p.getNumFactories() < p.NUM_FACTORIES_WANTED){
             System.out.println("There aren't any factories yet");
-            MapLocation blueLoc = workerGroups[0].setBlueprint();
+            MapLocation blueLoc = workerGroups[0].setBlueprint(UnitType.Factory);
             if(blueLoc != null ){
-                for (int i = 0; i < 200; i++) {
-                    System.out.println("attention");
-                }
                 short[][] hill = p.generateHill(blueLoc);
                 workerGroups[0].changeToTargetMap(hill);
                 p.unbuiltFactIndex++;
@@ -37,16 +38,42 @@ public class Workforce{
             }
         }
 
+        System.out.println("p.RocketIndex = " + p.getNumRockets());
+        if(canBuildRocket && p.rocketIndex == 0){
+            System.out.println("Let's build a rocket!");
+            MapLocation blueLoc = workerGroups[0].setBlueprint(UnitType.Rocket);
+            if(blueLoc != null){
+                short[][] hill = p.generateHill(blueLoc);
+                workerGroups[0].changeToTargetMap(hill);
+                p.rocketIndex++;
+                //hillChosen = true;
+            }
+        }
         for(int i = 0; i < groupIndex; i++){
             workerGroups[i].conductTurn();
         }
-
+        for(int i = 0; i < groupIndex; i++){
+            workerGroups[i].resetWorkerIndexCount();
+        }
         idleIndex = 0;
     }
 
-    public void createGroup() throws Exception{
+
+    public void addRocket(Unit unit){
+        workerGroups[0].addRocket(unit);
+    }
+
+    public void createGroup(){
         workerGroups[groupIndex] = new Workers(gc, p);
         groupIndex++;
+    }
+
+    public void setCanBuildRocket(boolean set){
+        canBuildRocket = set;
+    }
+
+    public boolean isCanBuildRocket(){
+        return canBuildRocket;
     }
 
     public void addWorker(int id){

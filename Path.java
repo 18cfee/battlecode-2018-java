@@ -24,6 +24,10 @@ public class Path {
     public int builtFactIndex = 0;
     public int [] builtFactary = new int [MAX_NUM_FACTS];
     public final static int NUM_FACTORIES_WANTED = 2;
+    int factIndex = 0;
+    int rocketIndex = 0;
+    int[] rockets = new int[10];
+
     public Path(GameController gc,Planet planet){
         this.planet = planet;
         this.gc = gc;
@@ -63,6 +67,9 @@ public class Path {
 
     public int getNumFactories(){
         return unbuiltFactIndex;
+    }
+    public int getNumRockets(){
+        return rocketIndex;
     }
     public MapLocation getLocBetween(MapLocation a, MapLocation b){
         int x = (a.getX()*4 + b.getX())/5;
