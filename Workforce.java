@@ -30,6 +30,9 @@ public class Workforce{
         if(p.unbuiltFactIndex == p.builtFactIndex && p.getNumFactories() < p.NUM_FACTORIES_WANTED){
             System.out.println("There aren't any factories yet");
             MapLocation blueLoc = workerGroups[0].setBlueprint(UnitType.Factory);
+            if(p.baseLoc == null){
+                p.baseLoc = blueLoc;
+            }
             if(blueLoc != null ){
                 short[][] hill = p.generateHill(blueLoc);
                 workerGroups[0].changeToTargetMap(hill);

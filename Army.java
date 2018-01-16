@@ -7,20 +7,24 @@ public class Army {
     GameController gc;
     Path p;
     Fighter carlsRangers;
+    Fighter baseProtection;
     int size = 0;
 
     public Army(GameController gc, Path p){
         this.gc = gc;
         this.p = p;
         carlsRangers = new RangersTargetNextUnit(gc,p);
+        baseProtection = new RangersTargetNextUnit(gc,p);
     }
     public void conductTurn() throws Exception{
         carlsRangers.conductTurn();
+        baseProtection.conductTurn();
         factoryProduce();
         resetSize();
     }
     public void addUnit(int id) throws Exception{
-        carlsRangers.add(id);
+        if(id%2 == 0) carlsRangers.add(id);
+        else baseProtection.add(id);
         size++;
     }
     public void addEnemyUnit(int id){

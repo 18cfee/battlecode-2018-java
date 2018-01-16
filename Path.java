@@ -27,7 +27,7 @@ public class Path {
     int factIndex = 0;
     int rocketIndex = 0;
     int[] rockets = new int[10];
-
+    public MapLocation baseLoc = null;
     public Path(GameController gc,Planet planet){
         this.planet = planet;
         this.gc = gc;
