@@ -1,6 +1,7 @@
 import bc.*;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Stack;
 
 public class Player {
@@ -28,14 +29,16 @@ public class Player {
                     for (int i = 0; i < units.size(); i++) {
                         // todo assign units to groups
                         Unit unit = units.get(i);
+                        Location loc = unit.location();
                         int id = unit.id();
-                        if(unit.team() != myTeam && !unit.location().isInGarrison()){
+                        if(loc.isInGarrison() || loc.isInSpace()){ // do nothing with unit
+                        } else if(unit.team() != myTeam){
                             sprint.addEnemyUnit(id);
-                        } else if (unit.unitType() == UnitType.Worker && unit.team() == myTeam) {
+                        } else if (unit.unitType() == UnitType.Worker) {
                             workforce.addWorker(id);
                         } else if (unit.unitType() == UnitType.Factory) {
                             workers.addFactory(unit);
-                        } else if (CarlTests && unit.unitType() == UnitType.Ranger && !unit.location().isInGarrison()) {
+                        } else {
                             sprint.addUnit(id);
                         }
                     }
@@ -60,7 +63,7 @@ public class Player {
                 e.printStackTrace();
                 System.exit(0);
             };
-            //System.out.println(gc.getTimeLeftMs());
+            System.out.println(gc.getTimeLeftMs());
             gc.nextTurn();
         }
 
