@@ -33,6 +33,7 @@ public class Workers extends Group{
     public MapLocation setBlueprint(UnitType type){
         System.out.println("This kind: " + type);
         Direction rand = p.getRandDirection();
+        System.out.println(rand);
         for(int i = 0; i <= index; i++){
             System.out.println("Trying to find blueprint loc, worker attempting: " + ids[i]);
             if(gc.canBlueprint(ids[i], type, rand)){

@@ -23,7 +23,7 @@ public class Workforce{
             createGroup();
         }
         while(idleIndex > 0){
-            workerGroups[0].add(idle[idleIndex--]);
+            workerGroups[0].add(idle[--idleIndex]);
         }
         System.out.println("built: " + p.builtFactIndex);
         System.out.println("unbuilt: " + p.getNumFactories());
@@ -32,6 +32,7 @@ public class Workforce{
             MapLocation blueLoc = workerGroups[0].setBlueprint(UnitType.Factory);
             if(p.baseLoc == null){
                 p.baseLoc = blueLoc;
+                p.hillToBase = p.generateHill(p.startLoc);
             }
             if(blueLoc != null ){
                 short[][] hill = p.generateHill(blueLoc);

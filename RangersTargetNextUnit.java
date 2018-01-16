@@ -5,12 +5,21 @@ public class RangersTargetNextUnit extends Fighter{
     RangersTargetNextUnit(GameController gc, Path p){
         super(gc,p);
     }
-    private short[][] baseHill = p.hillToBase;
-    private MapLocation base = p.startLoc;
+    private short[][] baseHill = null;
+    private MapLocation base = null;
     private boolean seesEnemy = false;
     private short groupTargetCooldown = 0;
     @Override
     public void conductTurn() throws Exception{
+        if(base == null){
+            //not ready to go
+            if(p.baseLoc == null){
+                return;
+            } else {
+                base = p.baseLoc;
+                baseHill = p.generateHill(base);
+            }
+        }
         if(seesEnemy == false && indexEnemy != 0 && groupTargetCooldown == 0){
             seesEnemy = true;
             MapLocation a = gc.unit(enemy[0]).location().mapLocation();

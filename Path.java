@@ -47,8 +47,6 @@ public class Path {
         if(planet == Planet.Earth){
             closestStartLocation = findClosestEnemyStartLoc();
             startLoc = gc.myUnits().get(0).location().mapLocation();
-            hillToBase = generateHill(startLoc);
-            Debug.printHill(hillToBase);
         }
         generatePassable();
     }
