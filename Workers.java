@@ -3,8 +3,6 @@ import bc.*;
 public class Workers extends Group{
     int [] unbuiltFactory = new int [5];
     int unbuiltIndex = 0;
-    int builtFactIndex = 0;
-    int [] builtFactary = new int [50];
     int factBlueId = -1;
     int totalHp = 0;
     GameController gc;
@@ -17,30 +15,7 @@ public class Workers extends Group{
         this.gc = gc;
         this.p = p;
     }
-    public void addFactory(Unit fact){
-        if(fact.structureIsBuilt() == 1){
-            System.out.println("a factory is built");
-            builtFactary[builtFactIndex++] = fact.id();
-        }
-    }
 
-    public void factoryProduce(){
-        UnitType production = UnitType.Ranger;
-        //Direction random = p.getRandDirection();
-        Direction random = p.getRandDirection();
-        System.out.println("Attempting to make a unit");
-        System.out.println("builtFactIndex = " + builtFactIndex);
-        for (int i = 0; i < builtFactIndex; i++) {
-
-            if(gc.canProduceRobot(builtFactary[i],production)){
-                System.out.println("factory made a unit");
-                gc.produceRobot(builtFactary[i],production);
-            }
-            if(gc.canUnload(builtFactary[i],random) ){ // && !gc.hasUnitAtLocation(gc.unit(builtFactary[i]).location().mapLocation().add(random))
-                gc.unload(builtFactary[i],random);
-            }
-        }
-    }
 
     public MapLocation setBlueprint(){
         /*working code
@@ -100,8 +75,7 @@ public class Workers extends Group{
             if(gc.canBuild(ids[i], factBlueId)){
                 gc.build(ids[i], factBlueId);
             }*/
-
-            if(builtFactIndex > 0){
+            if(p.builtFactIndex == p.NUM_FACTORIES_WANTED){
                 System.out.println("Factory complete");
                 setState(WorkerStates.GatherKarbonite);
             }else{
@@ -122,7 +96,6 @@ public class Workers extends Group{
     }
     void resetWorkerIndexCount(){
         index = 0;
-        builtFactIndex = 0;
         unbuiltIndex = 0;
     }
     void contBuildingFactory(){
@@ -138,9 +111,6 @@ public class Workers extends Group{
             System.out.println("this many bots tried: " + index);
             System.out.println("this is how much health the factory should have: " + totalHp);
         }
-    }
-    boolean doneBuildingFactory(){
-        return(builtFactIndex != 0);
     }
     void contBuildingRocket(){
         //// TODO

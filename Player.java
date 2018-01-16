@@ -36,15 +36,16 @@ public class Player {
                         } else if (unit.unitType() == UnitType.Worker) {
                             workforce.addWorker(id);
                         } else if (unit.unitType() == UnitType.Factory) {
-                            workers.addFactory(unit);
+                            if(unit.structureIsBuilt() == 1){
+                                sprint.addFact(unit);
+                            }
                         } else {
                             sprint.addUnit(id);
                         }
                     }
-                    workforce.conductTurn();
-                    workers.factoryProduce();
-                    workers.resetWorkerIndexCount();
                     sprint.conductTurn();
+                    workforce.conductTurn();
+                    workers.resetWorkerIndexCount();
                     // here is a section to start doing research
                     //todo
                 }

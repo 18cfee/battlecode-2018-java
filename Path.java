@@ -20,7 +20,10 @@ public class Path {
     MapLocation startLoc;
     int[] factories = new int[10];
     int factIndex = 0;
-
+    public final static int MAX_NUM_FACTS = 20;
+    public int builtFactIndex = 0;
+    public int [] builtFactary = new int [MAX_NUM_FACTS];
+    public final static int NUM_FACTORIES_WANTED = 1;
     public Path(GameController gc,Planet planet){
         this.planet = planet;
         this.gc = gc;
