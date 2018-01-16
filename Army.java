@@ -24,6 +24,7 @@ public class Army {
     }
     public void addFact(Unit fact){
         if(p.builtFactIndex < p.MAX_NUM_FACTS){
+            System.out.println("carl think we have a fact");
             p.builtFactary[p.builtFactIndex++] = fact.id();
         }
     }
@@ -34,7 +35,7 @@ public class Army {
         System.out.println("Attempting to make a unit");
         System.out.println("builtFactIndex = " + p.builtFactIndex);
         for (int i = 0; i < p.builtFactIndex; i++) {
-
+            System.out.println("Num in garrison: " + gc.unit(p.builtFactary[i]).structureGarrison().size());
             if(gc.canProduceRobot(p.builtFactary[i],production)){
                 System.out.println("factory made a unit");
                 gc.produceRobot(p.builtFactary[i],production);
@@ -43,6 +44,5 @@ public class Army {
                 gc.unload(p.builtFactary[i],random);
             }
         }
-        p.builtFactIndex = 0;
     }
 }

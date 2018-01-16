@@ -19,11 +19,11 @@ public class Path {
     BitSet[] passable;
     MapLocation startLoc;
     int[] factories = new int[10];
-    int factIndex = 0;
+    int unbuiltFactIndex = 0;
     public final static int MAX_NUM_FACTS = 20;
     public int builtFactIndex = 0;
     public int [] builtFactary = new int [MAX_NUM_FACTS];
-    public final static int NUM_FACTORIES_WANTED = 1;
+    public final static int NUM_FACTORIES_WANTED = 2;
     public Path(GameController gc,Planet planet){
         this.planet = planet;
         this.gc = gc;
@@ -62,7 +62,7 @@ public class Path {
     }
 
     public int getNumFactories(){
-        return factIndex;
+        return unbuiltFactIndex;
     }
     public MapLocation getLocBetween(MapLocation a, MapLocation b){
         int x = (a.getX()*4 + b.getX())/5;

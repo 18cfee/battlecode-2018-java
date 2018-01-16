@@ -1,8 +1,6 @@
 import bc.*;
 
 public class Workers extends Group{
-    int [] unbuiltFactory = new int [5];
-    int unbuiltIndex = 0;
     int factBlueId = -1;
     int totalHp = 0;
     GameController gc;
@@ -18,15 +16,14 @@ public class Workers extends Group{
 
 
     public MapLocation setBlueprint(){
-        /*working code
-        System.out.println("Trying to place blueprint");
-            for (int i = 0; i < index; i++) {
-                if(gc.canBlueprint(ids[i], UnitType.Factory,random)){
-                    gc.blueprint(ids[i], UnitType.Factory,random);
-                    System.out.println("blueprint placed");
-                }
-            }
-         */
+//        Direction rand = p.getRandDirection();
+//        System.out.println("Trying to place blueprint");
+//        for (int i = 0; i < index; i++) {
+//            if(gc.canBlueprint(ids[i], UnitType.Factory,rand)){
+//                gc.blueprint(ids[i], UnitType.Factory,rand);
+//                System.out.println("blueprint placed");
+//            }
+//        }
         Direction rand = p.getRandDirection();
         for(int i = 0; i <= index; i++){
             System.out.println("Trying to find blueprint loc, worker attempting: " + ids[i]);
@@ -37,7 +34,6 @@ public class Workers extends Group{
                 System.out.println("This is the unit found nearby: " + unit.toString());
                 factBlueId = unit.get(0).id();
                 System.out.println("Factory blueprint set: ID " + factBlueId);
-                unbuiltIndex++;
                 return unit.get(0).location().mapLocation();
             }
         }
@@ -69,6 +65,7 @@ public class Workers extends Group{
     }
     @Override
     public void conductTurn() throws Exception{
+        System.out.println("carb: " + gc.karbonite());
         System.out.println("Worker turn conducting");
         for(int i = 0; i < index; i++){
             /*
@@ -96,11 +93,9 @@ public class Workers extends Group{
     }
     void resetWorkerIndexCount(){
         index = 0;
-        unbuiltIndex = 0;
     }
     void contBuildingFactory(){
-        System.out.println("UnbuiltIndex = " + unbuiltIndex);
-        if(unbuiltIndex != 0){
+        if(p.unbuiltFactIndex != 0){
             System.out.println("trying to build fact");
             for (int i = 0; i < index; i++) {
                 if(gc.canBuild(ids[i], factBlueId)){

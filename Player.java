@@ -46,6 +46,8 @@ public class Player {
                     sprint.conductTurn();
                     workforce.conductTurn();
                     workers.resetWorkerIndexCount();
+                    //this is here because multiple classes rely on it
+                    p.builtFactIndex = 0;
                     // here is a section to start doing research
                     //todo
                 }
