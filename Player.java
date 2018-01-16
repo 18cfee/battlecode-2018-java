@@ -18,6 +18,12 @@ public class Player {
         Workforce workforce = new Workforce(gc, p);
         while (true) {
             try {
+                if(!gc.researchInfo().hasNextInQueue()){
+                    gc.queueResearch(UnitType.Worker);
+                    gc.queueResearch(UnitType.Rocket);
+                    gc.queueResearch(UnitType.Ranger);
+                    gc.queueResearch(UnitType.Knight);
+                }
                 if (gc.planet() != Planet.Earth) {
                 } else {
                     System.out.println();
@@ -26,6 +32,14 @@ public class Player {
                     //Place Units into their groups
                     VecUnit units = gc.units();
                     Team myTeam = gc.team();
+
+                    if(!workforce.isCanBuildRocket() && gc.round() > 350){
+                        workforce.setCanBuildRocket(true);
+                    }
+
+                    if(gc.round() % 50 == 0){
+                        System.out.println(gc.researchInfo().nextInQueue());
+                    }
                     for (int i = 0; i < units.size(); i++) {
                         Unit unit = units.get(i);
                         Location loc = unit.location();
@@ -37,12 +51,16 @@ public class Player {
                             workforce.addWorker(id);
                         } else if (unit.unitType() == UnitType.Factory) {
                             workers.addFactory(unit);
-                        } else {
+                        } else if (unit.unitType() == UnitType.Rocket) {
+                            workers.addRocket(unit);
+                        }else{
                             sprint.addUnit(id);
                         }
                     }
                     workforce.conductTurn();
-                    workers.factoryProduce();
+                    if(sprint.getArmySize() <= 10) {
+                        workers.factoryProduce();
+                    }
                     workers.resetWorkerIndexCount();
                     sprint.conductTurn();
                     // here is a section to start doing research
@@ -51,8 +69,10 @@ public class Player {
             } catch (Exception e){
                 e.printStackTrace();
                 System.exit(0);
-            };
-            System.out.println(gc.getTimeLeftMs());
+            }
+
+            //not working
+            //System.out.println(gc.getTimeLeftMs());
             gc.nextTurn();
         }
 

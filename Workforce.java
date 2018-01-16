@@ -1,5 +1,6 @@
 import bc.GameController;
 import bc.MapLocation;
+import bc.UnitType;
 
 public class Workforce{
     GameController gc;
@@ -8,6 +9,7 @@ public class Workforce{
     int idleIndex = 0;
     Workers[] workerGroups = new Workers[10];
     int groupIndex = 0;
+    boolean canBuildRocket = false;
 
     public Workforce(GameController gc, Path p){
         this.gc = gc;
@@ -19,12 +21,11 @@ public class Workforce{
             createGroup();
         }
         while(idleIndex > 0){
-            workerGroups[0].add(idle[idleIndex-1]);
-            idleIndex--;
+            workerGroups[0].add(idle[idleIndex--]);
         }
         if(p.getNumFactories() == 0){
             System.out.println("There aren't any factories yet");
-            MapLocation blueLoc = workerGroups[0].setBlueprint();
+            MapLocation blueLoc = workerGroups[0].setBlueprint(UnitType.Factory);
             if(blueLoc != null && !hillChosen){
                 short[][] hill = p.generateHill(blueLoc);
                 workerGroups[0].changeToTargetMap(hill);
@@ -39,12 +40,24 @@ public class Workforce{
             workerGroups[i].conductTurn();
         }
 
+        /*
+        for(int i = 0; i < groupIndex; i++){
+            workerGroups[i].resetWorkerIndexCount();
+        }*/
         idleIndex = 0;
     }
 
     public void createGroup() throws Exception{
         workerGroups[groupIndex] = new Workers(gc, p);
         groupIndex++;
+    }
+
+    public void setCanBuildRocket(boolean set){
+        canBuildRocket = set;
+    }
+
+    public boolean isCanBuildRocket(){
+        return canBuildRocket;
     }
 
     public void addWorker(int id){
