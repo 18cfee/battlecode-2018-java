@@ -25,6 +25,7 @@ public class Player {
                     gc.queueResearch(UnitType.Knight);
                 }
                 if (gc.planet() != Planet.Earth) {
+                    if(gc.units().size() > 0) System.out.println("Made it to Mars");
                 } else {
                     System.out.println();
                     System.out.println("Current round: " + gc.round());
@@ -54,6 +55,7 @@ public class Player {
                                 sprint.addFact(unit);
                             }
                         } else if (unit.unitType() == UnitType.Rocket) {
+                            System.out.println("still adding rocket into the mix of things");
                             if(unit.structureIsBuilt() != 0){
                                 sprint.addRocket(unit);
                             } else {

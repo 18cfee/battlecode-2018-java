@@ -36,6 +36,6 @@ public class Defenders extends Fighter {
                 gc.load(rocketId,moveAbles[i]);
             }
         }
-        index = 0;
+        movableIndex = 0;
     }
 }
