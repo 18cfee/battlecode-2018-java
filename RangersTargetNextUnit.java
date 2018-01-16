@@ -28,12 +28,14 @@ public class RangersTargetNextUnit extends Fighter{
             baseHill = baseHillDef;
         } else if(seesEnemy == false && indexEnemy != 0 && groupTargetCooldown == 0){
             seesEnemy = true;
-            MapLocation a = gc.unit(enemy[0]).location().mapLocation();
-            MapLocation target = p.getLocBetween(base,a);
-            if(p.passable(target)){
-                base = target;
-                baseHill = p.generateHill(base);
-                groupTargetCooldown+= 50;
+            if(gc.canSenseUnit(enemy[0])){
+                MapLocation a = gc.unit(enemy[0]).location().mapLocation();
+                MapLocation target = p.getLocBetween(base,a);
+                if(p.passable(target)){
+                    base = target;
+                    baseHill = p.generateHill(base);
+                    groupTargetCooldown+= 50;
+                }
             }
         } else if (seesEnemy = true && indexEnemy == 0){
             seesEnemy = false;

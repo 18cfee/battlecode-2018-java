@@ -25,10 +25,7 @@ public class Workforce{
         while(idleIndex > 0){
             workerGroups[0].add(idle[--idleIndex]);
         }
-        System.out.println("built: " + p.builtFactIndex);
-        System.out.println("unbuilt: " + p.getNumFactories());
         if(p.unbuiltFactIndex == p.builtFactIndex && p.getNumFactories() < p.NUM_FACTORIES_WANTED){
-            System.out.println("There aren't any factories yet");
             MapLocation blueLoc = workerGroups[0].setBlueprint(UnitType.Factory);
             if(p.baseLoc == null){
                 p.baseLoc = blueLoc;
@@ -38,13 +35,10 @@ public class Workforce{
                 short[][] hill = p.generateHill(blueLoc);
                 workerGroups[0].changeToTargetMap(hill);
                 p.unbuiltFactIndex++;
-                System.out.println("num fact: " + p.getNumFactories());
             }
         }
 
-        System.out.println("p.RocketIndex = " + p.getNumRockets());
         if(canBuildRocket && p.rocketIndex == 0){
-            System.out.println("Let's build a rocket!");
             MapLocation blueLoc = workerGroups[0].setBlueprint(UnitType.Rocket);
             if(blueLoc != null){
                 short[][] hill = p.generateHill(blueLoc);

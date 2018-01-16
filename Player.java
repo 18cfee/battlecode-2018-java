@@ -10,7 +10,6 @@ public class Player {
         GameController gc = new GameController();
         // Direction is a normal java enum.
         Direction[] directions = Direction.values();
-        System.out.println("num of directions: "+ directions.length);
         Path p = new Path(gc,gc.planet());
         Workers workers = new Workers(gc,p);
         workers.setState(WorkerStates.Replicate);
@@ -25,10 +24,10 @@ public class Player {
                     gc.queueResearch(UnitType.Knight);
                 }
                 if (gc.planet() != Planet.Earth) {
+                    System.out.println("mars");
                 } else {
                     System.out.println();
                     System.out.println("Current round: " + gc.round());
-                    System.out.println(workers.state);
                     //Place Units into their groups
                     VecUnit units = gc.units();
                     Team myTeam = gc.team();
@@ -44,7 +43,7 @@ public class Player {
                         Unit unit = units.get(i);
                         Location loc = unit.location();
                         int id = unit.id();
-                        if(loc.isInGarrison() || loc.isInSpace()){ // do nothing with unit
+                        if(!loc.isOnPlanet(Planet.Earth) ||  loc.isInGarrison() || loc.isInSpace()){ // do nothing with unit
                         } else if(unit.team() != myTeam){
                             sprint.addEnemyUnit(id);
                         } else if (unit.unitType() == UnitType.Worker) {
@@ -77,7 +76,7 @@ public class Player {
             }
 
             //not working
-            //System.out.println(gc.getTimeLeftMs());
+            System.out.println(gc.getTimeLeftMs());
             gc.nextTurn();
         }
 

@@ -35,7 +35,6 @@ public class Path {
         this.gc = gc;
         random = new Random();
         random.setSeed(724);
-        System.out.println("made it to Path");
         map = gc.startingMap(planet);
         planetSize = (int) map.getHeight();
         directions = Direction.values();
@@ -167,7 +166,7 @@ public class Path {
         outerLoop:
         while(!toCheck.isEmpty()){
             MapLocation cur = toCheck.removeFirst();
-            //System.out.println("visit:");
+            //ln("visit:");
             //Debug.printCoords(cur);
             for(Direction d : directions){
                 MapLocation newLoc = cur.add(d);
@@ -199,7 +198,6 @@ public class Path {
         from[newLoc.getX()][newLoc.getY()] = cur;
     }
     private Stack<MapLocation> generateStack(MapLocation[][] from, MapLocation end){
-        System.out.println("Stack");
         MapLocation cur = end;
         //Debug.printCoords(cur);
         MapLocation cameFrom = from[cur.getX()][cur.getY()];

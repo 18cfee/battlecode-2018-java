@@ -19,9 +19,11 @@ public class Defenders extends Fighter {
                 baseHill = p.generateHill(base);
             }
         }
-        if(gc.round()%4 == 0) moveToTarget(baseHill);
+        if(gc.round()%2 == 0){
+            moveToTarget(baseHill);
+            shootAtSomething();
+        }
         else loadRocketIfPossible(rocket);
-        shootAtSomething();
         indexShooters = 0;
         indexEnemy = 0;
         movableIndex = 0;
@@ -29,7 +31,6 @@ public class Defenders extends Fighter {
     }
     public void loadRocketIfPossible(int rocketId){
         if(rocketId == -1 ) return;
-        System.out.println("gathering around rocket");
         baseHill = p.firstRocketLocHill;
         for (int i = 0; i < movableIndex; i++) {
             if (gc.canLoad(rocketId,moveAbles[i])){

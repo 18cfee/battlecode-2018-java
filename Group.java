@@ -73,7 +73,6 @@ public class Group {
         }
         MapLocation durGoal = route.peek();
         Direction curDirection = gc.unit(id).location().mapLocation().directionTo(durGoal);
-        System.out.println("cur direction: " + curDirection);
         if(!gc.canMove(id,curDirection)){
             return false;
         } else {
@@ -109,7 +108,6 @@ public class Group {
         Unit unit = gc.unit(id);
         MapLocation cur = unit.location().mapLocation();
         if(hill == null) {
-            System.out.println("problem");
             return;
         }
         short dirVal = hill[cur.getX()][cur.getY()];

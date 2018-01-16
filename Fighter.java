@@ -44,7 +44,7 @@ public class Fighter extends Group {
     public void shootAtSomething ()throws Exception{
         for (int i = 0; i < indexShooters; i++) {
             for (int j = 0; j < indexEnemy; j++) {
-                if(gc.canAttack(canShoot[i],enemy[j])){
+                if(gc.isAttackReady(canShoot[indexShooters]) && gc.canAttack(canShoot[i],enemy[j])){
                     gc.attack(canShoot[i],enemy[j]);
                     break;
                 }
