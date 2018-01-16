@@ -30,11 +30,15 @@ public class Workers extends Group{
             if(gc.canBlueprint(ids[i], UnitType.Factory, rand)){
                 System.out.println("I found a spot to place it");
                 gc.blueprint(ids[i], UnitType.Factory, rand);
-                VecUnit unit = gc.senseNearbyUnitsByType(gc.unit(ids[i]).location().mapLocation(), 50, UnitType.Factory);
-                System.out.println("This is the unit found nearby: " + unit.toString());
-                factBlueId = unit.get(0).id();
-                System.out.println("Factory blueprint set: ID " + factBlueId);
-                return unit.get(0).location().mapLocation();
+                VecUnit units = gc.senseNearbyUnitsByType(gc.unit(ids[i]).location().mapLocation(), 50, UnitType.Factory);
+                for (int j = 0; j < units.size(); j++) {
+                    if(units.get(j).structureIsBuilt() != 1){
+                        factBlueId = units.get(j).id();
+                        System.out.println("Factory blueprint set: ID " + factBlueId);
+                        return units.get(j).location().mapLocation();
+                    }
+                }
+
             }
         }
         return null;
@@ -96,7 +100,7 @@ public class Workers extends Group{
     }
     void contBuildingFactory(){
         if(p.unbuiltFactIndex != 0){
-            System.out.println("trying to build fact");
+            System.out.println("trying to build fact: " + factBlueId);
             for (int i = 0; i < index; i++) {
                 if(gc.canBuild(ids[i], factBlueId)){
                     totalHp += 5;
