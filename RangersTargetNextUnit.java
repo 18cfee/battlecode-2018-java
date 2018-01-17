@@ -39,7 +39,7 @@ public class RangersTargetNextUnit extends Fighter{
             seesEnemy = false;
         }
         moveToTarget(baseHill);
-        shootAtSomething();
+        //shootAtSomething();
         indexShooters = 0;
         indexEnemy = 0;
         movableIndex = 0;

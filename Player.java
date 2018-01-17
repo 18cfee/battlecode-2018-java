@@ -16,6 +16,7 @@ public class Player {
         workers.setState(WorkerStates.Replicate);
         Army sprint = new Army(gc,p);
         Workforce workforce = new Workforce(gc, p);
+        int count = 0;
         while (true) {
             try {
                 if(!gc.researchInfo().hasNextInQueue()){
@@ -27,7 +28,7 @@ public class Player {
                 if (gc.planet() != Planet.Earth) {
                 } else {
                     System.out.println();
-                    System.out.println("Current round: " + gc.round());
+                    System.out.println("Current round: " + gc.round() + " bugs: "+ count);
                     System.out.println(workers.state);
                     //Place Units into their groups
                     VecUnit units = gc.units();
@@ -73,7 +74,7 @@ public class Player {
                 }
             } catch (Exception e){
                 e.printStackTrace();
-                System.exit(0);
+                count++;
             }
 
             //not working
