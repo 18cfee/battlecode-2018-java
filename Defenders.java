@@ -29,7 +29,11 @@ public class Defenders extends Fighter {
             }
         }
         moveToTarget(wall.hillToTargetWall);
+        if(wall.percentCoverageOfWall() > 70){
+            wall.growTargetWall();
+        }
         //else loadRocketIfPossible(rocket);
+
         shootAtSomething();
         indexShooters = 0;
         indexEnemy = 0;
@@ -66,9 +70,10 @@ class Wall{
         curWall.push(new MapLoc(startingPoint));
         targetNumFromBase = 1;
         hillToTargetWall = new short[p.planetWidth][p.planetHeight];
+        System.out.println("about to grow");
         growTargetWall();
     }
-    private void growTargetWall(){
+    public void growTargetWall(){
         ArrayDeque<MapLoc> newWall = new ArrayDeque<MapLoc>();
         HashSet<MapLoc> alreadyChecked = new HashSet<>();
         targetNumFromBase++;
@@ -88,6 +93,7 @@ class Wall{
                 }
             }
         }
+        System.out.println("about to generate gradient");
         curWall = newWall;
         generateWallGradient(curWall);
     }
@@ -116,9 +122,24 @@ class Wall{
                         toCheck.addLast(newLoc);
                         hillToTargetWall[newLoc.x][newLoc.y] = dis;
                     }
+                    checked[newLoc.x].set(newLoc.y);
                 }
             }
         }
         // todo smaller versions need to know if a path was found
+    }
+    public int percentCoverageOfWall(){
+        ArrayDeque<MapLoc> cloneWall = curWall.clone();
+        int size = 0;
+        int covered = 0;
+        while(!cloneWall.isEmpty()){
+            MapLoc cur = cloneWall.removeFirst();
+            size++;
+            MapLocation loc = new MapLocation(p.planet,cur.x,cur.y);
+            if(gc.hasUnitAtLocation(loc)){
+                covered++;
+            }
+        }
+        return covered*100/size;
     }
 }

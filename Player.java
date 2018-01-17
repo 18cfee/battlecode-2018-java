@@ -73,6 +73,7 @@ public class Player {
                     //todo
                 }
             } catch (Exception e){
+                // todo set indexes to 0 in here
                 e.printStackTrace();
                 count++;
             }
