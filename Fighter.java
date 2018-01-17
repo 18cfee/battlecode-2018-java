@@ -4,7 +4,6 @@ public class Fighter extends Group {
     int[] canShoot = new int[MAX_ARMY_SIZE];
     int indexShooters = 0;
     int[] enemy = new int[MAX_ARMY_SIZE];
-    int[] enemyClone = new int[MAX_ARMY_SIZE];
     int indexEnemy = 0;
     Fighter(GameController gc, Path p){
         super(gc,p);
@@ -27,7 +26,6 @@ public class Fighter extends Group {
         }
         return false;
     }
-    static int oldEnIndex = 0;
     @Override
     public void conductTurn() throws Exception{
         roamRandom();
