@@ -7,10 +7,11 @@ public class Workers extends Group{
     int builtRocketIndex = 0;
     int[] unbuiltRocket = new int[5];
     int[] builtRocket = new int[10];
+    MapLocation harvestPoint = null;
 
     GameController gc;
     Path p;
-    public WorkerStates state;
+    public WorkerStates state = WorkerStates.DefaultState;
 
     public Workers(GameController gc, Path p){
         super(gc, p);
@@ -88,7 +89,10 @@ public class Workers extends Group{
 
             }
         }else if(state == WorkerStates.GatherKarbonite){
-            for(int i = 0; i < index; i++){
+            System.out.println("About to gather karbonite");
+            if(harvestPoint != null) {
+                System.out.println("There is a karbonite loc");
+                gatherKarbonite();
             }
         }
 
@@ -112,7 +116,6 @@ public class Workers extends Group{
         if(type == UnitType.Factory) {
             System.out.println("UnbuiltIndex = " + p.unbuiltFactIndex);
             if (p.unbuiltFactIndex != 0) {
-                System.out.println("trying to build fact");
                 for (int i = 0; i < index; i++) {
                     if (gc.canBuild(ids[i], factBlueId)) {
                         gc.build(ids[i], factBlueId);
@@ -124,13 +127,26 @@ public class Workers extends Group{
             System.out.println();
             if(p.rocketIndex != 0){
                 for(int i = 0; i < index; i++){
-                    System.out.println("worker " + ids[i] + " trying to build " + rocketBlueId);
+                    System.out.println("Trying to work on the rocket: " + rocketBlueId);
                     if(gc.canBuild(ids[i], rocketBlueId)){
                         gc.build(ids[i], rocketBlueId);
+                        System.out.println("Worked on the rocket");
                     }
                 }
             }
         }
+    }
+
+    void gatherKarbonite(){
+        for(int i = 0; i < index; i++){
+            if(gc.canHarvest(ids[i], gc.unit(ids[i]).location().mapLocation().directionTo(harvestPoint))){
+                gc.harvest(ids[i], gc.unit(ids[i]).location().mapLocation().directionTo(harvestPoint));
+            }
+        }
+    }
+
+    public void setHarvestPoint(MapLocation harvestPoint) {
+        this.harvestPoint = harvestPoint;
     }
 
     public WorkerStates getState(){

@@ -1,7 +1,4 @@
-import bc.GameController;
-import bc.MapLocation;
-import bc.Unit;
-import bc.UnitType;
+import bc.*;
 
 public class Workforce{
     GameController gc;
@@ -59,9 +56,19 @@ public class Workforce{
             }
         }
 
+        System.out.println("Do the workers want to gather?");
         if(workerGroups[0].getState() == WorkerStates.GatherKarbonite){
-
+            System.out.println("They do! But is there a karbLocs?");
+            MapLoc loc = p.closestKarbLocs.pop();
+            if(loc != null) {
+                MapLocation mapLoc = new MapLocation(p.planet, loc.x, loc.y);
+                short[][] hill = p.generateHill(mapLoc);
+                workerGroups[0].changeToTargetMap(hill);
+                workerGroups[0].setHarvestPoint(mapLoc);
+                System.out.println("There was!");
+            }
         }
+
         for(int i = 0; i < groupIndex; i++){
             workerGroups[i].conductTurn();
         }
