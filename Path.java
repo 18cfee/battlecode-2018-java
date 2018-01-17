@@ -91,6 +91,9 @@ public class Path {
     public boolean passable(MapLocation location){
         return passable[location.getX()].get(location.getY());
     }
+    public boolean passable(MapLoc location){
+        return passable[location.x].get(location.y);
+    }
 
     //only meant for earth
     private MapLocation findClosestEnemyStartLoc(){
@@ -160,7 +163,6 @@ public class Path {
         long totalCarbs = 0;
         for (int i = 0; i < planetWidth; i++) {
             for (int j = 0; j < planetHeight; j++) {
-                System.out.println("x " +i+ "y" + j);
                 MapLocation loc = new MapLocation(planet,i,j);
 
                 long karbATLoc = map.initialKarboniteAt(loc);
@@ -175,5 +177,8 @@ public class Path {
     }
     public boolean onMap(int x, int y){
         return (0 <= x && x < planetWidth && 0 <= y && y < planetHeight);
+    }
+    public boolean onMap(MapLoc loc){
+        return (0 <= loc.x && loc.x < planetWidth && 0 <= loc.y && loc.y < planetHeight);
     }
 }
