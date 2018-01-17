@@ -1,6 +1,8 @@
+import bc.Direction;
 import bc.GameController;
 import bc.MapLocation;
 
+import java.util.ArrayDeque;
 import java.util.HashSet;
 import java.util.Stack;
 
@@ -60,10 +62,11 @@ class Wall{
         curWall = new Stack<MapLoc>();
         curWall.push(new MapLoc(startingPoint));
         targetNumFromBase = 1;
+        hillToTargetWall = new short[p.planetWidth][p.planetHeight];
         growTargetWall();
     }
     private void growTargetWall(){
-        Stack<MapLoc> newWall = new Stack<MapLoc>();
+        ArrayDeque<MapLoc> toCheck = new ArrayDeque<MapLocation>();
         HashSet<MapLoc> alreadyChecked = new HashSet<>();
         targetNumFromBase++;
         while(!curWall.empty()){
@@ -83,5 +86,28 @@ class Wall{
             }
         }
         curWall = newWall;
+    }
+    public short[][] generateWallGradient(MapLocation destination){
+        hillToTargetWall[destination.getX()][destination.getY()] = 1;
+        ArrayDeque<MapLoc> toCheck = new ArrayDeque<MapLocation>();
+        toCheck.addLast(destination);
+        while(!toCheck.isEmpty()){
+            MapLocation cur = toCheck.removeFirst();
+            short dis = hillToTargetWall[cur.getX()][cur.getY()];
+            for(Direction d : directions){
+                MapLocation newLoc = cur.add(d);
+                if(previouslyUncheckedMapLoc(newLoc,hillToTargetWall)){
+                    if(map.isPassableTerrainAt(newLoc) != 1){
+                        //mark as unreachable
+                        hillToTargetWall[newLoc.getX()][newLoc.getY()] = greatestPathNum;
+                    } else {
+                        toCheck.addLast(newLoc);
+                        hillToTargetWall[newLoc.getX()][newLoc.getY()] = (short)(dis + 1);
+                    }
+                }
+            }
+        }
+        // todo smaller versions need to know if a path was found
+        return hillToTargetWall;
     }
 }
