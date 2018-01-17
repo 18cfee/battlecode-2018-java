@@ -7,7 +7,7 @@ public class Army {
     Defenders baseProtection;
     int size = 0;
     private int rocketId = -1;
-
+    private final static int MAXUnits = 95;
     public Army(GameController gc, Path p){
         this.gc = gc;
         this.p = p;
@@ -50,6 +50,7 @@ public class Army {
         }
     }
     public void factoryProduce(){
+        if(size > MAXUnits) return;
         UnitType production = UnitType.Ranger;
         Direction random = p.getRandDirection();
         for (int i = 0; i < p.builtFactIndex; i++) {

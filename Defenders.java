@@ -29,7 +29,7 @@ public class Defenders extends Fighter {
             }
         }
         moveToTarget(wall.hillToTargetWall);
-        if(wall.percentCoverageOfWall() > 70){
+        if(wall.percentCoverageOfWall() > 90){
             wall.growTargetWall();
         }
         //else loadRocketIfPossible(rocket);
@@ -54,6 +54,7 @@ public class Defenders extends Fighter {
 }
 
 class Wall{
+    private static final int maxWallSize = 5;
     private short[][] baseHill;
     public short targetNumFromBase;
     private ArrayDeque<MapLoc> curWall;
@@ -74,6 +75,7 @@ class Wall{
         growTargetWall();
     }
     public void growTargetWall(){
+        if(targetNumFromBase > maxWallSize) return;
         ArrayDeque<MapLoc> newWall = new ArrayDeque<MapLoc>();
         HashSet<MapLoc> alreadyChecked = new HashSet<>();
         targetNumFromBase++;

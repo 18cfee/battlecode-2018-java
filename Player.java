@@ -79,7 +79,7 @@ public class Player {
             }
 
             //not working
-            //System.out.println(gc.getTimeLeftMs());
+            System.out.println(gc.getTimeLeftMs());
             gc.nextTurn();
         }
 
