@@ -23,11 +23,10 @@ public class Army {
         rocketId = -1;
     }
     public void addUnit(int id) throws Exception{
-        if(id%2 == 0){
-            carlsRangers.add(id);
-        } else{
-            baseProtection.add(id);
-        }
+//        if(id%2 == 0){
+//            carlsRangers.add(id);
+//        } else{
+        baseProtection.add(id);
         size++;
     }
     public void addEnemyUnit(int id){
