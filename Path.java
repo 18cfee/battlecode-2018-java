@@ -1,9 +1,6 @@
 import bc.*;
 
-import java.util.ArrayDeque;
-import java.util.BitSet;
-import java.util.Random;
-import java.util.Stack;
+import java.util.*;
 
 public class Path {
     private PlanetMap map;
@@ -30,6 +27,8 @@ public class Path {
     public MapLocation firstRocket;
     public short[][] firstRocketLocHill = null;
     public MapLocation placeToLandOnMars;
+    public long totalKarbOnEarth;
+    public ArrayList<MapLoc> karbLocs;
     public Path(GameController gc,Planet planet){
         this.planet = planet;
         this.gc = gc;
@@ -62,6 +61,7 @@ public class Path {
             closestStartLocation = findClosestEnemyStartLoc();
             startLoc = gc.myUnits().get(0).location().mapLocation();
         }
+        totalKarbOnEarth = calculateTotalKarbOnEarth();
         generatePassable();
     }
     private void generatePassable(){
@@ -155,12 +155,20 @@ public class Path {
         int a = random.nextInt(8);
         return directions[a];
     }
-    public long calculateTotalKripOnEarth(){
+    public long calculateTotalKarbOnEarth() {
+        karbLocs = new ArrayList<>();
         long totalCarbs = 0;
         for (int i = 0; i < planetWidth; i++) {
             for (int j = 0; j < planetHeight; j++) {
-                MapLocation loc = new MapLocation(Planet.Earth,i,j);
-                totalCarbs += map.initialKarboniteAt(loc);
+                System.out.println("x " +i+ "y" + j);
+                MapLocation loc = new MapLocation(planet,i,j);
+
+                long karbATLoc = map.initialKarboniteAt(loc);
+                if(karbATLoc > 0){
+                    totalCarbs += karbATLoc;
+                    MapLoc karbLoc = new MapLoc(loc);
+                    karbLocs.add(karbLoc);
+                }
             }
         }
         return totalCarbs;
