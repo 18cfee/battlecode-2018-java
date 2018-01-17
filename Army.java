@@ -26,12 +26,12 @@ public class Army {
 //        if(id%2 == 0){
 //            carlsRangers.add(id);
 //        } else{
-        baseProtection.add(id);
+            baseProtection.add(id);
         size++;
     }
     public void addEnemyUnit(int id){
         carlsRangers.addEnemy(id);
-        //baseProtection.addEnemy(id);
+        baseProtection.addEnemy(id);
     }
     public void addFact(Unit fact){
         if(p.builtFactIndex < p.MAX_NUM_FACTS){
