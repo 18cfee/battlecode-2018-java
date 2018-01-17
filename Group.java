@@ -33,54 +33,10 @@ public class Group {
         }
         return false;
     }
-    protected void changeToTargetDestinationState(MapLocation target){
-        state = GenericStates.TargetDestination;
-        this.target = target;
-        paths = new HashMap<>();
-    }
     public void conductTurn() throws Exception{
         roamRandom();
         index = 0;
         movableIndex = 0;
-    }
-    protected HashMap<Integer,Stack<MapLocation>> paths;
-    /*protected void aquireIndividualPaths(){
-        for (int i = 0; i < index; i++) {
-            int id = ids[i];
-            // add the ones not already calculated
-            if(!paths.containsValue(id)){
-                Stack<MapLocation> unitPath = p.genShortestRouteBFS(gc.unit(id).location().mapLocation(),
-                        p.closestStartLocation);
-                paths.put(id,unitPath);
-            }
-        }
-    }
-    protected void moveToTarget() throws Exception{
-        for (int i = 0; i < index; i++) {
-            int id = ids[i];
-            if(!tryMoveNextRoute(id)){
-                p.moveInRandomAvailableDirection(id);
-                Stack<MapLocation> unitPath = p.genShortestRouteBFS(gc.unit(id).location().mapLocation(),
-                        p.closestStartLocation);
-                paths.put(id,unitPath);
-            }
-        }
-    }*/
-    protected boolean tryMoveNextRoute(int id) throws Exception{
-        Stack<MapLocation> route = paths.get(id);
-        if(route == null || route.empty() || !gc.isMoveReady(id)){
-            return false;
-        }
-        MapLocation durGoal = route.peek();
-        Direction curDirection = gc.unit(id).location().mapLocation().directionTo(durGoal);
-        System.out.println("cur direction: " + curDirection);
-        if(!gc.canMove(id,curDirection)){
-            return false;
-        } else {
-            gc.moveRobot(id,curDirection);
-            route.pop();
-            return true;
-        }
     }
     protected void roamRandom(){
         for (int i = 0; i < movableIndex; i++) {
