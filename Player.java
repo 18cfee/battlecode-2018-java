@@ -98,28 +98,9 @@ class Troop {
         id = parent.id();
         this.parent = parent;
     }
-    public void setRoute(Stack<MapLocation> route){
-        this.route = route;
-    }
-    public boolean tryMoveNextRoute(){
-        if(emptyRoute() || !g.isMoveReady(id)){
-            return false;
-        }
-        MapLocation durGoal = route.peek();
-        Direction curDirection = parent.location().mapLocation().directionTo(durGoal);
-        if(!g.canMove(id,curDirection)){
-            return false;
-        } else {
-            g.moveRobot(id,curDirection);
-            route.pop();
-            return true;
-        }
-    }
+
     public MapLocation curLoc(){
         return parent.location().mapLocation();
-    }
-    public boolean emptyRoute(){
-        return (route == null || route.isEmpty());
     }
 
 }
