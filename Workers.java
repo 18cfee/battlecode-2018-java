@@ -72,10 +72,6 @@ public class Workers extends Group{
         System.out.println("Worker turn conducting");
         if(state == WorkerStates.Build) {
             for (int i = 0; i < index; i++) {
-            /*
-            if(gc.canBuild(ids[i], factBlueId)){
-                gc.build(ids[i], factBlueId);
-            }*/
                 if (p.builtFactIndex == p.NUM_FACTORIES_WANTED) {
                     System.out.println("Factory complete");
                     if (p.rocketIndex > 0) {
@@ -91,7 +87,11 @@ public class Workers extends Group{
                 }
 
             }
+        }else if(state == WorkerStates.GatherKarbonite){
+            for(int i = 0; i < index; i++){
+            }
         }
+
         moveToTarget(hill);
         movableIndex = 0;
         index = 0;
@@ -132,11 +132,9 @@ public class Workers extends Group{
             }
         }
     }
-    void contBuildingRocket(){
-        //// TODO
+
+    public WorkerStates getState(){
+        return state;
     }
-    boolean doneBuildingRocket(){
-        return false;
-        //todo
-    }
+
 }
