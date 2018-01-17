@@ -3,6 +3,7 @@ import bc.GameController;
 import bc.MapLocation;
 
 import java.util.ArrayDeque;
+import java.util.BitSet;
 import java.util.HashSet;
 import java.util.Stack;
 
@@ -13,6 +14,7 @@ public class Defenders extends Fighter {
     public int rocket;
     private short[][] baseHill = null;
     private MapLocation base = null;
+    private Wall wall;
     @Override
     public void conductTurn() throws Exception{
         System.out.println("it is making it into defenders");
@@ -23,10 +25,15 @@ public class Defenders extends Fighter {
             } else {
                 base = p.baseLoc;
                 baseHill = p.generateHill(base);
+                wall = new Wall(gc,p,baseHill,base);
             }
         }
-        moveToTarget(baseHill);
+        moveToTarget(wall.hillToTargetWall);
+        if(wall.percentCoverageOfWall() > 90){
+            wall.growTargetWall();
+        }
         //else loadRocketIfPossible(rocket);
+
         shootAtSomething();
         indexShooters = 0;
         indexEnemy = 0;
@@ -46,68 +53,95 @@ public class Defenders extends Fighter {
     }
 }
 
-//class Wall{
-//    private short[][] baseHill;
-//    public int targetNumFromBase;
-//    private Stack<MapLoc> curWall;
-//    private short[][] hillToTargetWall;
-//    private MapLocation hillCenterLoc;
-//    GameController gc;
-//    Path p;
-//    Wall(GameController gc, Path p, short[][] hill, MapLocation startingPoint){
-//        this.gc = gc;
-//        this.p = p;
-//        this.baseHill = hill;
-//        this.hillCenterLoc = startingPoint;
-//        curWall = new Stack<MapLoc>();
-//        curWall.push(new MapLoc(startingPoint));
-//        targetNumFromBase = 1;
-//        hillToTargetWall = new short[p.planetWidth][p.planetHeight];
-//        growTargetWall();
-//    }
-//    private void growTargetWall(){
-//        ArrayDeque<MapLoc> toCheck = new ArrayDeque<MapLocation>();
-//        HashSet<MapLoc> alreadyChecked = new HashSet<>();
-//        targetNumFromBase++;
-//        while(!curWall.empty()){
-//            MapLoc current = curWall.pop();
-//            int curX = current.x;
-//            int curY = current.y;
-//            for (int i = 0; i < 8; i++) {
-//                int x = curX + p.numsDirections[i][0];
-//                int y = curY + p.numsDirections[i][1];
-//                if(p.onMap(x,y) && baseHill[x][y] == targetNumFromBase){
-//                    MapLoc loc = new MapLoc(x,y);
-//                    if(!alreadyChecked.contains(loc)){
-//                        alreadyChecked.add(loc);
-//                        newWall.push(loc);
-//                    }
-//                }
-//            }
-//        }
-//        curWall = newWall;
-//    }
-//    public short[][] generateWallGradient(MapLocation destination){
-//        hillToTargetWall[destination.getX()][destination.getY()] = 1;
-//        ArrayDeque<MapLoc> toCheck = new ArrayDeque<MapLocation>();
-//        toCheck.addLast(destination);
-//        while(!toCheck.isEmpty()){
-//            MapLocation cur = toCheck.removeFirst();
-//            short dis = hillToTargetWall[cur.getX()][cur.getY()];
-//            for(Direction d : directions){
-//                MapLocation newLoc = cur.add(d);
-//                if(previouslyUncheckedMapLoc(newLoc,hillToTargetWall)){
-//                    if(map.isPassableTerrainAt(newLoc) != 1){
-//                        //mark as unreachable
-//                        hillToTargetWall[newLoc.getX()][newLoc.getY()] = greatestPathNum;
-//                    } else {
-//                        toCheck.addLast(newLoc);
-//                        hillToTargetWall[newLoc.getX()][newLoc.getY()] = (short)(dis + 1);
-//                    }
-//                }
-//            }
-//        }
-//        // todo smaller versions need to know if a path was found
-//        return hillToTargetWall;
-//    }
-//}
+class Wall{
+    private static final int maxWallSize = 5;
+    private short[][] baseHill;
+    public short targetNumFromBase;
+    private ArrayDeque<MapLoc> curWall;
+    public short[][] hillToTargetWall;
+    private MapLocation hillCenterLoc;
+    GameController gc;
+    Path p;
+    Wall(GameController gc, Path p, short[][] hill, MapLocation startingPoint){
+        this.gc = gc;
+        this.p = p;
+        this.baseHill = hill;
+        this.hillCenterLoc = startingPoint;
+        curWall = new ArrayDeque<>();
+        curWall.push(new MapLoc(startingPoint));
+        targetNumFromBase = 1;
+        hillToTargetWall = new short[p.planetWidth][p.planetHeight];
+        System.out.println("about to grow");
+        growTargetWall();
+    }
+    public void growTargetWall(){
+        if(targetNumFromBase > maxWallSize) return;
+        ArrayDeque<MapLoc> newWall = new ArrayDeque<MapLoc>();
+        HashSet<MapLoc> alreadyChecked = new HashSet<>();
+        targetNumFromBase++;
+        while(!curWall.isEmpty()){
+            MapLoc current = curWall.pop();
+            int curX = current.x;
+            int curY = current.y;
+            for (int i = 0; i < 8; i++) {
+                int x = curX + p.numsDirections[i][0];
+                int y = curY + p.numsDirections[i][1];
+                if(p.onMap(x,y) && baseHill[x][y] == targetNumFromBase){
+                    MapLoc loc = new MapLoc(x,y);
+                    if(!alreadyChecked.contains(loc)){
+                        alreadyChecked.add(loc);
+                        newWall.addLast(loc);
+                    }
+                }
+            }
+        }
+        System.out.println("about to generate gradient");
+        curWall = newWall;
+        generateWallGradient(curWall);
+    }
+    public void generateWallGradient(ArrayDeque<MapLoc> input){
+        ArrayDeque<MapLoc> toCheck = input.clone();
+        BitSet[] checked = new BitSet[p.planetWidth];
+        for (int i = 0; i < checked.length; i++) {
+            BitSet cur = new BitSet(p.planetHeight);
+            checked[i] = cur;
+        }
+        while(!toCheck.isEmpty()){
+            MapLoc cur = toCheck.removeFirst();
+            short dis;
+            if(baseHill[cur.x][cur.y] == targetNumFromBase){
+                dis = 0;
+            } else {
+                dis = (short)(hillToTargetWall[cur.x][cur.y] + 1);
+            }
+            for (int i = 0; i < 8; i++) {
+                MapLoc newLoc = cur.add(p.numsDirections[i][0],p.numsDirections[i][1]);
+                if(p.onMap(newLoc) && !checked[newLoc.x].get(newLoc.y)){
+                    if(!p.passable(newLoc)){
+                        //mark as unreachable
+                        hillToTargetWall[newLoc.x][newLoc.y] = p.greatestPathNum;
+                    } else {
+                        toCheck.addLast(newLoc);
+                        hillToTargetWall[newLoc.x][newLoc.y] = dis;
+                    }
+                    checked[newLoc.x].set(newLoc.y);
+                }
+            }
+        }
+        // todo smaller versions need to know if a path was found
+    }
+    public int percentCoverageOfWall(){
+        ArrayDeque<MapLoc> cloneWall = curWall.clone();
+        int size = 0;
+        int covered = 0;
+        while(!cloneWall.isEmpty()){
+            MapLoc cur = cloneWall.removeFirst();
+            size++;
+            MapLocation loc = new MapLocation(p.planet,cur.x,cur.y);
+            if(gc.hasUnitAtLocation(loc)){
+                covered++;
+            }
+        }
+        return covered*100/size;
+    }
+}

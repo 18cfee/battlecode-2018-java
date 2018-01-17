@@ -11,4 +11,7 @@ public class MapLoc {
         this.x = loc.getX();
         this.y = loc.getY();
     }
+    public MapLoc add(int x, int y){
+        return new MapLoc(this.x + x,this.y + y);
+    }
 }

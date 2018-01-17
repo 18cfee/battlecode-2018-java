@@ -73,12 +73,13 @@ public class Player {
                     //todo
                 }
             } catch (Exception e){
+                // todo set indexes to 0 in here
                 e.printStackTrace();
                 count++;
             }
 
             //not working
-            //System.out.println(gc.getTimeLeftMs());
+            System.out.println(gc.getTimeLeftMs());
             gc.nextTurn();
         }
 
