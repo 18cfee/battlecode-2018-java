@@ -43,7 +43,7 @@ public class Workforce{
         }
 
         System.out.println("p.RocketIndex = " + p.getNumRockets());
-        if(canBuildRocket && p.rocketIndex == 0){
+        /*if(canBuildRocket && p.rocketIndex == 0){
             System.out.println("Let's build a rocket!");
             MapLocation blueLoc = workerGroups[0].setBlueprint(UnitType.Rocket);
             if(blueLoc != null){
@@ -53,7 +53,7 @@ public class Workforce{
                 p.rocketIndex++;
                 //hillChosen = true;
             }
-        }
+        }*/
         for(int i = 0; i < groupIndex; i++){
             workerGroups[i].conductTurn();
         }
