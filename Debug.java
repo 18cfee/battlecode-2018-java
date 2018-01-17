@@ -15,9 +15,15 @@ public class Debug {
             System.out.println();
         }
     }
+
+    public static void attention(){
+        for (int i = 0; i < 100; i++) {
+            System.out.println("GEt my attention bit ttiiiiiiiiiiiiiiiiiiiiiiiiiiime");
+        }
+    }
 //    long totalCarbs = 0;
-//        for (int i = 0; i < planetSize; i++) {
-//        for (int j = 0; j < planetSize; j++) {
+//        for (int i = 0; i < planetHeight; i++) {
+//        for (int j = 0; j < planetHeight; j++) {
 //            MapLocation loc = new MapLocation(Planet.Earth,i,j);
 //            totalCarbs += earth.initialKarboniteAt(loc);
 //        }

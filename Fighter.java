@@ -1,13 +1,9 @@
-import bc.Direction;
-import bc.GameController;
-import bc.MapLocation;
-import bc.Unit;
+import bc.*;
 
 public class Fighter extends Group {
     int[] canShoot = new int[MAX_ARMY_SIZE];
     int indexShooters = 0;
     int[] enemy = new int[MAX_ARMY_SIZE];
-    int[] enemyClone = new int[MAX_ARMY_SIZE];
     int indexEnemy = 0;
     Fighter(GameController gc, Path p){
         super(gc,p);
@@ -20,7 +16,7 @@ public class Fighter extends Group {
         return false;
     }
     @Override
-    public boolean add(int id){
+    public boolean add(int id) throws Exception{
 
         if(super.add(id)) {
             if(gc.isAttackReady(id)){
@@ -30,26 +26,18 @@ public class Fighter extends Group {
         }
         return false;
     }
-    static int oldEnIndex = 0;
     @Override
     public void conductTurn() throws Exception{
-        if(state == GenericStates.RandomMove){
-            if(shouldContinueRoamingRandomly()){
-                roamRandom();
-            } else{
-                short[][] toEnemy = p.generateHill(p.closestStartLocation);
-                Debug.printHill(toEnemy);
-                changeToTargetMap(toEnemy);
-            }
-        }
-        if(state == GenericStates.TargetDestination){
-            moveToTarget(hill);// the hill is set above, in p.generateHill(MapLocation);
-        }
+        roamRandom();
         shootAtSomething();
         indexShooters = 0;
         indexEnemy = 0;
         movableIndex = 0;
         index = 0;
+    }
+    @Override
+    protected boolean shouldContinueRoamingRandomly(){
+        return (indexEnemy == 0);
     }
     public void shootAtSomething ()throws Exception{
         for (int i = 0; i < indexShooters; i++) {

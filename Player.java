@@ -1,6 +1,7 @@
 import bc.*;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Stack;
 
 public class Player {
@@ -15,53 +16,72 @@ public class Player {
         workers.setState(WorkerStates.Replicate);
         Army sprint = new Army(gc,p);
         Workforce workforce = new Workforce(gc, p);
+        int count = 0;
         while (true) {
             try {
+                if(!gc.researchInfo().hasNextInQueue()){
+                    gc.queueResearch(UnitType.Rocket);
+                    gc.queueResearch(UnitType.Worker);
+                    gc.queueResearch(UnitType.Ranger);
+                    gc.queueResearch(UnitType.Knight);
+                }
                 if (gc.planet() != Planet.Earth) {
                 } else {
                     System.out.println();
-                    System.out.println("Current round: " + gc.round());
+                    System.out.println("Current round: " + gc.round() + " bugs: "+ count);
                     System.out.println(workers.state);
                     //Place Units into their groups
                     VecUnit units = gc.units();
                     Team myTeam = gc.team();
+
+                    if(!workforce.isCanBuildRocket() && gc.round() > 100){
+                        workforce.setCanBuildRocket(true);
+                    }
+
+                    if(gc.round() % 50 == 0){
+                        System.out.println(gc.researchInfo().nextInQueue());
+                    }
                     for (int i = 0; i < units.size(); i++) {
-                        // todo assign units to groups
                         Unit unit = units.get(i);
+                        Location loc = unit.location();
                         int id = unit.id();
-                        if (unit.team() != myTeam) {
+                        if(loc.isInGarrison() || loc.isInSpace()){ // do nothing with unit
+                        } else if(unit.team() != myTeam){
                             sprint.addEnemyUnit(id);
-                        } else if (unit.unitType() == UnitType.Worker && unit.team() == myTeam) {
+                        } else if (unit.unitType() == UnitType.Worker) {
                             workforce.addWorker(id);
                         } else if (unit.unitType() == UnitType.Factory) {
-                            workers.addFactory(unit);
-                        } else if (CarlTests && unit.unitType() == UnitType.Ranger && !unit.location().isInGarrison()) {
+                            if(unit.structureIsBuilt() == 1){
+                                sprint.addFact(unit);
+                            }
+                        } else if (unit.unitType() == UnitType.Rocket) {
+                            if(unit.structureIsBuilt() != 0){
+                                sprint.addRocket(unit);
+                            } else {
+                                System.out.println("un built rocket");
+                            }
+                        }else{
                             sprint.addUnit(id);
                         }
                     }
+                    sprint.conductTurn();
                     workforce.conductTurn();
-                    // todo have the workers get krypt
-
-                    //todo this should churn out units
-                    workers.factoryProduce();
                     workers.resetWorkerIndexCount();
-
+                    //this is here because multiple classes rely on it
+                    p.builtFactIndex = 0;
                     // here is a section to start doing research
                     //todo
-
-                    //here is a section to start rocket stuff
-                    //todo
-
-                    // othere groups after this
-                    //todo make stuff shoot
-                    sprint.conductTurn();
                 }
             } catch (Exception e){
                 e.printStackTrace();
-                System.exit(0);
+                count++;
             }
+
+            //not working
+            //System.out.println(gc.getTimeLeftMs());
             gc.nextTurn();
         }
+
     }
 }
 
@@ -78,28 +98,9 @@ class Troop {
         id = parent.id();
         this.parent = parent;
     }
-    public void setRoute(Stack<MapLocation> route){
-        this.route = route;
-    }
-    public boolean tryMoveNextRoute(){
-        if(emptyRoute() || !g.isMoveReady(id)){
-            return false;
-        }
-        MapLocation durGoal = route.peek();
-        Direction curDirection = parent.location().mapLocation().directionTo(durGoal);
-        if(!g.canMove(id,curDirection)){
-            return false;
-        } else {
-            g.moveRobot(id,curDirection);
-            route.pop();
-            return true;
-        }
-    }
+
     public MapLocation curLoc(){
         return parent.location().mapLocation();
-    }
-    public boolean emptyRoute(){
-        return (route == null || route.isEmpty());
     }
 
 }
