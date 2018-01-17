@@ -36,7 +36,6 @@ public class Army {
     }
     public void addFact(Unit fact){
         if(p.builtFactIndex < p.MAX_NUM_FACTS){
-            System.out.println("carl think we have a fact");
             p.builtFactary[p.builtFactIndex++] = fact.id();
         }
     }
