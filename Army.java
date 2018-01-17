@@ -11,21 +11,23 @@ public class Army {
     public Army(GameController gc, Path p){
         this.gc = gc;
         this.p = p;
-        carlsRangers = new Fighter(gc,p);
+        carlsRangers = new RangersTargetNextUnit(gc,p);
         baseProtection = new Defenders(gc,p);
     }
     public void conductTurn() throws Exception{
-        if(gc.round()%4 == 0)
         carlsRangers.conductTurn();
-        //baseProtection.conductTurn();
+        baseProtection.conductTurn();
         factoryProduce();
         rocketShouldLaunchIfItCan();
         resetSize();
         rocketId = -1;
     }
     public void addUnit(int id) throws Exception{
-        carlsRangers.add(id);
-        //baseProtection.add(id);
+        if(id%2 == 0){
+            carlsRangers.add(id);
+        } else{
+            baseProtection.add(id);
+        }
         size++;
     }
     public void addEnemyUnit(int id){

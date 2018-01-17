@@ -10,6 +10,7 @@ public class Defenders extends Fighter {
     private MapLocation base = null;
     @Override
     public void conductTurn() throws Exception{
+        System.out.println("it is making it into defenders");
         if(base == null){
             //not ready to go
             if(p.baseLoc == null){
@@ -19,7 +20,7 @@ public class Defenders extends Fighter {
                 baseHill = p.generateHill(base);
             }
         }
-        if(gc.round()%4 == 0) moveToTarget(baseHill);
+        moveToTarget(baseHill);
         //else loadRocketIfPossible(rocket);
         shootAtSomething();
         indexShooters = 0;

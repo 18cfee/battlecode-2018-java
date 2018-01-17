@@ -13,6 +13,7 @@ public class RangersTargetNextUnit extends Fighter{
     private short groupTargetCooldown = 0;
     @Override
     public void conductTurn() throws Exception{
+        System.out.println("it is making it into rangers next unit");
         if(baseDef == null){
             //not ready to go
             if(p.baseLoc == null){
