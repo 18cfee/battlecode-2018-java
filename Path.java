@@ -165,4 +165,7 @@ public class Path {
         }
         return totalCarbs;
     }
+    public boolean onMap(int x, int y){
+        return (0 <= x && x < planetWidth && 0 <= y && y < planetHeight);
+    }
 }
