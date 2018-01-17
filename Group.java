@@ -44,7 +44,7 @@ public class Group {
         movableIndex = 0;
     }
     protected HashMap<Integer,Stack<MapLocation>> paths;
-    protected void aquireIndividualPaths(){
+    /*protected void aquireIndividualPaths(){
         for (int i = 0; i < index; i++) {
             int id = ids[i];
             // add the ones not already calculated
@@ -65,7 +65,7 @@ public class Group {
                 paths.put(id,unitPath);
             }
         }
-    }
+    }*/
     protected boolean tryMoveNextRoute(int id) throws Exception{
         Stack<MapLocation> route = paths.get(id);
         if(route == null || route.empty() || !gc.isMoveReady(id)){

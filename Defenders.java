@@ -20,8 +20,8 @@ public class Defenders extends Fighter {
             }
         }
         if(gc.round()%4 == 0) moveToTarget(baseHill);
-        else loadRocketIfPossible(rocket);
-        //shootAtSomething();
+        //else loadRocketIfPossible(rocket);
+        shootAtSomething();
         indexShooters = 0;
         indexEnemy = 0;
         movableIndex = 0;

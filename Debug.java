@@ -22,8 +22,8 @@ public class Debug {
         }
     }
 //    long totalCarbs = 0;
-//        for (int i = 0; i < planetSize; i++) {
-//        for (int j = 0; j < planetSize; j++) {
+//        for (int i = 0; i < planetHeight; i++) {
+//        for (int j = 0; j < planetHeight; j++) {
 //            MapLocation loc = new MapLocation(Planet.Earth,i,j);
 //            totalCarbs += earth.initialKarboniteAt(loc);
 //        }

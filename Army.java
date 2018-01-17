@@ -45,8 +45,8 @@ public class Army {
     }
     public void rocketShouldLaunchIfItCan(){
         if(rocketId == -1) return;
-        if(gc.unit(rocketId).structureGarrison().size() == 8 && gc.canLaunchRocket(rocketId, new MapLocation(Planet.Mars,10,10))){
-            gc.launchRocket(rocketId, new MapLocation(Planet.Mars,10,10));
+        if(gc.unit(rocketId).structureGarrison().size() == 12 && gc.canLaunchRocket(rocketId, p.placeToLandOnMars)){
+            gc.launchRocket(rocketId, p.placeToLandOnMars);
         }
     }
     public void factoryProduce(){

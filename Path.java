@@ -8,7 +8,8 @@ import java.util.Stack;
 public class Path {
     private PlanetMap map;
     GameController gc;
-    int planetSize;
+    int planetHeight;
+    int planetWidth;
     public Direction[] directions;
     private Random random;
     public MapLocation closestStartLocation;
@@ -30,14 +31,30 @@ public class Path {
     public MapLocation baseLoc = null;
     public MapLocation firstRocket;
     public short[][] firstRocketLocHill = null;
+    public MapLocation placeToLandOnMars;
     public Path(GameController gc,Planet planet){
         this.planet = planet;
         this.gc = gc;
+        if(planet == Planet.Earth){
+            int height = (int)gc.startingMap(Planet.Mars).getHeight();
+            int width = (int)gc.startingMap(Planet.Mars).getWidth();
+            loop:
+            for (int i = 0; i < width; i++) {
+                for (int j = 0; j < height; j++) {
+                    if(gc.startingMap(Planet.Mars).isPassableTerrainAt
+                            (new MapLocation(Planet.Mars,i,j)) != 0){
+                        placeToLandOnMars = new MapLocation(Planet.Mars,i,j);
+                        break loop;
+                    }
+                }
+            }
+        }
         random = new Random();
         random.setSeed(724);
         System.out.println("made it to Path");
         map = gc.startingMap(planet);
-        planetSize = (int) map.getHeight();
+        planetHeight = (int) map.getHeight();
+        planetWidth = (int) map.getWidth();
         directions = Direction.values();
         //todo the following code was making an infinite loop on bfs possibly
         // remove the direction none
@@ -53,10 +70,10 @@ public class Path {
         generatePassable();
     }
     private void generatePassable(){
-        passable = new BitSet[planetSize];
-        for (int i = 0; i < planetSize; i++) {
-            BitSet cur = new BitSet(planetSize);
-            for (int j = 0; j < planetSize; j++) {
+        passable = new BitSet[planetWidth];
+        for (int i = 0; i < planetWidth; i++) {
+            BitSet cur = new BitSet(planetHeight);
+            for (int j = 0; j < planetHeight; j++) {
                 if (map.isPassableTerrainAt(new MapLocation(planet,i,j)) == 1){
                     cur.set(j);
                 }
@@ -97,8 +114,8 @@ public class Path {
     private MapLocation flippLocDiag(MapLocation loc){
         int oldX = loc.getX();
         int oldY = loc.getY();
-        int newX = planetSize - 1 - oldX;
-        int newY = planetSize - 1 - oldY;
+        int newX = planetWidth - 1 - oldX;
+        int newY = planetHeight - 1 - oldY;
         return new MapLocation(planet,newX,newY);
     }
     public boolean moveInRandomAvailableDirection(int id){
@@ -113,7 +130,7 @@ public class Path {
         return false;
     }
     public short[][] generateHill(MapLocation destination){
-        short hill[][] = new short[planetSize][planetSize];
+        short hill[][] = new short[planetWidth][planetHeight];
         hill[destination.getX()][destination.getY()] = 1;
         ArrayDeque<MapLocation> toCheck = new ArrayDeque<MapLocation>();
         toCheck.addLast(destination);
@@ -145,21 +162,21 @@ public class Path {
     }
     public long calculateTotalKripOnEarth(){
         long totalCarbs = 0;
-        for (int i = 0; i < planetSize; i++) {
-            for (int j = 0; j < planetSize; j++) {
+        for (int i = 0; i < planetWidth; i++) {
+            for (int j = 0; j < planetHeight; j++) {
                 MapLocation loc = new MapLocation(Planet.Earth,i,j);
                 totalCarbs += map.initialKarboniteAt(loc);
             }
         }
         return totalCarbs;
     }
-    public Stack<MapLocation> genShortestRouteBFS(MapLocation start, MapLocation end){
-        BitSet[] visited = new BitSet[planetSize];
-        for (int i = 0; i < planetSize; i++) {
-            BitSet set = new BitSet(planetSize);
+    /*public Stack<MapLocation> genShortestRouteBFS(MapLocation start, MapLocation end){
+        BitSet[] visited = new BitSet[planetHeight];
+        for (int i = 0; i < planetHeight; i++) {
+            BitSet set = new BitSet(planetHeight);
             visited[i] = set;
         }
-        MapLocation[][] from = new MapLocation[planetSize][planetSize];
+        MapLocation[][] from = new MapLocation[planetHeight][planetHeight];
         ArrayDeque<MapLocation> toCheck = new ArrayDeque<MapLocation>();
         toCheck.addLast(start);
         recordFrom(start,start,from);
@@ -187,7 +204,7 @@ public class Path {
         else {
             return generateStack(from,end);
         }
-    }
+    }*/
     private boolean shouldBeCheckedLater(MapLocation a, BitSet[] checked){
         return(a != null && map.onMap(a) && !checked[a.getY()].get(a.getX()) && map.isPassableTerrainAt(a) == 1);
     }

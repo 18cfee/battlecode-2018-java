@@ -23,7 +23,7 @@ public class RangersTargetNextUnit extends Fighter{
             }
         }
         // disallows a longer trail of soldiers on bigger maps
-        if(index < p.planetSize/2){
+        if(index < (p.planetHeight + p.planetWidth)/2){
             base = baseDef;
             baseHill = baseHillDef;
         } else if(seesEnemy == false && indexEnemy != 0 && groupTargetCooldown == 0){
@@ -39,7 +39,7 @@ public class RangersTargetNextUnit extends Fighter{
             seesEnemy = false;
         }
         moveToTarget(baseHill);
-        //shootAtSomething();
+        shootAtSomething();
         indexShooters = 0;
         indexEnemy = 0;
         movableIndex = 0;
