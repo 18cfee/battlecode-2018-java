@@ -19,13 +19,11 @@ public class Path {
     public int[][] numsDirections = {{0,1},{1,1},{1,0},{1,-1},{0,-1},{-1,-1},{-1,0},{-1,1}};
     BitSet[] passable;
     MapLocation startLoc;
-    int[] factories = new int[10];
     int unbuiltFactIndex = 0;
     public final static int MAX_NUM_FACTS = 20;
     public int builtFactIndex = 0;
     public int [] builtFactary = new int [MAX_NUM_FACTS];
     public final static int NUM_FACTORIES_WANTED = 2;
-    int factIndex = 0;
     int rocketIndex = 0;
     int[] rockets = new int[10];
     public MapLocation baseLoc = null;
@@ -51,13 +49,10 @@ public class Path {
         }
         random = new Random();
         random.setSeed(724);
-        System.out.println("made it to Path");
         map = gc.startingMap(planet);
         planetHeight = (int) map.getHeight();
         planetWidth = (int) map.getWidth();
         directions = Direction.values();
-        //todo the following code was making an infinite loop on bfs possibly
-        // remove the direction none
         Direction[] temp = Direction.values();
         directions = new Direction[8];
         for (int i = 0; i < directions.length; i++) {
