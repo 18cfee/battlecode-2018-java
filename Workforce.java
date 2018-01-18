@@ -9,6 +9,7 @@ public class Workforce{
     int groupIndex = 0;
     boolean canBuildRocket = false;
     MapLocation closestKarbDepot = null;
+    int numWorkers = 0;
 
     public Workforce(GameController gc, Path p) {
         this.gc = gc;
@@ -21,10 +22,11 @@ public class Workforce{
         if(groupIndex == 0){
             createGroup();
         }
+        numWorkers = idleIndex;
         while(idleIndex > 0){
             workerGroups[0].add(idle[--idleIndex]);
         }
-        if(gc.round() == 1){
+        if(gc.round() == 1 || numWorkers < 10){
             workerGroups[0].replicate();
         }else {
             System.out.println("built: " + p.builtFactIndex);
@@ -63,19 +65,26 @@ public class Workforce{
             System.out.println("They do! But is there a karbLocs?");
 
             if(closestKarbDepot == null || gc.karboniteAt(closestKarbDepot) == 0) {
-                if (p.closestKarbLocs.peek() != null) {
-                    System.out.println("A new spot was found: " + p.closestKarbLocs.peek().toMapLocation().toString());
-                    if(gc.canSenseLocation(p.closestKarbLocs.peek().toMapLocation())) {
-                        System.out.println("Amount of karbs at location = " + gc.karboniteAt(p.closestKarbLocs.peek().toMapLocation()));
-                    }else{
-                        System.out.println("But we can't see it from here");
+                boolean viable = false;
+                while (!viable && !p.closestKarbLocs.isEmpty()) {
+                    if (p.closestKarbLocs.peek() != null || gc.karboniteAt(p.closestKarbLocs.peek().toMapLocation()) == 0) {
+                        viable = true;
+                        System.out.println("A new spot was found: " + p.closestKarbLocs.peek().toMapLocation().toString());
+
+                        if (gc.canSenseLocation(p.closestKarbLocs.peek().toMapLocation())) {
+                            System.out.println("Amount of karbs at location = " + gc.karboniteAt(p.closestKarbLocs.peek().toMapLocation()));
+                        } else {
+                            System.out.println("But we can't see it from here");
+                        }
+                        MapLocation newLoc = p.closestKarbLocs.pop().toMapLocation();
+
+                        short[][] hill = p.generateHill(newLoc);
+                        workerGroups[0].changeToTargetMap(hill);
+                        workerGroups[0].setHarvestPoint(newLoc);
+                        System.out.println("There was!");
                     }
-                    MapLocation newLoc = p.closestKarbLocs.pop().toMapLocation();
-                    short[][] hill = p.generateHill(newLoc);
-                    workerGroups[0].changeToTargetMap(hill);
-                    workerGroups[0].setHarvestPoint(newLoc);
-                    System.out.println("There was!");
-                } else {
+                }
+                if(!viable){
                     System.out.println("All out of karbonite on this planet");
                 }
             }
