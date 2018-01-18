@@ -58,7 +58,7 @@ public class MPQ {
         pq[j] = temp;
     }
 
-    private boolean isEmpty(){
+    public boolean isEmpty(){
         return n == 0;
     }
 }
