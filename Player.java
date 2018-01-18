@@ -17,6 +17,8 @@ public class Player {
         Army sprint = new Army(gc,p);
         Workforce workforce = new Workforce(gc, p);
         Fighter mars = new Fighter(gc,p);
+        ArrayList<Group> newlist = new ArrayList<>();
+        newlist.add(mars);
         int count = 0;
         while (true) {
             try {
