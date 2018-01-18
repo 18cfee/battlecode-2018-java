@@ -75,7 +75,6 @@ class Wall{
         growTargetWall();
     }
     public void growTargetWall(){
-        if(targetNumFromBase > maxWallSize) return;
         ArrayDeque<MapLoc> newWall = new ArrayDeque<MapLoc>();
         HashSet<MapLoc> alreadyChecked = new HashSet<>();
         targetNumFromBase++;
@@ -131,6 +130,7 @@ class Wall{
         // todo smaller versions need to know if a path was found
     }
     public int percentCoverageOfWall(){
+        if(targetNumFromBase > maxWallSize) return 0;
         ArrayDeque<MapLoc> cloneWall = curWall.clone();
         int size = 0;
         int covered = 0;

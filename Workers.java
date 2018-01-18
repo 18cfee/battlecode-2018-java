@@ -68,21 +68,15 @@ public class Workers extends Group{
     }
     @Override
     public void conductTurn() throws Exception{
-        System.out.println("carb: " + gc.karbonite());
-        System.out.println("Worker turn conducting");
         if(state == WorkerStates.Build) {
             for (int i = 0; i < index; i++) {
                 if (p.builtFactIndex == p.NUM_FACTORIES_WANTED) {
-                    System.out.println("Factory complete");
                     if (p.rocketIndex > 0) {
-                        System.out.println("About to continue building a rocket");
                         contBuilding(UnitType.Rocket);
                     } else {
-                        System.out.println("Nothing to build");
                         setState(WorkerStates.GatherKarbonite);
                     }
                 } else {
-                    System.out.println("About to continue to build factory");
                     contBuilding(UnitType.Factory);
                 }
 
@@ -110,9 +104,7 @@ public class Workers extends Group{
     }
     void contBuilding(UnitType type){
         if(type == UnitType.Factory) {
-            System.out.println("UnbuiltIndex = " + p.unbuiltFactIndex);
             if (p.unbuiltFactIndex != 0) {
-                System.out.println("trying to build fact");
                 for (int i = 0; i < index; i++) {
                     if (gc.canBuild(ids[i], factBlueId)) {
                         gc.build(ids[i], factBlueId);
@@ -120,11 +112,9 @@ public class Workers extends Group{
                 }
             }
         }else{
-            System.out.println("Unbuilt rockets: " + p.rocketIndex);
             System.out.println();
             if(p.rocketIndex != 0){
                 for(int i = 0; i < index; i++){
-                    System.out.println("worker " + ids[i] + " trying to build " + rocketBlueId);
                     if(gc.canBuild(ids[i], rocketBlueId)){
                         gc.build(ids[i], rocketBlueId);
                     }

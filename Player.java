@@ -16,6 +16,7 @@ public class Player {
         workers.setState(WorkerStates.Replicate);
         Army sprint = new Army(gc,p);
         Workforce workforce = new Workforce(gc, p);
+        Fighter mars = new Fighter(gc,p);
         int count = 0;
         while (true) {
             try {
@@ -26,6 +27,9 @@ public class Player {
                     gc.queueResearch(UnitType.Knight);
                 }
                 if (gc.planet() != Planet.Earth) {
+                    VecUnit units = gc.units();
+                    Team myTeam = gc.team();
+                    
                 } else {
                     System.out.println();
                     System.out.println("Current round: " + gc.round() + " bugs: "+ count);
