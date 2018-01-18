@@ -63,25 +63,35 @@ public class Workforce{
         System.out.println("Do the workers want to gather?");
         if(workerGroups[0].getState() == WorkerStates.GatherKarbonite){
             System.out.println("They do! But is there a karbLocs?");
-
+            System.out.println("PQ says there are " + p.closestKarbLocs.getSize() + " deposits left");
             if(closestKarbDepot == null || gc.karboniteAt(closestKarbDepot) == 0) {
                 boolean viable = false;
                 while (!viable && !p.closestKarbLocs.isEmpty()) {
-                    if (p.closestKarbLocs.peek() != null || gc.karboniteAt(p.closestKarbLocs.peek().toMapLocation()) == 0) {
-                        viable = true;
-                        System.out.println("A new spot was found: " + p.closestKarbLocs.peek().toMapLocation().toString());
+                    MapLocation newLoc = p.closestKarbLocs.pop().toMapLocation();
+                    System.out.println("PQ says there are " + p.closestKarbLocs.getSize() + " deposits left");
+                    if(gc.canSenseLocation(newLoc)) {
+                        if (newLoc != null && gc.karboniteAt(newLoc) != 0) {
+                            viable = true;
+                            System.out.println("A new spot was found: " + p.closestKarbLocs.peek().toMapLocation().toString());
 
-                        if (gc.canSenseLocation(p.closestKarbLocs.peek().toMapLocation())) {
-                            System.out.println("Amount of karbs at location = " + gc.karboniteAt(p.closestKarbLocs.peek().toMapLocation()));
+                            if (gc.canSenseLocation(p.closestKarbLocs.peek().toMapLocation())) {
+                                System.out.println("Amount of karbs at location = " + gc.karboniteAt(p.closestKarbLocs.peek().toMapLocation()));
+                            } else {
+                                System.out.println("But we can't see it from here");
+                            }
+
+                            short[][] hill = p.generateHill(newLoc);
+                            workerGroups[0].changeToTargetMap(hill);
+                            workerGroups[0].setHarvestPoint(newLoc);
+                            System.out.println("There was!");
                         } else {
-                            System.out.println("But we can't see it from here");
+                            System.out.println("No spot here!");
                         }
-                        MapLocation newLoc = p.closestKarbLocs.pop().toMapLocation();
-
+                    }else{
+                        System.out.println("Too far away, moving closer");
                         short[][] hill = p.generateHill(newLoc);
                         workerGroups[0].changeToTargetMap(hill);
                         workerGroups[0].setHarvestPoint(newLoc);
-                        System.out.println("There was!");
                     }
                 }
                 if(!viable){

@@ -5,6 +5,7 @@ public class MPQ {
 
     MapLoc[] pq;
     int n = 0;
+
     public MPQ(int size){
         pq = new MapLoc[size];
     }
@@ -60,5 +61,9 @@ public class MPQ {
 
     public boolean isEmpty(){
         return n == 0;
+    }
+
+    public int getSize(){
+        return n;
     }
 }
