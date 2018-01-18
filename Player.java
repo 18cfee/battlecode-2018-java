@@ -29,7 +29,29 @@ public class Player {
                 if (gc.planet() != Planet.Earth) {
                     VecUnit units = gc.units();
                     Team myTeam = gc.team();
-                    
+                    for (int i = 0; i < units.size(); i++) {
+                        Unit unit = units.get(i);
+                        Location loc = unit.location();
+                        int id = unit.id();
+                        if(loc.isInGarrison() || loc.isInSpace()){ // do nothing with unit
+                        } else if(unit.team() != myTeam){
+                            mars.addEnemy(id);
+                        } else if (unit.unitType() == UnitType.Worker) {
+                            workforce.addWorker(id);
+                        } else if (unit.unitType() == UnitType.Factory) {
+                            if(unit.structureIsBuilt() == 1){
+                                sprint.addFact(unit);
+                            }
+                        } else if (unit.unitType() == UnitType.Rocket) {
+                            Direction random = p.getRandDirection();
+                            if(gc.canUnload(unit.id(),random)){
+                                gc.unload(unit.id(),random);
+                            }
+                        }else{
+                            mars.add(id);
+                        }
+                    }
+                    mars.conductTurn();
                 } else {
                     System.out.println();
                     System.out.println("Current round: " + gc.round() + " bugs: "+ count);
