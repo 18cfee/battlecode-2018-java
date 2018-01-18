@@ -29,6 +29,9 @@ public class Path {
     public MapLocation placeToLandOnMars;
     public long totalKarbOnEarth;
     public ArrayList<MapLoc> karbLocs;
+    public MPQ closestKarbLocs;
+    private int numKarbLocs = 0;
+
     public Path(GameController gc,Planet planet){
         this.planet = planet;
         this.gc = gc;
@@ -168,10 +171,23 @@ public class Path {
                 long karbATLoc = map.initialKarboniteAt(loc);
                 if(karbATLoc > 0){
                     totalCarbs += karbATLoc;
-                    MapLoc karbLoc = new MapLoc(loc);
+                    MapLoc karbLoc;
+                    if(startLoc != null) {
+                        karbLoc = new MapLoc(planet, loc, startLoc);
+                    }else{
+                        karbLoc = new MapLoc(loc);
+                    }
                     karbLocs.add(karbLoc);
+                    numKarbLocs++;
                 }
             }
+        }
+        System.out.println("Starting the pq");
+        System.out.println("There are " + numKarbLocs + " karbonite locations on this planet!");
+        closestKarbLocs = new MPQ(numKarbLocs+1);
+        for(MapLoc loc : karbLocs){
+            closestKarbLocs.insert(loc);
+            System.out.println("New loc added to pq!");
         }
         return totalCarbs;
     }

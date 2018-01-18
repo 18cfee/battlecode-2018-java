@@ -7,10 +7,11 @@ public class Workers extends Group{
     int builtRocketIndex = 0;
     int[] unbuiltRocket = new int[5];
     int[] builtRocket = new int[10];
+    MapLocation harvestPoint = null;
 
     GameController gc;
     Path p;
-    public WorkerStates state;
+    public WorkerStates state = WorkerStates.DefaultState;
 
     public Workers(GameController gc, Path p){
         super(gc, p);
@@ -20,21 +21,21 @@ public class Workers extends Group{
 
     public void addRocket(Unit rocket){
         if(rocket.structureIsBuilt() == 1){
-            System.out.println("a rocket is built");
+            //System.out.println("a rocket is built");
             builtRocket[builtRocketIndex++] = rocket.id();
         }else{
-            System.out.println("There is an unfinished rocket");
+            //System.out.println("There is an unfinished rocket");
             unbuiltRocket[unbuiltRocketIndex++] = rocket.id();
         }
     }
 
 
     public MapLocation setBlueprint(UnitType type){
-        System.out.println("This kind: " + type);
+        //System.out.println("This kind: " + type);
         Direction rand = p.getRandDirection();
         System.out.println(rand);
         for(int i = 0; i <= index; i++){
-            System.out.println("Trying to find blueprint loc, worker attempting: " + ids[i]);
+            //System.out.println("Trying to find blueprint loc, worker attempting: " + ids[i]);
             if(gc.canBlueprint(ids[i], type, rand)){
                 state = WorkerStates.Build;
                 System.out.println("I found a spot to place it");
@@ -68,6 +69,8 @@ public class Workers extends Group{
     }
     @Override
     public void conductTurn() throws Exception{
+        //System.out.println("Total karb: " + gc.karbonite());
+        System.out.println("Worker turn conducting");
         if(state == WorkerStates.Build) {
             for (int i = 0; i < index; i++) {
                 if (p.builtFactIndex == p.NUM_FACTORIES_WANTED) {
@@ -82,7 +85,10 @@ public class Workers extends Group{
 
             }
         }else if(state == WorkerStates.GatherKarbonite){
-            for(int i = 0; i < index; i++){
+            System.out.println("About to gather karbonite");
+            if(harvestPoint != null) {
+                System.out.println("There is a karbonite loc");
+                gatherKarbonite();
             }
         }
 
@@ -112,15 +118,30 @@ public class Workers extends Group{
                 }
             }
         }else{
+            //System.out.println("Unbuilt rockets: " + p.rocketIndex);
             System.out.println();
             if(p.rocketIndex != 0){
                 for(int i = 0; i < index; i++){
+                    //System.out.println("Trying to work on the rocket: " + rocketBlueId);
                     if(gc.canBuild(ids[i], rocketBlueId)){
                         gc.build(ids[i], rocketBlueId);
                     }
                 }
             }
         }
+    }
+
+    void gatherKarbonite(){
+        for(int i = 0; i < index; i++){
+            if(gc.canHarvest(ids[i], gc.unit(ids[i]).location().mapLocation().directionTo(harvestPoint))){
+                System.out.println("Karbonite harvested!");
+                gc.harvest(ids[i], gc.unit(ids[i]).location().mapLocation().directionTo(harvestPoint));
+            }
+        }
+    }
+
+    public void setHarvestPoint(MapLocation harvestPoint) {
+        this.harvestPoint = harvestPoint;
     }
 
     public WorkerStates getState(){

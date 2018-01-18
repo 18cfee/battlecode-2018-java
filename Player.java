@@ -57,6 +57,7 @@ public class Player {
                 } else {
                     System.out.println();
                     System.out.println("Current round: " + gc.round() + " bugs: "+ count);
+                    System.out.println("Current karb count: " + gc.karbonite());
                     System.out.println(workers.state);
                     //Place Units into their groups
                     VecUnit units = gc.units();
@@ -83,10 +84,13 @@ public class Player {
                                 sprint.addFact(unit);
                             }
                         } else if (unit.unitType() == UnitType.Rocket) {
-                            if(unit.structureIsBuilt() != 0){
+                            if(unit.structureIsBuilt() == 1){
+                                System.out.println("The rocket is already built");
                                 sprint.addRocket(unit);
+                                workforce.addRocket(unit);
                             } else {
-                                System.out.println("un built rocket");
+                                System.out.println("The rocket isn't built yet");
+                                workforce.addRocket(unit);
                             }
                         }else{
                             sprint.addUnit(id);
@@ -97,8 +101,6 @@ public class Player {
                     workers.resetWorkerIndexCount();
                     //this is here because multiple classes rely on it
                     p.builtFactIndex = 0;
-                    // here is a section to start doing research
-                    //todo
                 }
             } catch (Exception e){
                 // todo set indexes to 0 in here
