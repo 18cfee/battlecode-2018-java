@@ -1,4 +1,5 @@
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 public class MPQ {
 
@@ -14,6 +15,7 @@ public class MPQ {
     }
 
     public MapLoc pop(){
+        if(isEmpty()) throw new NoSuchElementException("Out of locations to harvest");
         MapLoc min = pq[1];
         exchange(1, n--);
         sink(1);
@@ -21,34 +23,42 @@ public class MPQ {
         return min;
     }
 
-    private void swim(int val){
-        while(val > 1 && greater(val/2, val)){
-            exchange(val, val/2);
-            val = val/2;
+    private void swim(int i){
+        while(i > 1 && greater(i/2, i)){
+            exchange(i, i/2);
+            i = i/2;
         }
     }
 
-    private void sink(int val){
-        while(2*val <= n){
-            int i = 2*val;
-            if(i < n && greater(i, i+1)){
-                i++;
+    public MapLoc peek(){
+        return pq[1];
+    }
+
+    private void sink(int i){
+        while(2*i <= n){
+            int j = 2*i;
+            if(j < n && greater(j, j+1)){
+                j++;
             }
-            if(!greater(val, i)){
+            if(!greater(i, j)){
                 break;
             }
-            exchange(val, i);
-            val = i;
+            exchange(i, j);
+            i = j;
         }
     }
 
-    private boolean greater(int val1, int val2){
-        return pq[val1].distanceToBase > pq[val2].distanceToBase;
+    private boolean greater(int i, int j){
+        return pq[i].distanceToBase > pq[j].distanceToBase;
     }
 
-    private void exchange(int val1, int val2){
-        MapLoc temp = pq[val1];
-        pq[val1] = pq[val2];
-        pq[val2] = temp;
+    private void exchange(int i, int j){
+        MapLoc temp = pq[i];
+        pq[i] = pq[j];
+        pq[j] = temp;
+    }
+
+    private boolean isEmpty(){
+        return n == 0;
     }
 }

@@ -21,21 +21,21 @@ public class Workers extends Group{
 
     public void addRocket(Unit rocket){
         if(rocket.structureIsBuilt() == 1){
-            System.out.println("a rocket is built");
+            //System.out.println("a rocket is built");
             builtRocket[builtRocketIndex++] = rocket.id();
         }else{
-            System.out.println("There is an unfinished rocket");
+            //System.out.println("There is an unfinished rocket");
             unbuiltRocket[unbuiltRocketIndex++] = rocket.id();
         }
     }
 
 
     public MapLocation setBlueprint(UnitType type){
-        System.out.println("This kind: " + type);
+        //System.out.println("This kind: " + type);
         Direction rand = p.getRandDirection();
         System.out.println(rand);
         for(int i = 0; i <= index; i++){
-            System.out.println("Trying to find blueprint loc, worker attempting: " + ids[i]);
+            //System.out.println("Trying to find blueprint loc, worker attempting: " + ids[i]);
             if(gc.canBlueprint(ids[i], type, rand)){
                 state = WorkerStates.Build;
                 System.out.println("I found a spot to place it");
@@ -69,21 +69,21 @@ public class Workers extends Group{
     }
     @Override
     public void conductTurn() throws Exception{
-        System.out.println("carb: " + gc.karbonite());
+        //System.out.println("Total karb: " + gc.karbonite());
         System.out.println("Worker turn conducting");
         if(state == WorkerStates.Build) {
             for (int i = 0; i < index; i++) {
                 if (p.builtFactIndex == p.NUM_FACTORIES_WANTED) {
-                    System.out.println("Factory complete");
-                    if (p.rocketIndex > 0) {
-                        System.out.println("About to continue building a rocket");
+                    //System.out.println("Factory complete");
+                    if (unbuiltRocketIndex > 0) {
+                        //System.out.println("About to continue building a rocket");
                         contBuilding(UnitType.Rocket);
                     } else {
-                        System.out.println("Nothing to build");
+                        //System.out.println("Nothing to build");
                         setState(WorkerStates.GatherKarbonite);
                     }
                 } else {
-                    System.out.println("About to continue to build factory");
+                    //System.out.println("About to continue to build factory");
                     contBuilding(UnitType.Factory);
                 }
 
@@ -114,7 +114,7 @@ public class Workers extends Group{
     }
     void contBuilding(UnitType type){
         if(type == UnitType.Factory) {
-            System.out.println("UnbuiltIndex = " + p.unbuiltFactIndex);
+            //System.out.println("UnbuiltIndex = " + p.unbuiltFactIndex);
             if (p.unbuiltFactIndex != 0) {
                 for (int i = 0; i < index; i++) {
                     if (gc.canBuild(ids[i], factBlueId)) {
@@ -123,14 +123,14 @@ public class Workers extends Group{
                 }
             }
         }else{
-            System.out.println("Unbuilt rockets: " + p.rocketIndex);
+            //System.out.println("Unbuilt rockets: " + p.rocketIndex);
             System.out.println();
             if(p.rocketIndex != 0){
                 for(int i = 0; i < index; i++){
-                    System.out.println("Trying to work on the rocket: " + rocketBlueId);
+                    //System.out.println("Trying to work on the rocket: " + rocketBlueId);
                     if(gc.canBuild(ids[i], rocketBlueId)){
                         gc.build(ids[i], rocketBlueId);
-                        System.out.println("Worked on the rocket");
+                        //System.out.println("Worked on the rocket");
                     }
                 }
             }
@@ -140,6 +140,7 @@ public class Workers extends Group{
     void gatherKarbonite(){
         for(int i = 0; i < index; i++){
             if(gc.canHarvest(ids[i], gc.unit(ids[i]).location().mapLocation().directionTo(harvestPoint))){
+                System.out.println("Karbonite harvested!");
                 gc.harvest(ids[i], gc.unit(ids[i]).location().mapLocation().directionTo(harvestPoint));
             }
         }

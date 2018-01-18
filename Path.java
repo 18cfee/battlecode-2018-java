@@ -30,7 +30,7 @@ public class Path {
     public long totalKarbOnEarth;
     public ArrayList<MapLoc> karbLocs;
     public MPQ closestKarbLocs;
-    int numKarbLocs = 0;
+    private int numKarbLocs = 0;
 
     public Path(GameController gc,Planet planet){
         this.planet = planet;
@@ -171,7 +171,7 @@ public class Path {
                     totalCarbs += karbATLoc;
                     MapLoc karbLoc;
                     if(startLoc != null) {
-                        karbLoc = new MapLoc(loc, startLoc);
+                        karbLoc = new MapLoc(planet, loc, startLoc);
                     }else{
                         karbLoc = new MapLoc(loc);
                     }
@@ -181,6 +181,7 @@ public class Path {
             }
         }
         System.out.println("Starting the pq");
+        System.out.println("There are " + numKarbLocs + " karbonite locations on this planet!");
         closestKarbLocs = new MPQ(numKarbLocs+1);
         for(MapLoc loc : karbLocs){
             closestKarbLocs.insert(loc);
