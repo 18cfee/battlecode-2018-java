@@ -40,7 +40,7 @@ public class Fighter extends Group {
         index = 0;
     }
     public void shootAtSomething ()throws Exception{
-        if(noEnemies()) return;
+        if(noEnemies()) return; // not just for efficiency
         for (int i = 0; i < indexShooters; i++) {
             for (Enemy enemy: enemies) {
                 if(gc.canAttack(canShoot[i],enemy.id)){
