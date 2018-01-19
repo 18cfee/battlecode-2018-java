@@ -196,16 +196,16 @@ public class Path {
     public long calculateTotalKarbOnEarth() {
         karbLocs = new ArrayList<>();
         long totalCarbs = 0;
-        for (int i = 0; i < planetWidth; i++) {
-            for (int j = 0; j < planetHeight; j++) {
-                MapLocation loc = new MapLocation(planet,i,j);
+        for (int x = 0; x < planetWidth; x++) {
+            for (int y = 0; y < planetHeight; y++) {
+                MapLocation loc = new MapLocation(planet,x,y);
 
                 long karbATLoc = map.initialKarboniteAt(loc);
                 if(karbATLoc > 0){
                     totalCarbs += karbATLoc;
                     MapLoc karbLoc;
                     if(baseLoc != null) {
-                        karbLoc = new MapLoc(planet, loc, baseLoc);
+                        karbLoc = new MapLoc(planet, loc, hillToBase[x][y]);
                     }else{
                         karbLoc = new MapLoc(loc);
                     }
