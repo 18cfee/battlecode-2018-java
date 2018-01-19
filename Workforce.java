@@ -72,14 +72,14 @@ public class Workforce{
                     if(gc.canSenseLocation(newLoc)) {
                         if (newLoc != null && gc.karboniteAt(newLoc) != 0) {
                             viable = true;
-                            //todo I got a null pointer on the following line for your info jase
+                            //todo I got a null pointer on the following line for your info jase I think it was cause of the peek code use when the Q was empty
                             //System.out.println("A new spot was found: " + p.closestKarbLocs.peek().toMapLocation().toString());
-
-                            if (gc.canSenseLocation(p.closestKarbLocs.peek().toMapLocation())) {
-                                System.out.println("Amount of karbs at location = " + gc.karboniteAt(p.closestKarbLocs.peek().toMapLocation()));
-                            } else {
-                                System.out.println("But we can't see it from here");
-                            }
+//
+//                            if (gc.canSenseLocation(p.closestKarbLocs.peek().toMapLocation())) {
+//                                System.out.println("Amount of karbs at location = " + gc.karboniteAt(p.closestKarbLocs.peek().toMapLocation()));
+//                            } else {
+//                                System.out.println("But we can't see it from here");
+//                            }
 
                             short[][] hill = p.generateHill(newLoc);
                             workerGroups[0].changeToTargetMap(hill);
