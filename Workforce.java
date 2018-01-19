@@ -72,7 +72,8 @@ public class Workforce{
                     if(gc.canSenseLocation(newLoc)) {
                         if (newLoc != null && gc.karboniteAt(newLoc) != 0) {
                             viable = true;
-                            System.out.println("A new spot was found: " + p.closestKarbLocs.peek().toMapLocation().toString());
+                            //todo I got a null pointer on the following line for your info jase
+                            //System.out.println("A new spot was found: " + p.closestKarbLocs.peek().toMapLocation().toString());
 
                             if (gc.canSenseLocation(p.closestKarbLocs.peek().toMapLocation())) {
                                 System.out.println("Amount of karbs at location = " + gc.karboniteAt(p.closestKarbLocs.peek().toMapLocation()));

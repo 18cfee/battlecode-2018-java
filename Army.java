@@ -58,12 +58,23 @@ public class Army {
         UnitType production = UnitType.Ranger;
         Direction random = p.getRandDirection();
         for (int i = 0; i < p.builtFactIndex; i++) {
+            int factId = p.builtFactary[i];
             System.out.println("Num in garrison: " + gc.unit(p.builtFactary[i]).structureGarrison().size());
-            if(gc.canProduceRobot(p.builtFactary[i],production)){
-                gc.produceRobot(p.builtFactary[i],production);
+            if(gc.canProduceRobot(factId,production)){
+                gc.produceRobot(factId,production);
             }
-            if(gc.canUnload(p.builtFactary[i],random) ){ // && !gc.hasUnitAtLocation(gc.unit(builtFactary[i]).location().mapLocation().add(random))
-                gc.unload(p.builtFactary[i],random);
+            if(gc.unit(factId).structureGarrison().size() > 0){
+                tryToUnloadInAlDirections(factId);
+            }
+        }
+    }
+
+    private void tryToUnloadInAlDirections(int id){
+        int num = p.random.nextInt(8);
+        for (int i = 0; i < 8; i++) {
+            Direction dir = p.directions[(i+num)%8];
+            if(gc.canUnload(id,dir)){
+                gc.unload(id,dir);
             }
         }
     }

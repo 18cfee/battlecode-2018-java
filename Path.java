@@ -8,7 +8,7 @@ public class Path {
     int planetHeight;
     int planetWidth;
     public Direction[] directions;
-    private Random random;
+    public Random random;
     public MapLocation closestStartLocation;
     Planet planet;
     public final static short greatestPathNum = 3000;
