@@ -85,10 +85,10 @@ public class Player {
                             if(unit.structureIsBuilt() == 1){
                                 System.out.println("The rocket is already built");
                                 sprint.addRocket(unit);
-                                workforce.addRocket(unit);
+                                //workforce.addRocket(unit);
                             } else {
                                 System.out.println("The rocket isn't built yet");
-                                workforce.addRocket(unit);
+                                //workforce.addRocket(unit);
                             }
                         }else{
                             sprint.addUnit(id);

@@ -111,9 +111,9 @@ public class Workforce{
     }
 
 
-    public void addRocket(Unit unit){
-        workerGroups[0].addRocket(unit);
-    }
+//    public void addRocket(Unit unit){
+//        workerGroups[0].addRocket(unit);
+//    }
 
     public void createGroup(){
         workerGroups[groupIndex] = new Workers(gc, p);

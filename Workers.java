@@ -3,10 +3,9 @@ import bc.*;
 public class Workers extends Group{
     int factBlueId = -1;
     int rocketBlueId = -1;
-    int unbuiltRocketIndex = 0;
-    int builtRocketIndex = 0;
-    int[] unbuiltRocket = new int[5];
-    int[] builtRocket = new int[10];
+//    int unbuiltRocketIndex = 0;
+//    int builtRocketIndex = 0;
+//    int[] unbuiltRocket = new int[5];
     MapLocation harvestPoint = null;
 
     GameController gc;
@@ -19,15 +18,15 @@ public class Workers extends Group{
         this.p = p;
     }
 
-    public void addRocket(Unit rocket){
-        if(rocket.structureIsBuilt() == 1){
-            //System.out.println("a rocket is built");
-            builtRocket[builtRocketIndex++] = rocket.id();
-        }else{
-            //System.out.println("There is an unfinished rocket");
-            unbuiltRocket[unbuiltRocketIndex++] = rocket.id();
-        }
-    }
+//    public void addRocket(Unit rocket){
+//        if(rocket.structureIsBuilt() == 1){
+//            //System.out.println("a rocket is built");
+//            builtRocket[builtRocketIndex++] = rocket.id();
+//        }else{
+//            //System.out.println("There is an unfinished rocket");
+//            unbuiltRocket[unbuiltRocketIndex++] = rocket.id();
+//        }
+//    }
 
 
     public MapLocation setBlueprint(UnitType type){
@@ -48,7 +47,7 @@ public class Workers extends Group{
                         return units.get(j).location().mapLocation();
                     } else if(units.get(j).structureIsBuilt() == 0 && type == UnitType.Rocket){
                         rocketBlueId = units.get(j).id();
-                        unbuiltRocketIndex++;
+//                        unbuiltRocketIndex++;
                         System.out.println("Rocker blueprint set: ID " + rocketBlueId);
                         return units.get(j).location().mapLocation();
                     }
@@ -105,8 +104,8 @@ public class Workers extends Group{
 
     void resetWorkerIndexCount(){
         index = 0;
-        builtRocketIndex = 0;
-        unbuiltRocketIndex = 0;
+//        builtRocketIndex = 0;
+//        unbuiltRocketIndex = 0;
     }
     void contBuilding(UnitType type) throws Exception{
         if(type == UnitType.Factory) {
