@@ -9,6 +9,3 @@ public class BasicUnit {
     }
 }
 
-enum types {
-    Factory, Ranger, Worker, Rocket;
-}

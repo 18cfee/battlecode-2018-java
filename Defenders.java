@@ -1,11 +1,9 @@
-import bc.Direction;
 import bc.GameController;
 import bc.MapLocation;
 
 import java.util.ArrayDeque;
 import java.util.BitSet;
 import java.util.HashSet;
-import java.util.Stack;
 
 public class Defenders extends Fighter {
     Defenders(GameController gc, Path p){
@@ -36,7 +34,6 @@ public class Defenders extends Fighter {
 
         shootAtSomething();
         indexShooters = 0;
-        indexEnemy = 0;
         movableIndex = 0;
         index = 0;
     }

@@ -39,9 +39,9 @@ public class Army {
         }
         size++;
     }
-    public void addEnemyUnit(int id){
-        carlsRangers.addEnemy(id);
-        baseProtection.addEnemy(id);
+    public void addEnemyUnit(Unit unit){
+        carlsRangers.addEnemy(unit);
+        baseProtection.addEnemy(unit);
     }
 //    public void distributeFactories(){
 //        p.currentBuiltFactories.retainAll(tempFactories);
@@ -57,6 +57,7 @@ public class Army {
             p.currentBuiltFactories = new HashSet<>();
         }
         int id = fact.id();
+        System.out.println("there just was " + tempOldFactories.size() + " factories");
         if(tempOldFactories.contains(id)){
             p.currentBuiltFactories.add(id);
         } else {
@@ -77,7 +78,12 @@ public class Army {
     }
     public void factoryProduce(){
         if(size > MAXUnits) return;
-
+        // this means no units were added so the add method was never called
+        if(armyRound != p.round){
+            armyRound = p.round;
+            tempOldFactories.clear();
+            p.currentBuiltFactories.clear();
+        }
         UnitType production = UnitType.Ranger;
         Direction random = p.getRandDirection();
         for (Integer factId: p.currentBuiltFactories) {

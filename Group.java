@@ -3,14 +3,11 @@ import bc.GameController;
 import bc.MapLocation;
 import bc.Unit;
 
-import java.util.HashMap;
-import java.util.Stack;
-
 public class Group {
-    static final int MAX_ARMY_SIZE = 100;
+    static final int DEF_ARMY_SIZE = 100;
     GameController gc;
-    int [] ids = new int[MAX_ARMY_SIZE];
-    int [] moveAbles = new int[MAX_ARMY_SIZE];
+    int [] ids = new int[DEF_ARMY_SIZE];
+    int [] moveAbles = new int[DEF_ARMY_SIZE];
     int movableIndex = 0;
     int index = 0;
     Path p;
@@ -24,7 +21,7 @@ public class Group {
         state = GenericStates.RandomMove;
     }
     public boolean add(int id) throws Exception{
-        if(index != MAX_ARMY_SIZE){
+        if(index != DEF_ARMY_SIZE){
             ids[index++] = id;
             if(gc.isMoveReady(id)){
                 moveAbles[movableIndex++] = id;

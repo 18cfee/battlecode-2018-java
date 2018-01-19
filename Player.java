@@ -37,7 +37,7 @@ public class Player {
                         int id = unit.id();
                         if(loc.isInGarrison() || loc.isInSpace()){ // do nothing with unit
                         } else if(unit.team() != myTeam){
-                            mars.addEnemy(id);
+                            mars.addEnemy(unit);
                         } else if (unit.unitType() == UnitType.Worker) {
                             workforce.addWorker(id);
                         } else if (unit.unitType() == UnitType.Factory) {
@@ -74,7 +74,7 @@ public class Player {
                         int id = unit.id();
                         if(loc.isInGarrison() || loc.isInSpace()){ // do nothing with unit
                         } else if(unit.team() != myTeam){
-                            sprint.addEnemyUnit(id);
+                            sprint.addEnemyUnit(unit);
                         } else if (unit.unitType() == UnitType.Worker) {
                             workforce.addWorker(id);
                         } else if (unit.unitType() == UnitType.Factory) {
@@ -101,6 +101,7 @@ public class Player {
             } catch (Exception e){
                 // todo set indexes to 0 in here
                 e.printStackTrace();
+                System.exit(0);
                 count++;
             }
 
