@@ -29,8 +29,8 @@ public class Workforce{
         if(gc.round() == 1 || numWorkers < 10){
             workerGroups[0].replicate();
         }else {
-            System.out.println("built: " + p.builtFactIndex);
-            System.out.println("unbuilt: " + p.getNumFactories());
+            //System.out.println("built: " + p.builtFactIndex);
+            //System.out.println("unbuilt: " + p.getNumFactories());
             if (p.unbuiltFactIndex == p.builtFactIndex && p.getNumFactories() < p.NUM_FACTORIES_WANTED) {
                 //System.out.println("There aren't any factories yet");
                 MapLocation blueLoc = workerGroups[0].setBlueprint(UnitType.Factory);
@@ -62,7 +62,7 @@ public class Workforce{
 
         System.out.println("Do the workers want to gather?");
         if(workerGroups[0].getState() == WorkerStates.GatherKarbonite){
-            System.out.println("They do! But is there a karbLocs?");
+            System.out.println("They do! But is there a karbonite deposit?");
             System.out.println("PQ says there are " + p.closestKarbLocs.getSize() + " deposits left");
             if(closestKarbDepot == null || gc.karboniteAt(closestKarbDepot) == 0) {
                 boolean viable = false;
@@ -74,8 +74,8 @@ public class Workforce{
                             viable = true;
                             System.out.println("A new spot was found: " + p.closestKarbLocs.peek().toMapLocation().toString());
 
-                            if (gc.canSenseLocation(p.closestKarbLocs.peek().toMapLocation())) {
-                                System.out.println("Amount of karbs at location = " + gc.karboniteAt(p.closestKarbLocs.peek().toMapLocation()));
+                            if (gc.canSenseLocation(newLoc)) {
+                                System.out.println("Amount of karbs at location = " + gc.karboniteAt(newLoc));
                             } else {
                                 System.out.println("But we can't see it from here");
                             }
