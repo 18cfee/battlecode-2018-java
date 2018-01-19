@@ -35,8 +35,8 @@ public class Workforce{
                 //System.out.println("There aren't any factories yet");
                 MapLocation blueLoc = workerGroups[0].setBlueprint(UnitType.Factory);
                 if (p.baseLoc == null) {
-                    p.baseLoc = blueLoc;
-                    p.hillToBase = p.generateHill(p.startLoc);
+                    //p.baseLoc = blueLoc;
+                    //p.hillToBase = p.generateHill(p.startLoc);
                 }
                 if (blueLoc != null) {
                     short[][] hill = p.generateHill(blueLoc);
