@@ -145,7 +145,6 @@ public class Workers extends Group{
         for(int i = 0; i < index; i++){
             if(gc.canHarvest(ids[i], gc.unit(ids[i]).location().mapLocation().directionTo(harvestPoint))){
                 System.out.println("Karbonite harvested! I shouldn't have moved...");
-                System.out.println("Karbonite left at location: " + gc.karboniteAt(harvestPoint));
                 gc.harvest(ids[i], gc.unit(ids[i]).location().mapLocation().directionTo(harvestPoint));
             }else{
                 System.out.println("Couldn't harvest, so I'm going to move");
