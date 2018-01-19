@@ -9,8 +9,6 @@ public class Player {
     public static void main(String args[]){
         GameController gc = new GameController();
         // Direction is a normal java enum.
-        Direction[] directions = Direction.values();
-        System.out.println("num of directions: "+ directions.length);
         Path p = new Path(gc,gc.planet());
         Workers workers = new Workers(gc,p);
         workers.setState(WorkerStates.Replicate);
@@ -22,6 +20,8 @@ public class Player {
         int count = 0;
         while (true) {
             try {
+                p.round = (int)gc.round();
+                System.out.println("Current round: " + p.round + " bugs: "+ count);
                 if(!gc.researchInfo().hasNextInQueue()){
                     gc.queueResearch(UnitType.Rocket);
                     gc.queueResearch(UnitType.Worker);
@@ -55,8 +55,6 @@ public class Player {
                     }
                     mars.conductTurn();
                 } else {
-                    System.out.println();
-                    System.out.println("Current round: " + gc.round() + " bugs: "+ count);
                     System.out.println("Current karb count: " + gc.karbonite());
                     System.out.println(workers.state);
                     //Place Units into their groups
@@ -99,8 +97,6 @@ public class Player {
                     sprint.conductTurn();
                     workforce.conductTurn();
                     workers.resetWorkerIndexCount();
-                    //this is here because multiple classes rely on it
-                    p.builtFactIndex = 0;
                 }
             } catch (Exception e){
                 // todo set indexes to 0 in here

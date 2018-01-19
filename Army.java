@@ -1,20 +1,26 @@
 import bc.*;
 
+import java.util.HashMap;
+import java.util.HashSet;
+
 public class Army {
     GameController gc;
     Path p;
     Fighter carlsRangers;
     Defenders baseProtection;
     RocketBoarders marsTroops;
+    HashSet<Integer> tempOldFactories;
     int size = 0;
     private int rocketId = -1;
     private final static int MAXUnits = 95;
+    private int armyRound = 0;
     public Army(GameController gc, Path p){
         this.gc = gc;
         this.p = p;
         carlsRangers = new RangersTargetNextUnit(gc,p);
         baseProtection = new Defenders(gc,p);
         marsTroops = new RocketBoarders(gc,p);
+        tempOldFactories = new HashSet<>();
     }
     public void conductTurn() throws Exception{
         carlsRangers.conductTurn();
@@ -37,9 +43,25 @@ public class Army {
         carlsRangers.addEnemy(id);
         baseProtection.addEnemy(id);
     }
+//    public void distributeFactories(){
+//        p.currentBuiltFactories.retainAll(tempFactories);
+//        tempFactories.remove(p.currentBuiltFactories);
+//        // for now just put all the new facotories in the builtFactories
+//
+//    }
     public void addFact(Unit fact){
-        if(p.builtFactIndex < p.MAX_NUM_FACTS){
-            p.builtFactary[p.builtFactIndex++] = fact.id();
+        // resets the temp factories every turn
+        if(armyRound != p.round){
+            armyRound = p.round;
+            tempOldFactories = p.currentBuiltFactories;
+            p.currentBuiltFactories = new HashSet<>();
+        }
+        int id = fact.id();
+        if(tempOldFactories.contains(id)){
+            p.currentBuiltFactories.add(id);
+        } else {
+            System.out.println("there is a new factory");
+            p.currentBuiltFactories.add(id);
         }
     }
     public void addRocket(Unit unit){
@@ -55,11 +77,11 @@ public class Army {
     }
     public void factoryProduce(){
         if(size > MAXUnits) return;
+
         UnitType production = UnitType.Ranger;
         Direction random = p.getRandDirection();
-        for (int i = 0; i < p.builtFactIndex; i++) {
-            int factId = p.builtFactary[i];
-            System.out.println("Num in garrison: " + gc.unit(p.builtFactary[i]).structureGarrison().size());
+        for (Integer factId: p.currentBuiltFactories) {
+            System.out.println("Num in garrison: " + gc.unit(factId).structureGarrison().size());
             if(gc.canProduceRobot(factId,production)){
                 gc.produceRobot(factId,production);
             }

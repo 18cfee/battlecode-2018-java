@@ -29,9 +29,9 @@ public class Workforce{
         if(gc.round() == 1 || numWorkers < 10){
             workerGroups[0].replicate();
         }else {
-            System.out.println("built: " + p.builtFactIndex);
+            System.out.println("built: " + p.currentBuiltFactories.size());
             System.out.println("unbuilt: " + p.getNumFactories());
-            if (p.unbuiltFactIndex == p.builtFactIndex && p.getNumFactories() < p.NUM_FACTORIES_WANTED) {
+            if (p.unbuiltFactIndex == p.currentBuiltFactories.size() && p.getNumFactories() < p.NUM_FACTORIES_WANTED) {
                 //System.out.println("There aren't any factories yet");
                 MapLocation blueLoc = workerGroups[0].setBlueprint(UnitType.Factory);
                 if (p.baseLoc == null) {

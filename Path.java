@@ -17,9 +17,10 @@ public class Path {
     BitSet[] passable;
     //MapLocation startLoc;
     int unbuiltFactIndex = 0;
-    public final static int MAX_NUM_FACTS = 20;
-    public int builtFactIndex = 0;
-    public int [] builtFactary = new int [MAX_NUM_FACTS];
+    public int round = 0;
+    //public final static int MAX_NUM_FACTS = 20;
+    //public int builtFactIndex = 0;
+    //public int [] builtFactary = new int [MAX_NUM_FACTS];
     public final static int NUM_FACTORIES_WANTED = 2;
     int rocketIndex = 0;
     int[] rockets = new int[10];
@@ -31,8 +32,9 @@ public class Path {
     public ArrayList<MapLoc> karbLocs;
     public MPQ closestKarbLocs;
     private int numKarbLocs = 0;
-
+    HashSet<Integer> currentBuiltFactories;
     public Path(GameController gc,Planet planet){
+        currentBuiltFactories = new HashSet<>(10);
         this.planet = planet;
         this.gc = gc;
         random = new Random();

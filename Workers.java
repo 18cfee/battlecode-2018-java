@@ -73,7 +73,7 @@ public class Workers extends Group{
         System.out.println("Worker turn conducting");
         if(state == WorkerStates.Build) {
             for (int i = 0; i < index; i++) {
-                if (p.builtFactIndex == p.NUM_FACTORIES_WANTED) {
+                if (p.currentBuiltFactories.size() == p.NUM_FACTORIES_WANTED) {
                     if (p.rocketIndex > 0) {
                         contBuilding(UnitType.Rocket);
                     } else {
