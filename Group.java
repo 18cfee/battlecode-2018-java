@@ -14,7 +14,7 @@ public class Group {
     Path p;
     MapLocation target;
     GenericStates state;
-    protected short[][] hill;
+    protected Hill hill;
     protected int groupRound = 0;
     Group(GameController gc, Path p){
         this.p = p;
@@ -61,9 +61,16 @@ public class Group {
     protected boolean shouldContinueRoamingRandomly(){
         return gc.round() < 100;
     }
-    protected void changeToTargetMap(short[][] hill) throws Exception{
+    protected void changeToTargetMap(Hill hill) throws Exception{
         state = GenericStates.TargetDestination;
         this.hill = hill;
+    }
+    protected void moveToTarget(Hill hill) throws Exception{
+        if(noUnits()) return;
+        for (int i = 0; i < movableIndex; i++) {
+            int id = moveAbles[i];
+            moveDownHill(id,hill);
+        }
     }
     protected void moveToTarget(short[][] hill) throws Exception{
         if(noUnits()) return;
@@ -73,6 +80,32 @@ public class Group {
         }
     }
     // calling this basically has units move to the set target
+    protected void moveDownHill(int id, Hill hill) throws Exception{
+        Unit unit = gc.unit(id);
+        MapLocation cur = unit.location().mapLocation();
+        if(hill == null) {
+            System.out.println("problem");
+            return;
+        }
+        short dirVal = hill.getGradient(cur);
+        short min = p.greatestPathNum;
+        Direction topChoice = null;
+        for (int i = 0; i < 8; i++) {
+            Direction dir = p.directions[i];
+            if(gc.canMove(id,dir)){
+                int[] dirR = p.numsDirections[i];
+                MapLocation newLoc = new MapLocation(p.planet,dirR[0]+ cur.getX(),dirR[1]+cur.getY());
+                short grad = hill.getGradient(newLoc);
+                if (grad < min) {
+                    min = grad;
+                    topChoice = dir;
+                }
+            }
+        }
+        if(topChoice != null){ //min <= dirVal
+            if(gc.isMoveReady(id)) gc.moveRobot(id,topChoice);
+        }
+    }
     protected void moveDownHill(int id, short[][] hill) throws Exception{
         Unit unit = gc.unit(id);
         MapLocation cur = unit.location().mapLocation();

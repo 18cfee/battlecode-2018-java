@@ -6,7 +6,7 @@ public class RocketBoarders extends Fighter {
         super(gc,p);
     }
     public int rocket;
-    private short[][] baseHill = null;
+    private Hill baseHill = null;
     private MapLocation base = null;
     private Wall wall;
     @Override

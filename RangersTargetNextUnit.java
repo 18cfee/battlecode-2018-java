@@ -5,9 +5,9 @@ public class RangersTargetNextUnit extends Fighter{
     RangersTargetNextUnit(GameController gc, Path p){
         super(gc,p);
     }
-    private short[][] baseHill = null;
+    private Hill baseHill = null;
     private MapLocation base = null;
-    private short[][] baseHillDef = null;
+    private Hill baseHillDef = null;
     private MapLocation baseDef = null;
     private boolean seesEnemy = false;
     private short groupTargetCooldown = 0;
@@ -21,7 +21,8 @@ public class RangersTargetNextUnit extends Fighter{
                 return;
             } else {
                 baseDef = p.baseLoc;
-                baseHillDef = p.generateHill(baseDef);
+                baseHillDef = new Hill(p);
+                baseHillDef.generateCompleteReachableHill(baseDef);
             }
         }
         // disallows a longer trail of soldiers on bigger maps
@@ -34,7 +35,7 @@ public class RangersTargetNextUnit extends Fighter{
             MapLocation target = p.getLocBetween(base,a);
             if(p.passable(target)){
                 base = target;
-                baseHill = p.generateHill(base);
+                baseHill.generateCompleteReachableHill(base);
                 groupTargetCooldown+= 50;
             }
         } else if (seesEnemy = true && enemies.size() == 0){

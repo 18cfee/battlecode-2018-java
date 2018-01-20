@@ -12,7 +12,7 @@ public class Path {
     public MapLocation closestStartLocation;
     Planet planet;
     public final static short greatestPathNum = 3000;
-    short[][] hillToBase;
+    Hill baseHill;
     public int[][] numsDirections = {{0,1},{1,1},{1,0},{1,-1},{0,-1},{-1,-1},{-1,0},{-1,1}};
     BitSet[] passable;
     //MapLocation startLoc;
@@ -24,7 +24,7 @@ public class Path {
     public final static int NUM_FACTORIES_WANTED = 2;
     int rocketIndex = 0;
     public MapLocation baseLoc = null;
-    public short[][] firstRocketLocHill = null;
+    public Hill firstRocketLocHill = null;
     public MapLocation placeToLandOnMars;
     public long totalKarbOnEarth;
     public ArrayList<MapLoc> karbLocs;
@@ -65,7 +65,8 @@ public class Path {
                 }
             }
             baseLoc = chooseBaseLocation();
-            hillToBase = generateHill(baseLoc);
+            baseHill = new Hill(this);
+            baseHill.generateCompleteReachableHill(baseLoc);
         }
         totalKarbOnEarth = calculateTotalKarbOnEarth();
     }
@@ -162,40 +163,40 @@ public class Path {
         }
         return false;
     }
-    private long functionCalled = 0;
-    private long totalTimeInFunc = 0;
-    public short[][] generateHill(MapLocation destination){
-        functionCalled++;
-        long start = System.currentTimeMillis();
-        short hill[][] = new short[planetWidth][planetHeight];
-        hill[destination.getX()][destination.getY()] = 1;
-        ArrayDeque<MapLocation> toCheck = new ArrayDeque<MapLocation>();
-        toCheck.addLast(destination);
-        while(!toCheck.isEmpty()){
-            MapLocation cur = toCheck.removeFirst();
-            short dis = hill[cur.getX()][cur.getY()];
-            for(Direction d : directions){
-                MapLocation newLoc = cur.add(d);
-                if(previouslyUncheckedMapLoc(newLoc,hill)){
-                    if(!passable(newLoc)){
-                        //mark as unreachable
-                        hill[newLoc.getX()][newLoc.getY()] = greatestPathNum;
-                    } else {
-                        toCheck.addLast(newLoc);
-                        hill[newLoc.getX()][newLoc.getY()] = (short)(dis + 1);
-                    }
-                }
-            }
-        }
-        long end = System.currentTimeMillis();
-        totalTimeInFunc+=(end - start);
-        System.out.println("asdfasdfsdfasdf milis attention " + totalTimeInFunc + " Num times called " + functionCalled);
-        // todo smaller versions need to know if a path was found
-        return hill;
-    }
-    private boolean previouslyUncheckedMapLoc(MapLocation a, short[][] hill){
-        return(map.onMap(a) && hill[a.getX()][a.getY()] == (short)0);
-    }
+//    private long functionCalled = 0;
+//    private long totalTimeInFunc = 0;
+//    public short[][] generateHill(MapLocation destination){
+//        functionCalled++;
+//        long start = System.currentTimeMillis();
+//        short hill[][] = new short[planetWidth][planetHeight];
+//        hill[destination.getX()][destination.getY()] = 1;
+//        ArrayDeque<MapLocation> toCheck = new ArrayDeque<MapLocation>();
+//        toCheck.addLast(destination);
+//        while(!toCheck.isEmpty()){
+//            MapLocation cur = toCheck.removeFirst();
+//            short dis = hill[cur.getX()][cur.getY()];
+//            for(Direction d : directions){
+//                MapLocation newLoc = cur.add(d);
+//                if(previouslyUncheckedMapLoc(newLoc,hill)){
+//                    if(!passable(newLoc)){
+//                        //mark as unreachable
+//                        hill[newLoc.getX()][newLoc.getY()] = greatestPathNum;
+//                    } else {
+//                        toCheck.addLast(newLoc);
+//                        hill[newLoc.getX()][newLoc.getY()] = (short)(dis + 1);
+//                    }
+//                }
+//            }
+//        }
+//        long end = System.currentTimeMillis();
+//        totalTimeInFunc+=(end - start);
+//        System.out.println("asdfasdfsdfasdf milis attention " + totalTimeInFunc + " Num times called " + functionCalled);
+//        // todo smaller versions need to know if a path was found
+//        return hill;
+//    }
+//    private boolean previouslyUncheckedMapLoc(MapLocation a, short[][] hill){
+//        return(map.onMap(a) && hill[a.getX()][a.getY()] == (short)0);
+//    }
     public Direction getRandDirection(){
         int a = random.nextInt(8);
         return directions[a];
@@ -206,13 +207,12 @@ public class Path {
         for (int x = 0; x < planetWidth; x++) {
             for (int y = 0; y < planetHeight; y++) {
                 MapLocation loc = new MapLocation(planet,x,y);
-
                 long karbATLoc = map.initialKarboniteAt(loc);
                 if(karbATLoc > 0){
                     totalCarbs += karbATLoc;
                     MapLoc karbLoc;
                     if(baseLoc != null) {
-                        karbLoc = new MapLoc(planet, loc, hillToBase[x][y]);
+                        karbLoc = new MapLoc(planet, loc, baseHill.getGradient(loc));
                     }else{
                         karbLoc = new MapLoc(loc);
                     }

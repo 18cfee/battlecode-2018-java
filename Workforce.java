@@ -39,7 +39,8 @@ public class Workforce{
                     //p.hillToBase = p.generateHill(p.startLoc);
                 }
                 if (blueLoc != null) {
-                    short[][] hill = p.generateHill(blueLoc);
+                    Hill hill = new Hill(p);
+                    hill.generateCompleteReachableHill(blueLoc);
                     workerGroups[0].changeToTargetMap(hill);
                     p.unbuiltFactIndex++;
                     System.out.println("num fact: " + p.getNumFactories());
@@ -52,7 +53,8 @@ public class Workforce{
             //System.out.println("Let's build a rocket!");
             MapLocation blueLoc = workerGroups[0].setBlueprint(UnitType.Rocket);
             if(blueLoc != null){
-                short[][] hill = p.generateHill(blueLoc);
+                Hill hill = new Hill(p);
+                hill.generateCompleteReachableHill(blueLoc);
                 p.firstRocketLocHill = hill;
                 workerGroups[0].changeToTargetMap(hill);
                 p.rocketIndex++;
@@ -81,7 +83,8 @@ public class Workforce{
 //                                System.out.println("But we can't see it from here");
 //                            }
 
-                            short[][] hill = p.generateHill(newLoc);
+                            Hill hill = new Hill(p);
+                            hill.generateCompleteReachableHill(newLoc);
                             workerGroups[0].changeToTargetMap(hill);
                             workerGroups[0].setHarvestPoint(newLoc);
                             System.out.println("There was!");
@@ -90,7 +93,8 @@ public class Workforce{
                         }
                     }else{
                         System.out.println("Too far away, moving closer");
-                        short[][] hill = p.generateHill(newLoc);
+                        Hill hill = new Hill(p);
+                        hill.generateCompleteReachableHill(newLoc);
                         workerGroups[0].changeToTargetMap(hill);
                         workerGroups[0].setHarvestPoint(newLoc);
                     }

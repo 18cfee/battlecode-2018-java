@@ -10,7 +10,7 @@ public class Defenders extends Fighter {
         super(gc,p);
     }
     public int rocket;
-    private short[][] baseHill = null;
+    private Hill baseHill = null;
     private MapLocation base = null;
     private Wall wall;
     @Override
@@ -23,8 +23,9 @@ public class Defenders extends Fighter {
                 return;
             } else {
                 base = p.baseLoc;
-                baseHill = p.generateHill(base);
-                wall = new Wall(gc,p,baseHill,base);
+                baseHill = p.baseHill;
+                        //p.generateHill(base);
+                wall = new Wall(gc,p,baseHill);
             }
         }
         moveToTarget(wall.hillToTargetWall);
@@ -50,20 +51,20 @@ public class Defenders extends Fighter {
 
 class Wall{
     private static final int maxWallSize = 5;
-    private short[][] baseHill;
+    private Hill baseHill;
     public short targetNumFromBase;
     private ArrayDeque<MapLoc> curWall;
     public short[][] hillToTargetWall;
     private MapLocation hillCenterLoc;
     GameController gc;
     Path p;
-    Wall(GameController gc, Path p, short[][] hill, MapLocation startingPoint){
+    Wall(GameController gc, Path p, Hill hill){
         this.gc = gc;
         this.p = p;
         this.baseHill = hill;
-        this.hillCenterLoc = startingPoint;
+        this.hillCenterLoc = hill.getMapLocation();
         curWall = new ArrayDeque<>();
-        curWall.push(new MapLoc(startingPoint));
+        curWall.push(hill.getMapLoc());
         targetNumFromBase = 1;
         hillToTargetWall = new short[p.planetWidth][p.planetHeight];
         System.out.println("about to grow");
@@ -80,7 +81,7 @@ class Wall{
             for (int i = 0; i < 8; i++) {
                 int x = curX + p.numsDirections[i][0];
                 int y = curY + p.numsDirections[i][1];
-                if(p.onMap(x,y) && baseHill[x][y] == targetNumFromBase){
+                if(p.onMap(x,y) && baseHill.getGradient(x,y) == targetNumFromBase){
                     MapLoc loc = new MapLoc(x,y);
                     if(!alreadyChecked.contains(loc)){
                         alreadyChecked.add(loc);
@@ -103,7 +104,7 @@ class Wall{
         while(!toCheck.isEmpty()){
             MapLoc cur = toCheck.removeFirst();
             short dis;
-            if(baseHill[cur.x][cur.y] == targetNumFromBase){
+            if(baseHill.getGradient(cur) == targetNumFromBase){
                 dis = 0;
             } else {
                 dis = (short)(hillToTargetWall[cur.x][cur.y] + 1);
