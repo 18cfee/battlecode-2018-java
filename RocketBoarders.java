@@ -11,6 +11,7 @@ public class RocketBoarders extends Fighter {
     private Wall wall;
     @Override
     public void conductTurn() throws Exception{
+        if(noUnits()) return;
         System.out.println("it is making it into defenders");
         if(base == null){
             //not ready to go
@@ -25,7 +26,6 @@ public class RocketBoarders extends Fighter {
             moveToTarget(baseHill);
         }
         shootAtSomething();
-        index = 0;
     }
     public boolean loadRocketIfPossible(int rocketId){
         if(rocketId == -1 ) return false;

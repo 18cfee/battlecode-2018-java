@@ -13,6 +13,7 @@ public class RangersTargetNextUnit extends Fighter{
     private short groupTargetCooldown = 0;
     @Override
     public void conductTurn() throws Exception{
+        if(noUnits())return;
         System.out.println("it is making it into rangers next unit");
         if(baseDef == null){
             //not ready to go
@@ -24,7 +25,7 @@ public class RangersTargetNextUnit extends Fighter{
             }
         }
         // disallows a longer trail of soldiers on bigger maps
-        if(index < (p.planetHeight + p.planetWidth)/2){
+        if(size() < (p.planetHeight + p.planetWidth)/2){
             base = baseDef;
             baseHill = baseHillDef;
         } else if(seesEnemy == false && enemies.size() != 0 && groupTargetCooldown == 0){
@@ -41,7 +42,6 @@ public class RangersTargetNextUnit extends Fighter{
         }
         moveToTarget(baseHill);
         shootAtSomething();
-        index = 0;
         if(groupTargetCooldown > 0) groupTargetCooldown--;
     }
 }

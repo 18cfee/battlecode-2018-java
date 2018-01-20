@@ -3,43 +3,53 @@ import bc.GameController;
 import bc.MapLocation;
 import bc.Unit;
 
+import java.util.HashSet;
+
 public class Group {
     static final int DEF_ARMY_SIZE = 100;
     GameController gc;
-    int [] ids = new int[DEF_ARMY_SIZE];
     int [] moveAbles = new int[DEF_ARMY_SIZE];
     int movableIndex = 0;
-    int index = 0;
+    HashSet<Integer> ids;
     Path p;
     MapLocation target;
     GenericStates state;
     protected short[][] hill;
-    private int moveRound = 0;
+    protected int groupRound = 0;
     Group(GameController gc, Path p){
         this.p = p;
         this.gc = gc;
         state = GenericStates.RandomMove;
+        ids = new HashSet<>(DEF_ARMY_SIZE);
     }
-    public boolean add(int id) throws Exception{
-        if(moveRound != p.round){
-            moveRound = p.round;
+    public void add(int id) throws Exception{
+        if(groupRound != p.round){
+            groupRound = p.round;
             movableIndex = 0;
+            ids.clear();
         }
-        if(index != DEF_ARMY_SIZE){
-            ids[index++] = id;
-            if(gc.isMoveReady(id)){
-                moveAbles[movableIndex++] = id;
+        ids.add(id);
+        if(gc.isMoveReady(id)){
+            // if the array is too small
+            if(movableIndex == moveAbles.length){
+                int[] temp = moveAbles;
+                moveAbles = new int[temp.length*2];
+                for (int i = 0; i < temp.length; i++) {
+                    moveAbles[i] = temp[i];
+                }
             }
-            return true;
+            moveAbles[movableIndex++] = id;
         }
-        return false;
+    }
+    public int size(){
+        return ids.size();
     }
     public void conductTurn() throws Exception{
+        if(noUnits())return;
         roamRandom();
-        index = 0;
     }
     protected void roamRandom(){
-        if(noMovables()) return;
+        if(noUnits()) return;
         for (int i = 0; i < movableIndex; i++) {
             int id = moveAbles[i];
             Direction toMove = p.getRandDirection();
@@ -56,7 +66,7 @@ public class Group {
         this.hill = hill;
     }
     protected void moveToTarget(short[][] hill) throws Exception{
-        if(noMovables()) return;
+        if(noUnits()) return;
         for (int i = 0; i < movableIndex; i++) {
             int id = moveAbles[i];
             moveDownHill(id,hill);
@@ -89,11 +99,12 @@ public class Group {
             if(gc.isMoveReady(id)) gc.moveRobot(id,topChoice);
         }
     }
-    private boolean noMovables(){
-        if(movableIndex == 0) return true;
-        if(p.round != moveRound){
+    protected boolean noUnits(){
+        if(ids.size() == 0) return true;
+        if(p.round != groupRound){
             movableIndex = 0;
-            moveRound = p.round;
+            ids.clear();
+            groupRound = p.round;
             return true;
         }
         return false;

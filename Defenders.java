@@ -16,6 +16,7 @@ public class Defenders extends Fighter {
     @Override
     public void conductTurn() throws Exception{
         System.out.println("it is making it into defenders");
+        if(noUnits())return;
         if(base == null){
             //not ready to go
             if(p.baseLoc == null){
@@ -33,9 +34,9 @@ public class Defenders extends Fighter {
         //else loadRocketIfPossible(rocket);
 
         shootAtSomething();
-        index = 0;
     }
     public void loadRocketIfPossible(int rocketId){
+
         if(rocketId == -1 ) return;
         System.out.println("gathering around rocket");
         baseHill = p.firstRocketLocHill;
@@ -44,7 +45,6 @@ public class Defenders extends Fighter {
                 gc.load(rocketId,moveAbles[i]);
             }
         }
-        index = 0;
     }
 }
 

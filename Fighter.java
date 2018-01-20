@@ -21,24 +21,21 @@ public class Fighter extends Group {
         enemies.add(enemy);
     }
     @Override
-    public boolean add(int id) throws Exception{
+    public void add(int id) throws Exception{
         if(shooterTurn != p.round){
             numShooters = 0;
             shooterTurn = p.round;
         }
-        if(super.add(id)) {
-            if(gc.isAttackReady(id)){
-                canShoot[numShooters++] = id;
-            }
-            return true;
+        super.add(id);
+        if(gc.isAttackReady(id)){
+            canShoot[numShooters++] = id;
         }
-        return false;
     }
     @Override
     public void conductTurn() throws Exception{
+        if(noUnits()) return;
         roamRandom();
         shootAtSomething();
-        index = 0;
     }
     public void shootAtSomething ()throws Exception{
         if(noEnemies() || noShooters()) return; // not just for efficiency
