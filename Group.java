@@ -14,13 +14,17 @@ public class Group {
     MapLocation target;
     GenericStates state;
     protected short[][] hill;
-
+    private int moveRound = 0;
     Group(GameController gc, Path p){
         this.p = p;
         this.gc = gc;
         state = GenericStates.RandomMove;
     }
     public boolean add(int id) throws Exception{
+        if(moveRound != p.round){
+            moveRound = p.round;
+            movableIndex = 0;
+        }
         if(index != DEF_ARMY_SIZE){
             ids[index++] = id;
             if(gc.isMoveReady(id)){
@@ -33,9 +37,9 @@ public class Group {
     public void conductTurn() throws Exception{
         roamRandom();
         index = 0;
-        movableIndex = 0;
     }
     protected void roamRandom(){
+        if(noMovables()) return;
         for (int i = 0; i < movableIndex; i++) {
             int id = moveAbles[i];
             Direction toMove = p.getRandDirection();
@@ -52,6 +56,7 @@ public class Group {
         this.hill = hill;
     }
     protected void moveToTarget(short[][] hill) throws Exception{
+        if(noMovables()) return;
         for (int i = 0; i < movableIndex; i++) {
             int id = moveAbles[i];
             moveDownHill(id,hill);
@@ -83,6 +88,15 @@ public class Group {
         if(topChoice != null){ //min <= dirVal
             if(gc.isMoveReady(id)) gc.moveRobot(id,topChoice);
         }
+    }
+    private boolean noMovables(){
+        if(movableIndex == 0) return true;
+        if(p.round != moveRound){
+            movableIndex = 0;
+            moveRound = p.round;
+            return true;
+        }
+        return false;
     }
 }
 

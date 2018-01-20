@@ -114,8 +114,6 @@ public class Player {
 }
 
 
-
-
 class Troop {
     private Stack<MapLocation> route;
     private GameController g;

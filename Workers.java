@@ -92,7 +92,6 @@ public class Workers extends Group{
         }
 
         //moveToTarget(hill);
-        movableIndex = 0;
         index = 0;
     }
     public boolean doneReplicating(){

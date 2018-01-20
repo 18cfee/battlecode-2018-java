@@ -38,7 +38,6 @@ public class Fighter extends Group {
     public void conductTurn() throws Exception{
         roamRandom();
         shootAtSomething();
-        movableIndex = 0;
         index = 0;
     }
     public void shootAtSomething ()throws Exception{
