@@ -9,16 +9,19 @@ public class Player {
     public static void main(String args[]){
         GameController gc = new GameController();
         // Direction is a normal java enum.
-        Direction[] directions = Direction.values();
-        System.out.println("num of directions: "+ directions.length);
         Path p = new Path(gc,gc.planet());
         Workers workers = new Workers(gc,p);
         workers.setState(WorkerStates.Replicate);
         Army sprint = new Army(gc,p);
         Workforce workforce = new Workforce(gc, p);
+        Fighter mars = new Fighter(gc,p);
+        ArrayList<Group> newlist = new ArrayList<>();
+        newlist.add(mars);
         int count = 0;
         while (true) {
             try {
+                p.round = (int)gc.round();
+                System.out.println("Current round: " + p.round + " bugs: "+ count);
                 if(!gc.researchInfo().hasNextInQueue()){
                     gc.queueResearch(UnitType.Rocket);
                     gc.queueResearch(UnitType.Worker);
@@ -26,9 +29,32 @@ public class Player {
                     gc.queueResearch(UnitType.Knight);
                 }
                 if (gc.planet() != Planet.Earth) {
+                    VecUnit units = gc.units();
+                    Team myTeam = gc.team();
+                    for (int i = 0; i < units.size(); i++) {
+                        Unit unit = units.get(i);
+                        Location loc = unit.location();
+                        int id = unit.id();
+                        if(loc.isInGarrison() || loc.isInSpace()){ // do nothing with unit
+                        } else if(unit.team() != myTeam){
+                            mars.addEnemy(unit);
+                        } else if (unit.unitType() == UnitType.Worker) {
+                            workforce.addWorker(id);
+                        } else if (unit.unitType() == UnitType.Factory) {
+                            if(unit.structureIsBuilt() == 1){
+                                sprint.addFact(unit);
+                            }
+                        } else if (unit.unitType() == UnitType.Rocket) {
+                            Direction random = p.getRandDirection();
+                            if(gc.canUnload(unit.id(),random)){
+                                gc.unload(unit.id(),random);
+                            }
+                        }else{
+                            mars.add(id);
+                        }
+                    }
+                    mars.conductTurn();
                 } else {
-                    System.out.println();
-                    System.out.println("Current round: " + gc.round() + " bugs: "+ count);
                     System.out.println("Current karb count: " + gc.karbonite());
                     System.out.println(workers.state);
                     //Place Units into their groups
@@ -48,7 +74,7 @@ public class Player {
                         int id = unit.id();
                         if(loc.isInGarrison() || loc.isInSpace()){ // do nothing with unit
                         } else if(unit.team() != myTeam){
-                            sprint.addEnemyUnit(id);
+                            sprint.addEnemyUnit(unit);
                         } else if (unit.unitType() == UnitType.Worker) {
                             workforce.addWorker(id);
                         } else if (unit.unitType() == UnitType.Factory) {
@@ -59,10 +85,10 @@ public class Player {
                             if(unit.structureIsBuilt() == 1){
                                 System.out.println("The rocket is already built");
                                 sprint.addRocket(unit);
-                                workforce.addRocket(unit);
+                                //workforce.addRocket(unit);
                             } else {
                                 System.out.println("The rocket isn't built yet");
-                                workforce.addRocket(unit);
+                                //workforce.addRocket(unit);
                             }
                         }else{
                             sprint.addUnit(id);
@@ -71,23 +97,21 @@ public class Player {
                     sprint.conductTurn();
                     workforce.conductTurn();
                     workers.resetWorkerIndexCount();
-                    //this is here because multiple classes rely on it
-                    p.builtFactIndex = 0;
                 }
             } catch (Exception e){
+                // todo set indexes to 0 in here
                 e.printStackTrace();
+                System.exit(0);
                 count++;
             }
 
             //not working
-            //System.out.println(gc.getTimeLeftMs());
+            System.out.println(gc.getTimeLeftMs());
             gc.nextTurn();
         }
 
     }
 }
-
-
 
 
 class Troop {

@@ -29,14 +29,14 @@ public class Workforce{
         if(gc.round() == 1 || numWorkers < 10){
             workerGroups[0].replicate();
         }else {
-            //System.out.println("built: " + p.builtFactIndex);
-            //System.out.println("unbuilt: " + p.getNumFactories());
-            if (p.unbuiltFactIndex == p.builtFactIndex && p.getNumFactories() < p.NUM_FACTORIES_WANTED) {
+            System.out.println("built: " + p.currentBuiltFactories.size());
+            System.out.println("unbuilt: " + p.getNumFactories());
+            if (p.unbuiltFactIndex == p.currentBuiltFactories.size() && p.getNumFactories() < p.NUM_FACTORIES_WANTED) {
                 //System.out.println("There aren't any factories yet");
                 MapLocation blueLoc = workerGroups[0].setBlueprint(UnitType.Factory);
                 if (p.baseLoc == null) {
-                    p.baseLoc = blueLoc;
-                    p.hillToBase = p.generateHill(p.startLoc);
+                    //p.baseLoc = blueLoc;
+                    //p.hillToBase = p.generateHill(p.startLoc);
                 }
                 if (blueLoc != null) {
                     short[][] hill = p.generateHill(blueLoc);
@@ -62,7 +62,7 @@ public class Workforce{
 
         System.out.println("Do the workers want to gather?");
         if(workerGroups[0].getState() == WorkerStates.GatherKarbonite){
-            System.out.println("They do! But is there a karbonite deposit?");
+            System.out.println("They do! But is there a karbLocs?");
             System.out.println("PQ says there are " + p.closestKarbLocs.getSize() + " deposits left");
             if(closestKarbDepot == null || gc.karboniteAt(closestKarbDepot) == 0) {
                 boolean viable = false;
@@ -72,13 +72,14 @@ public class Workforce{
                     if(gc.canSenseLocation(newLoc)) {
                         if (newLoc != null && gc.karboniteAt(newLoc) != 0) {
                             viable = true;
-                            System.out.println("A new spot was found: " + p.closestKarbLocs.peek().toMapLocation().toString());
-
-                            if (gc.canSenseLocation(newLoc)) {
-                                System.out.println("Amount of karbs at location = " + gc.karboniteAt(newLoc));
-                            } else {
-                                System.out.println("But we can't see it from here");
-                            }
+                            //todo I got a null pointer on the following line for your info jase I think it was cause of the peek code use when the Q was empty
+                            //System.out.println("A new spot was found: " + p.closestKarbLocs.peek().toMapLocation().toString());
+//
+//                            if (gc.canSenseLocation(p.closestKarbLocs.peek().toMapLocation())) {
+//                                System.out.println("Amount of karbs at location = " + gc.karboniteAt(p.closestKarbLocs.peek().toMapLocation()));
+//                            } else {
+//                                System.out.println("But we can't see it from here");
+//                            }
 
                             short[][] hill = p.generateHill(newLoc);
                             workerGroups[0].changeToTargetMap(hill);
@@ -110,9 +111,9 @@ public class Workforce{
     }
 
 
-    public void addRocket(Unit unit){
-        workerGroups[0].addRocket(unit);
-    }
+//    public void addRocket(Unit unit){
+//        workerGroups[0].addRocket(unit);
+//    }
 
     public void createGroup(){
         workerGroups[groupIndex] = new Workers(gc, p);

@@ -8,33 +8,49 @@ public class Path {
     int planetHeight;
     int planetWidth;
     public Direction[] directions;
-    private Random random;
+    public Random random;
     public MapLocation closestStartLocation;
     Planet planet;
     public final static short greatestPathNum = 3000;
     short[][] hillToBase;
     public int[][] numsDirections = {{0,1},{1,1},{1,0},{1,-1},{0,-1},{-1,-1},{-1,0},{-1,1}};
     BitSet[] passable;
-    MapLocation startLoc;
+    //MapLocation startLoc;
     int unbuiltFactIndex = 0;
-    public final static int MAX_NUM_FACTS = 20;
-    public int builtFactIndex = 0;
-    public int [] builtFactary = new int [MAX_NUM_FACTS];
+    public int round = 0;
+    //public final static int MAX_NUM_FACTS = 20;
+    //public int builtFactIndex = 0;
+    //public int [] builtFactary = new int [MAX_NUM_FACTS];
     public final static int NUM_FACTORIES_WANTED = 2;
     int rocketIndex = 0;
-    int[] rockets = new int[10];
     public MapLocation baseLoc = null;
-    public MapLocation firstRocket;
     public short[][] firstRocketLocHill = null;
     public MapLocation placeToLandOnMars;
     public long totalKarbOnEarth;
     public ArrayList<MapLoc> karbLocs;
     public MPQ closestKarbLocs;
     private int numKarbLocs = 0;
-
+    HashSet<Integer> currentBuiltFactories;
     public Path(GameController gc,Planet planet){
+        currentBuiltFactories = new HashSet<>(10);
         this.planet = planet;
         this.gc = gc;
+        random = new Random();
+        random.setSeed(724);
+        map = gc.startingMap(planet);
+        planetHeight = (int) map.getHeight();
+        planetWidth = (int) map.getWidth();
+        directions = Direction.values();
+        Direction[] temp = Direction.values();
+        directions = new Direction[8];
+        generatePassable();
+        for (int i = 0; i < directions.length; i++) {
+            directions[i] = temp[i];
+        }
+        if(planet == Planet.Earth){
+            //closestStartLocation = findClosestEnemyStartLoc();
+            //startLoc = gc.myUnits().get(0).location().mapLocation();
+        }
         if(planet == Planet.Earth){
             int height = (int)gc.startingMap(Planet.Mars).getHeight();
             int width = (int)gc.startingMap(Planet.Mars).getWidth();
@@ -48,24 +64,40 @@ public class Path {
                     }
                 }
             }
-        }
-        random = new Random();
-        random.setSeed(724);
-        map = gc.startingMap(planet);
-        planetHeight = (int) map.getHeight();
-        planetWidth = (int) map.getWidth();
-        directions = Direction.values();
-        Direction[] temp = Direction.values();
-        directions = new Direction[8];
-        for (int i = 0; i < directions.length; i++) {
-            directions[i] = temp[i];
-        }
-        if(planet == Planet.Earth){
-            closestStartLocation = findClosestEnemyStartLoc();
-            startLoc = gc.myUnits().get(0).location().mapLocation();
+            baseLoc = chooseBaseLocation();
+            hillToBase = generateHill(baseLoc);
         }
         totalKarbOnEarth = calculateTotalKarbOnEarth();
-        generatePassable();
+    }
+    private MapLocation chooseBaseLocation(){
+        int maxGreenPercent = 0;
+        VecUnit units = gc.myUnits();
+        MapLocation bestLoc = null;
+        for (int i = 0; i < units.size(); i++) {
+            int greens = 0;
+            int totlocs = 0;
+            MapLocation loc = units.get(i).location().mapLocation();
+            for (int j = loc.getX() - 5; j <= loc.getX() + 5; j++) {
+                for (int k = loc.getY() - 5; k <= loc.getY() + 5; k++) {
+                    MapLoc countedLoc = new MapLoc(j,k);
+                    if (onMap(countedLoc)){
+                        totlocs++;
+                        if(passable(countedLoc)){
+                            greens++;
+                        }
+                    }
+                }
+            }
+            int greenCov = 100*greens/totlocs;
+            if(greenCov > maxGreenPercent){
+                maxGreenPercent = greenCov;
+                bestLoc = loc;
+            }
+        }
+        if(bestLoc == null){
+            bestLoc = units.get(0).location().mapLocation();
+        }
+        return bestLoc;
     }
     private void generatePassable(){
         passable = new BitSet[planetWidth];
@@ -93,6 +125,9 @@ public class Path {
     }
     public boolean passable(MapLocation location){
         return passable[location.getX()].get(location.getY());
+    }
+    public boolean passable(MapLoc location){
+        return passable[location.x].get(location.y);
     }
 
     //only meant for earth
@@ -161,17 +196,16 @@ public class Path {
     public long calculateTotalKarbOnEarth() {
         karbLocs = new ArrayList<>();
         long totalCarbs = 0;
-        for (int i = 0; i < planetWidth; i++) {
-            for (int j = 0; j < planetHeight; j++) {
-                System.out.println("x: " +i+ " y:" + j);
-                MapLocation loc = new MapLocation(planet,i,j);
+        for (int x = 0; x < planetWidth; x++) {
+            for (int y = 0; y < planetHeight; y++) {
+                MapLocation loc = new MapLocation(planet,x,y);
 
                 long karbATLoc = map.initialKarboniteAt(loc);
                 if(karbATLoc > 0){
                     totalCarbs += karbATLoc;
                     MapLoc karbLoc;
-                    if(startLoc != null) {
-                        karbLoc = new MapLoc(planet, loc, startLoc);
+                    if(baseLoc != null) {
+                        karbLoc = new MapLoc(planet, loc, hillToBase[x][y]);
                     }else{
                         karbLoc = new MapLoc(loc);
                     }
@@ -191,5 +225,8 @@ public class Path {
     }
     public boolean onMap(int x, int y){
         return (0 <= x && x < planetWidth && 0 <= y && y < planetHeight);
+    }
+    public boolean onMap(MapLoc loc){
+        return (0 <= loc.x && loc.x < planetWidth && 0 <= loc.y && loc.y < planetHeight);
     }
 }

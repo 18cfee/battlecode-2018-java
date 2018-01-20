@@ -17,11 +17,14 @@ public class MapLoc {
         this.y = loc.getY();
     }
 
-    public MapLoc(Planet planet, MapLocation loc, MapLocation base){
+    public MapLoc(Planet planet, MapLocation loc, int distanceToBase){
         this.x = loc.getX();
         this.y = loc.getY();
-        distanceToBase = loc.distanceSquaredTo(base);
+        this.distanceToBase = distanceToBase;
         this.planet = planet;
+    }
+    public MapLoc add(int x, int y){
+        return new MapLoc(this.x + x,this.y + y);
     }
 
     public MapLocation toMapLocation(){

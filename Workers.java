@@ -3,10 +3,9 @@ import bc.*;
 public class Workers extends Group{
     int factBlueId = -1;
     int rocketBlueId = -1;
-    int unbuiltRocketIndex = 0;
-    int builtRocketIndex = 0;
-    int[] unbuiltRocket = new int[5];
-    int[] builtRocket = new int[10];
+//    int unbuiltRocketIndex = 0;
+//    int builtRocketIndex = 0;
+//    int[] unbuiltRocket = new int[5];
     MapLocation harvestPoint = null;
 
     GameController gc;
@@ -19,28 +18,28 @@ public class Workers extends Group{
         this.p = p;
     }
 
-    public void addRocket(Unit rocket){
-        if(rocket.structureIsBuilt() == 1){
-            //System.out.println("a rocket is built");
-            builtRocket[builtRocketIndex++] = rocket.id();
-        }else{
-            //System.out.println("There is an unfinished rocket");
-            unbuiltRocket[unbuiltRocketIndex++] = rocket.id();
-        }
-    }
+//    public void addRocket(Unit rocket){
+//        if(rocket.structureIsBuilt() == 1){
+//            //System.out.println("a rocket is built");
+//            builtRocket[builtRocketIndex++] = rocket.id();
+//        }else{
+//            //System.out.println("There is an unfinished rocket");
+//            unbuiltRocket[unbuiltRocketIndex++] = rocket.id();
+//        }
+//    }
 
 
     public MapLocation setBlueprint(UnitType type){
         //System.out.println("This kind: " + type);
         Direction rand = p.getRandDirection();
         System.out.println(rand);
-        for(int i = 0; i <= index; i++){
+        for(Integer id: ids){
             //System.out.println("Trying to find blueprint loc, worker attempting: " + ids[i]);
-            if(gc.canBlueprint(ids[i], type, rand)){
+            if(gc.canBlueprint(id, type, rand)){
                 state = WorkerStates.Build;
                 System.out.println("I found a spot to place it");
-                gc.blueprint(ids[i], type, rand);
-                VecUnit units = gc.senseNearbyUnitsByType(gc.unit(ids[i]).location().mapLocation(), 50, type);
+                gc.blueprint(id, type, rand);
+                VecUnit units = gc.senseNearbyUnitsByType(gc.unit(id).location().mapLocation(), 50, type);
                 for (int j = 0; j < units.size(); j++) {
                     if(units.get(j).structureIsBuilt() == 0 && type == UnitType.Factory){
                         factBlueId = units.get(j).id();
@@ -48,12 +47,11 @@ public class Workers extends Group{
                         return units.get(j).location().mapLocation();
                     } else if(units.get(j).structureIsBuilt() == 0 && type == UnitType.Rocket){
                         rocketBlueId = units.get(j).id();
-                        unbuiltRocketIndex++;
+//                        unbuiltRocketIndex++;
                         System.out.println("Rocker blueprint set: ID " + rocketBlueId);
                         return units.get(j).location().mapLocation();
                     }
                 }
-
             }
         }
         return null;
@@ -61,29 +59,28 @@ public class Workers extends Group{
 
     public void replicate(){
         Direction random = p.getRandDirection();
-        for (int i = 0; i < index; i++) {
-            if(gc.canReplicate(ids[i],random)){
-                gc.replicate(ids[i],random);
+        for(Integer id: ids){
+            if(gc.canReplicate(id,random)){
+                gc.replicate(id,random);
             }
         }
     }
     @Override
     public void conductTurn() throws Exception{
+        // this basically makes sure things have been reset we need it at the beggining of all conduct turns for
+        // groups
+        if(noUnits()) return;
         //System.out.println("Total karb: " + gc.karbonite());
         System.out.println("Worker turn conducting");
         if(state == WorkerStates.Build) {
-            for (int i = 0; i < index; i++) {
-                if (p.builtFactIndex == p.NUM_FACTORIES_WANTED) {
-                    //System.out.println("Factory complete");
-                    if (unbuiltRocketIndex > 0) {
-                        //System.out.println("About to continue building a rocket");
+            for (Integer id: ids){
+                if (p.currentBuiltFactories.size() == p.NUM_FACTORIES_WANTED) {
+                    if (p.rocketIndex > 0) {
                         contBuilding(UnitType.Rocket);
                     } else {
-                        //System.out.println("Nothing to build");
                         setState(WorkerStates.GatherKarbonite);
                     }
                 } else {
-                    //System.out.println("About to continue to build factory");
                     contBuilding(UnitType.Factory);
                 }
 
@@ -97,28 +94,24 @@ public class Workers extends Group{
         }
 
         //moveToTarget(hill);
-        movableIndex = 0;
-        index = 0;
     }
     public boolean doneReplicating(){
-        return(index > 3);
+        return(size() > 3);
     }
     void setState(WorkerStates state){
         this.state = state;
     }
 
     void resetWorkerIndexCount(){
-        index = 0;
-        builtRocketIndex = 0;
-        unbuiltRocketIndex = 0;
+//        builtRocketIndex = 0;
+//        unbuiltRocketIndex = 0;
     }
     void contBuilding(UnitType type) throws Exception{
         if(type == UnitType.Factory) {
-            //System.out.println("UnbuiltIndex = " + p.unbuiltFactIndex);
             if (p.unbuiltFactIndex != 0) {
-                for (int i = 0; i < index; i++) {
-                    if (gc.canBuild(ids[i], factBlueId)) {
-                        gc.build(ids[i], factBlueId);
+                for (Integer id: ids){
+                    if (gc.canBuild(id, factBlueId)) {
+                        gc.build(id, factBlueId);
                     }else{
                         moveToTarget(hill);
                     }
@@ -128,10 +121,10 @@ public class Workers extends Group{
             //System.out.println("Unbuilt rockets: " + p.rocketIndex);
             System.out.println();
             if(p.rocketIndex != 0){
-                for(int i = 0; i < index; i++){
+                for(Integer id: ids){
                     //System.out.println("Trying to work on the rocket: " + rocketBlueId);
-                    if(gc.canBuild(ids[i], rocketBlueId)){
-                        gc.build(ids[i], rocketBlueId);
+                    if(gc.canBuild(id, rocketBlueId)){
+                        gc.build(id, rocketBlueId);
                         //System.out.println("Worked on the rocket");
                     }else{
                         moveToTarget(hill);
@@ -142,10 +135,12 @@ public class Workers extends Group{
     }
 
     void gatherKarbonite() throws Exception{
-        for(int i = 0; i < index; i++){
-            if(gc.canHarvest(ids[i], gc.unit(ids[i]).location().mapLocation().directionTo(harvestPoint))){
+        for(Integer id: ids){
+            if(gc.canHarvest(id, gc.unit(id).location().mapLocation().directionTo(harvestPoint))){
                 System.out.println("Karbonite harvested! I shouldn't have moved...");
-                gc.harvest(ids[i], gc.unit(ids[i]).location().mapLocation().directionTo(harvestPoint));
+                // this threw an error
+                // I think this could be out of sight sometimes?System.out.println("Karbonite left at location: " + gc.karboniteAt(harvestPoint));
+                gc.harvest(id, gc.unit(id).location().mapLocation().directionTo(harvestPoint));
             }else{
                 System.out.println("Couldn't harvest, so I'm going to move");
                 moveToTarget(hill);
