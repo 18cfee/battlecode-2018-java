@@ -162,7 +162,10 @@ public class Path {
         }
         return false;
     }
+    private long functionCalled = 0;
+    private long totalTimeInFunc = 0;
     public short[][] generateHill(MapLocation destination){
+        functionCalled++;
         long start = System.currentTimeMillis();
         short hill[][] = new short[planetWidth][planetHeight];
         hill[destination.getX()][destination.getY()] = 1;
@@ -174,7 +177,7 @@ public class Path {
             for(Direction d : directions){
                 MapLocation newLoc = cur.add(d);
                 if(previouslyUncheckedMapLoc(newLoc,hill)){
-                    if(passable(newLoc)){
+                    if(!passable(newLoc)){
                         //mark as unreachable
                         hill[newLoc.getX()][newLoc.getY()] = greatestPathNum;
                     } else {
@@ -185,7 +188,8 @@ public class Path {
             }
         }
         long end = System.currentTimeMillis();
-        System.out.println("asdfasdfsdfasdf milis attention goooooooooooooo" + (end - start));
+        totalTimeInFunc+=(end - start);
+        System.out.println("asdfasdfsdfasdf milis attention " + totalTimeInFunc + " Num times called " + functionCalled);
         // todo smaller versions need to know if a path was found
         return hill;
     }

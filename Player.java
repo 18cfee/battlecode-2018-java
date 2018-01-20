@@ -19,6 +19,7 @@ public class Player {
         newlist.add(mars);
         int count = 0;
         while (true) {
+            if(gc.round() == 105)System.exit(0);
             try {
                 p.round = (int)gc.round();
                 System.out.println("Current round: " + p.round + " bugs: "+ count);
