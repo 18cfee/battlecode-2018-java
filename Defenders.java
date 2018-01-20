@@ -33,7 +33,7 @@ public class Defenders extends Fighter {
         //else loadRocketIfPossible(rocket);
 
         shootAtSomething();
-        indexShooters = 0;
+        numShooters = 0;
         movableIndex = 0;
         index = 0;
     }

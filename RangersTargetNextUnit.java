@@ -41,7 +41,7 @@ public class RangersTargetNextUnit extends Fighter{
         }
         moveToTarget(baseHill);
         shootAtSomething();
-        indexShooters = 0;
+        numShooters = 0;
         movableIndex = 0;
         index = 0;
         if(groupTargetCooldown > 0) groupTargetCooldown--;

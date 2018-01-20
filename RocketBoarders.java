@@ -25,7 +25,7 @@ public class RocketBoarders extends Fighter {
             moveToTarget(baseHill);
         }
         shootAtSomething();
-        indexShooters = 0;
+        numShooters = 0;
         movableIndex = 0;
         index = 0;
     }
