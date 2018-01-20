@@ -34,7 +34,7 @@ public class Workers extends Group{
         Direction rand = p.getRandDirection();
         System.out.println(rand);
         for(Integer id: ids){
-            //System.out.println("Trying to find blueprint loc, worker attempting: " + ids[i]);
+            //System.out.println("Trying to find blueprint centerLoc, worker attempting: " + ids[i]);
             if(gc.canBlueprint(id, type, rand)){
                 state = WorkerStates.Build;
                 System.out.println("I found a spot to place it");
@@ -88,7 +88,7 @@ public class Workers extends Group{
         }else if(state == WorkerStates.GatherKarbonite){
             System.out.println("About to gather karbonite");
             if(harvestPoint != null) {
-                //System.out.println("There is a karbonite loc");
+                //System.out.println("There is a karbonite centerLoc");
                 gatherKarbonite();
             }
         }

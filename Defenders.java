@@ -127,7 +127,7 @@ class Wall{
     public int percentCoverageOfWall(){
         if(targetNumFromBase > maxWallSize) return 0;
         ArrayDeque<MapLoc> cloneWall = curWall.clone();
-        int size = 0;
+        int size = 1;
         int covered = 0;
         while(!cloneWall.isEmpty()){
             MapLoc cur = cloneWall.removeFirst();

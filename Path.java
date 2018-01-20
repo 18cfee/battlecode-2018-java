@@ -163,6 +163,7 @@ public class Path {
         return false;
     }
     public short[][] generateHill(MapLocation destination){
+        long start = System.currentTimeMillis();
         short hill[][] = new short[planetWidth][planetHeight];
         hill[destination.getX()][destination.getY()] = 1;
         ArrayDeque<MapLocation> toCheck = new ArrayDeque<MapLocation>();
@@ -173,7 +174,7 @@ public class Path {
             for(Direction d : directions){
                 MapLocation newLoc = cur.add(d);
                 if(previouslyUncheckedMapLoc(newLoc,hill)){
-                    if(map.isPassableTerrainAt(newLoc) != 1){
+                    if(passable(newLoc)){
                         //mark as unreachable
                         hill[newLoc.getX()][newLoc.getY()] = greatestPathNum;
                     } else {
@@ -183,6 +184,8 @@ public class Path {
                 }
             }
         }
+        long end = System.currentTimeMillis();
+        System.out.println("asdfasdfsdfasdf milis attention goooooooooooooo" + (end - start));
         // todo smaller versions need to know if a path was found
         return hill;
     }
@@ -219,7 +222,7 @@ public class Path {
         closestKarbLocs = new MPQ(numKarbLocs+1);
         for(MapLoc loc : karbLocs){
             closestKarbLocs.insert(loc);
-            System.out.println("New loc added to pq!");
+            System.out.println("New centerLoc added to pq!");
         }
         return totalCarbs;
     }
