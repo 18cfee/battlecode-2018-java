@@ -23,9 +23,7 @@ public class Path {
     //public int [] builtFactary = new int [MAX_NUM_FACTS];
     public final static int NUM_FACTORIES_WANTED = 2;
     int rocketIndex = 0;
-    int[] rockets = new int[10];
     public MapLocation baseLoc = null;
-    public MapLocation firstRocket;
     public short[][] firstRocketLocHill = null;
     public MapLocation placeToLandOnMars;
     public long totalKarbOnEarth;
