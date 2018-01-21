@@ -14,19 +14,19 @@ public class AggresiveRangers extends Fighter{
     @Override
     public void conductTurn() throws Exception{
         if(noUnits())return;
-        System.out.println("aggressive rangers");
-        if(!noEnemies() && seesEnemy == false && groupTargetCooldown == 0){
-            seesEnemy = true;
-            Enemy enemy = enemies.get(0);
-            if(enemy.hp > 0){
-                MapLocation a = gc.unit(enemy.id).location().mapLocation();
-                base = a;
-                baseHill = p.generateHill(base);
-                groupTargetCooldown+= 25;
-            }
-        } else if (seesEnemy = true && enemies.size() == 0){
-            seesEnemy = false;
-        }
+        System.out.println("aggressive rangers " + size());
+//        if(!noEnemies() && seesEnemy == false && groupTargetCooldown == 0){
+//            seesEnemy = true;
+//            Enemy enemy = enemies.get(0);
+//            if(enemy.hp > 0){
+//                MapLocation a = gc.unit(enemy.id).location().mapLocation();
+//                base = a;
+//                baseHill = p.generateHill(base);
+//                groupTargetCooldown+= 25;
+//            }
+//        } else if (seesEnemy = true && enemies.size() == 0){
+//            seesEnemy = false;
+//        }
         if(base!= null) moveToTarget(baseHill);
         else roamRandom();
         shootOptimally();
