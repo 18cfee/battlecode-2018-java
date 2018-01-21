@@ -1,5 +1,6 @@
 import bc.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -8,12 +9,16 @@ public class Army {
     Path p;
     Fighter carlsRangers;
     Defenders baseProtection;
+    private int numDefenders = 0;
     RocketBoarders marsTroops;
+    ArrayList<AggresiveRangers> rangers;
+    ArrayList<HashSet<Integer>> troops;
     HashSet<Integer> tempOldFactories;
     int size = 0;
     private int rocketId = -1;
     private final static int MAXUnits = 95;
     private int armyRound = 0;
+    private int fighterRound = 0;
     public Army(GameController gc, Path p){
         this.gc = gc;
         this.p = p;
@@ -21,27 +26,57 @@ public class Army {
         baseProtection = new Defenders(gc,p);
         marsTroops = new RocketBoarders(gc,p);
         tempOldFactories = new HashSet<>();
+        rangers = new ArrayList<>();
+        troops = new ArrayList<>();
     }
     public void conductTurn() throws Exception{
         carlsRangers.conductTurn();
         baseProtection.conductTurn();
         marsTroops.conductTurn();
+        for(AggresiveRangers beasts: rangers){
+            beasts.conductTurn();
+        }
         factoryProduce();
         rocketShouldLaunchIfItCan();
         resetSize();
         rocketId = -1;
     }
     public void addUnit(int id) throws Exception{
+        if(fighterRound != p.round){
+            troops.clear();
+            for (int i = 0; i < rangers.size(); i++) {
+                troops.add(rangers.get(i).ids);
+            }
+            numDefenders = baseProtection.ids.size();
+        }
+        // assign all the rangers back to there groups
+        for (int i = 0; i < rangers.size(); i++) {
+            if(troops.get(i).contains(id)){
+                rangers.get(i).add(id);
+                size++;
+                return;
+            }
+        }
         if(gc.round() > 500 && gc.round()%2 == 0){
             marsTroops.add(id);
         } else {
-            baseProtection.add(id);
+            if(numDefenders > 10){
+                AggresiveRangers group = new AggresiveRangers(gc,p);
+                rangers.add(group);
+                group.add(id);
+            } else {
+                baseProtection.add(id);
+            }
         }
         size++;
     }
     public void addEnemyUnit(Unit unit){
-        carlsRangers.addEnemy(unit);
-        baseProtection.addEnemy(unit);
+        Enemy enemy = new Enemy(unit);
+        carlsRangers.addEnemy(enemy);
+        baseProtection.addEnemy(enemy);
+        for(AggresiveRangers group: rangers){
+            group.addEnemy(enemy);
+        }
     }
 //    public void distributeFactories(){
 //        p.currentBuiltFactories.retainAll(tempFactories);

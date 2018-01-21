@@ -21,7 +21,7 @@ public class Hill {
         this.centerLoc = centerLoc;
         destination = new MapLoc(centerLoc.getX(),centerLoc.getY());
         long start = System.currentTimeMillis();
-        short hill[][] = new short[p.planetWidth][p.planetHeight];
+        hill = new short[p.planetWidth][p.planetHeight];
         hill[destination.x][destination.y] = 1;
         ArrayDeque<MapLoc> toCheck = new ArrayDeque<>();
         toCheck.addLast(destination);

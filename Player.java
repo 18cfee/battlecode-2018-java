@@ -19,7 +19,6 @@ public class Player {
         newlist.add(mars);
         int count = 0;
         while (true) {
-            if(gc.round() == 105)System.exit(0);
             try {
                 p.round = (int)gc.round();
                 System.out.println("Current round: " + p.round + " bugs: "+ count);
@@ -38,7 +37,7 @@ public class Player {
                         int id = unit.id();
                         if(loc.isInGarrison() || loc.isInSpace()){ // do nothing with unit
                         } else if(unit.team() != myTeam){
-                            mars.addEnemy(unit);
+                            mars.addEnemy(new Enemy(unit));
                         } else if (unit.unitType() == UnitType.Worker) {
                             workforce.addWorker(id);
                         } else if (unit.unitType() == UnitType.Factory) {
@@ -110,7 +109,6 @@ public class Player {
             System.out.println(gc.getTimeLeftMs());
             gc.nextTurn();
         }
-
     }
 }
 
