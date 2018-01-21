@@ -38,14 +38,15 @@ public class Army {
         for (int i = 0; i < rangers.size(); i++) {
             AggresiveRangers beasts = rangers.get(i);
             beasts.conductTurn();
+            System.out.println("pre removal "+ beasts.ids.size());
             if(beasts.ids.size() == 0){
                 beastsToRemove.add(i);
             }
         }
         // removes the empty groups
-        for(Integer i: beastsToRemove){
-            rangers.remove(i);
-        }
+//        for(Integer i: beastsToRemove){
+//            rangers.remove(i);
+//        }
         factoryProduce();
         rocketShouldLaunchIfItCan();
         resetSize();
@@ -53,43 +54,53 @@ public class Army {
     }
     private int shouldEmptyBaseRound = -1;
     private int oldNumRangerGroups = 0;
+    AggresiveRangers group = null;
     public void addUnit(int id) throws Exception{
         // get the group info from last round then clear
         if(fighterRound != p.round){
+            group = null;
             fighterRound = p.round;
             troops.clear();
             oldNumRangerGroups = rangers.size();
+            System.out.println(oldNumRangerGroups+ "update late");
             for (int i = 0; i < oldNumRangerGroups; i++) {
+                System.out.println(rangers.get(i).size());
                 troops.add(rangers.get(i).ids);
             }
             numDefenders = baseProtection.ids.size();
+            System.out.println("thinks there are this many on d: " + numDefenders);
         }
         // assign all the rangers back to there groups
         for (int i = 0; i < oldNumRangerGroups; i++) {
             if(troops.get(i).contains(id)){
+                System.out.println("id assigned to old rangers: " + id);
                 rangers.get(i).add(id);
                 size++;
                 return;
             }
         }
-        if(gc.round() > 500 && gc.round()%2 == 0){
-            marsTroops.add(id);
+//        if(gc.round() > 500 && gc.round()%2 == 0){
+//            marsTroops.add(id);
+//        } else {
+        if(numDefenders > 10){
+            group = new AggresiveRangers(gc,p);
+            rangers.add(group);
+            group.add(id);
+            shouldEmptyBaseRound = p.round;
+            numDefenders = 0;
+            baseProtection.ids.clear();
+            numGroupsCreated++;
+            System.out.println("num of aggressives fffffffffffffffffffffffffffffff " + numGroupsCreated);
+        } else if(shouldEmptyBaseRound == p.round){
+            System.out.println(rangers.get(rangers.size()-1).ids.size() + "before");
+            group.add(id);
+            System.out.println(rangers.get(rangers.size()-1).ids.size() + "after");
+            System.out.println(rangers.size());
+            System.out.println("id added to new ranger group " + id);
         } else {
-            if(numDefenders > 10){
-                AggresiveRangers group = new AggresiveRangers(gc,p);
-                rangers.add(group);
-                group.add(id);
-                shouldEmptyBaseRound = p.round;
-                numDefenders = 0;
-                numGroupsCreated++;
-                System.out.println("num of aggressives fffffffffffffffffffffffffffffff " + numGroupsCreated);
-            } else if(shouldEmptyBaseRound == p.round){
-                rangers.get(rangers.size()-1).add(id);
-                System.out.println("id added to new ranger group " + id);
-            } else {
-                baseProtection.add(id);
-            }
+            baseProtection.add(id);
         }
+//        }
         size++;
     }
     public void addEnemyUnit(Unit unit){
