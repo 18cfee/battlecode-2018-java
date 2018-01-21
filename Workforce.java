@@ -8,95 +8,91 @@ public class Workforce{
     Workers[] workerGroups = new Workers[10];
     int groupIndex = 0;
     boolean canBuildRocket = false;
-    MapLocation closestKarbDepot = null;
+    MapLocation closestKarbDepot;
     int numWorkers = 0;
 
     public Workforce(GameController gc, Path p) {
         this.gc = gc;
         this.p = p;
         createGroup();
+        closestKarbDepot = p.baseLoc;
     }
     public void conductTurn() throws Exception{
 
         System.out.println("There are " + idleIndex + " workers");
-        if(groupIndex == 0){
+        while(groupIndex < 2){
             createGroup();
         }
+
         numWorkers = idleIndex;
         while(idleIndex > 0){
-            workerGroups[0].add(idle[--idleIndex]);
+            if(idleIndex >= numWorkers/2) {
+                System.out.println("Worker " + idleIndex + " added to group 0");
+                workerGroups[0].add(idle[--idleIndex]);
+            }else{
+                System.out.println("Worker " + idleIndex + " added to group 1");
+                workerGroups[1].add(idle[--idleIndex]);
+            }
         }
-        if(gc.round() == 1 || numWorkers < 10){
-            workerGroups[0].replicate();
-        }else {
-            System.out.println("built: " + p.currentBuiltFactories.size());
-            System.out.println("unbuilt: " + p.getNumFactories());
-            if (p.unbuiltFactIndex == p.currentBuiltFactories.size() && p.getNumFactories() < p.NUM_FACTORIES_WANTED) {
+
+        for(int i = 0; i < groupIndex; i++) {
+            if (gc.round() == 1 || numWorkers < 10) {
+                System.out.println("Worker group " + i + " is trying to replicate");
+                workerGroups[i].replicate();
+            } else if (p.unbuiltFactIndex == p.currentBuiltFactories.size() && p.getNumFactories() < p.NUM_FACTORIES_WANTED){
+                //System.out.println("built: " + p.currentBuiltFactories.size());
+                //System.out.println("unbuilt: " + p.getNumFactories());
                 //System.out.println("There aren't any factories yet");
-                MapLocation blueLoc = workerGroups[0].setBlueprint(UnitType.Factory);
-                if (p.baseLoc == null) {
-                    //p.baseLoc = blueLoc;
-                    //p.hillToBase = p.generateHill(p.startLoc);
-                }
+                MapLocation blueLoc = workerGroups[i].setBlueprint(UnitType.Factory);
                 if (blueLoc != null) {
                     short[][] hill = p.generateHill(blueLoc);
-                    workerGroups[0].changeToTargetMap(hill);
+                    workerGroups[i].changeToTargetMap(hill);
                     p.unbuiltFactIndex++;
-                    System.out.println("num fact: " + p.getNumFactories());
                 }
-            }
-        }
+            } else if (canBuildRocket && p.rocketIndex == 0) {
+                //System.out.println("Let's build a rocket!");
+                MapLocation blueLoc = workerGroups[i].setBlueprint(UnitType.Rocket);
+                if (blueLoc != null) {
+                    short[][] hill = p.generateHill(blueLoc);
+                    p.firstRocketLocHill = hill;
+                    workerGroups[i].changeToTargetMap(hill);
+                    p.rocketIndex++;
+                    //hillChosen = true;
+                }
+            }else /* if (workerGroups[i].getState() == WorkerStates.GatherKarbonite)*/ {
+                workerGroups[i].setState(WorkerStates.GatherKarbonite);
+                System.out.println("The workers want to gather");
+                System.out.println("PQ says there are " + p.closestKarbLocs.getSize() + " deposits left");
+                if (gc.karboniteAt(closestKarbDepot) == 0) {
+                    boolean viable = false;
+                    while (!viable && !p.closestKarbLocs.isEmpty()) {
+                        MapLocation newLoc = p.closestKarbLocs.pop().toMapLocation();
+                        System.out.println("PQ says there are " + p.closestKarbLocs.getSize() + " deposits left");
+                        if (gc.canSenseLocation(newLoc)) {
+                            if (newLoc != null && gc.karboniteAt(newLoc) != 0) {
+                                viable = true;
+                                System.out.println("A new spot was found: " + newLoc.toString());
 
-        //System.out.println("p.RocketIndex = " + p.getNumRockets());
-        if(canBuildRocket && p.rocketIndex == 0){
-            //System.out.println("Let's build a rocket!");
-            MapLocation blueLoc = workerGroups[0].setBlueprint(UnitType.Rocket);
-            if(blueLoc != null){
-                short[][] hill = p.generateHill(blueLoc);
-                p.firstRocketLocHill = hill;
-                workerGroups[0].changeToTargetMap(hill);
-                p.rocketIndex++;
-                //hillChosen = true;
-            }
-        }
+                                System.out.println("Amount of karbs at newLoc " + gc.karboniteAt(newLoc));
 
-        System.out.println("Do the workers want to gather?");
-        if(workerGroups[0].getState() == WorkerStates.GatherKarbonite){
-            System.out.println("They do! But is there a karbLocs?");
-            System.out.println("PQ says there are " + p.closestKarbLocs.getSize() + " deposits left");
-            if(closestKarbDepot == null || gc.karboniteAt(closestKarbDepot) == 0) {
-                boolean viable = false;
-                while (!viable && !p.closestKarbLocs.isEmpty()) {
-                    MapLocation newLoc = p.closestKarbLocs.pop().toMapLocation();
-                    System.out.println("PQ says there are " + p.closestKarbLocs.getSize() + " deposits left");
-                    if(gc.canSenseLocation(newLoc)) {
-                        if (newLoc != null && gc.karboniteAt(newLoc) != 0) {
+                                short[][] hill = p.generateHill(newLoc);
+                                workerGroups[i].changeToTargetMap(hill);
+                                workerGroups[i].setHarvestPoint(newLoc);
+                                System.out.println("There was!");
+                            } else {
+                                System.out.println("No spot here!");
+                            }
+                        } else{
                             viable = true;
-                            //todo I got a null pointer on the following line for your info jase I think it was cause of the peek code use when the Q was empty
-                            //System.out.println("A new spot was found: " + p.closestKarbLocs.peek().toMapLocation().toString());
-//
-//                            if (gc.canSenseLocation(p.closestKarbLocs.peek().toMapLocation())) {
-//                                System.out.println("Amount of karbs at location = " + gc.karboniteAt(p.closestKarbLocs.peek().toMapLocation()));
-//                            } else {
-//                                System.out.println("But we can't see it from here");
-//                            }
-
+                            System.out.println("Too far away, moving closer");
                             short[][] hill = p.generateHill(newLoc);
-                            workerGroups[0].changeToTargetMap(hill);
-                            workerGroups[0].setHarvestPoint(newLoc);
-                            System.out.println("There was!");
-                        } else {
-                            System.out.println("No spot here!");
+                            workerGroups[i].changeToTargetMap(hill);
+                            workerGroups[i].setHarvestPoint(newLoc);
                         }
-                    }else{
-                        System.out.println("Too far away, moving closer");
-                        short[][] hill = p.generateHill(newLoc);
-                        workerGroups[0].changeToTargetMap(hill);
-                        workerGroups[0].setHarvestPoint(newLoc);
                     }
-                }
-                if(!viable){
-                    System.out.println("All out of karbonite on this planet");
+                    if (!viable) {
+                        System.out.println("All out of karbonite on this planet");
+                    }
                 }
             }
         }
@@ -143,7 +139,10 @@ public class Workforce{
             idle[idleIndex] = id;
             idleIndex++;
         }*/
+
         idle[idleIndex] = id;
         idleIndex++;
+
+
     }
 }
