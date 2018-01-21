@@ -31,6 +31,7 @@ public class Army {
         troops = new ArrayList<>();
     }
     public void conductTurn() throws Exception{
+        long time = System.currentTimeMillis();
         carlsRangers.conductTurn();
         baseProtection.conductTurn();
         marsTroops.conductTurn();
@@ -50,6 +51,8 @@ public class Army {
         rocketShouldLaunchIfItCan();
         resetSize();
         rocketId = -1;
+        long end = System.currentTimeMillis();
+        System.out.println("conduct turn took: " + (end - time));
     }
     private int shouldEmptyBaseRound = -1;
     private int oldNumRangerGroups = 0;
