@@ -35,15 +35,15 @@ public class Workforce{
             }
         }
 
-        System.out.println("Unbuilt fact index " + p.unbuiltFactIndex);
-        System.out.println("p.currentBuiltFactories: " + p.currentBuiltFactories.size());
-        System.out.println("p.getNumFactories: " + p.getNumFactories());
+        //System.out.println("Unbuilt fact index " + p.unbuiltFactIndex);
+        //System.out.println("p.currentBuiltFactories: " + p.currentBuiltFactories.size());
+        //System.out.println("p.getNumFactories: " + p.getNumFactories());
         for(int i = 0; i < groupIndex; i++) {
             System.out.println("Work group " + i + " is in state: " +workerGroups[i].getState());
             if (gc.round() == 1 || numWorkers < 10) {
                 System.out.println("Worker group " + i + " is trying to replicate");
                 workerGroups[i].replicate();
-            } else if (p.unbuiltFactIndex == p.currentBuiltFactories.size() && p.getNumFactories() < p.NUM_FACTORIES_WANTED){
+            } else if (p.unbuiltFactIndex <= Path.NUM_FACTORIES_WANTED && p.getNumFactories() < p.NUM_FACTORIES_WANTED){
                 MapLocation blueLoc = workerGroups[i].setBlueprint(UnitType.Factory);
                 if (blueLoc != null) {
                     short[][] hill = p.generateHill(blueLoc);
@@ -60,7 +60,7 @@ public class Workforce{
                     p.rocketIndex++;
                     //hillChosen = true;
                 }
-            }else if (!p.closestKarbLocs.isEmpty()) {
+            }else if (!p.closestKarbLocs.isEmpty() && workerGroups[i].getState() != WorkerStates.Build) {
                 workerGroups[i].setState(WorkerStates.GatherKarbonite);
                 System.out.println("The workers want to gather");
                 System.out.println("PQ says there are " + p.closestKarbLocs.getSize() + " deposits left");
@@ -100,6 +100,7 @@ public class Workforce{
         }
 
         for(int i = 0; i < groupIndex; i++){
+            System.out.println("Worker group " + i + " conducting turn");
             workerGroups[i].conductTurn();
         }
         for(int i = 0; i < groupIndex; i++){
