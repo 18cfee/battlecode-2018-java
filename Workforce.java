@@ -1,30 +1,29 @@
 import bc.*;
 
 public class Workforce{
-    GameController gc;
-    Path p;
-    int[] idle = new int[100];
-    int idleIndex = 0;
-    Workers[] workerGroups = new Workers[10];
-    int groupIndex = 0;
-    boolean canBuildRocket = false;
-    MapLocation closestKarbDepot;
-    int numWorkers = 0;
+    private GameController gc;
+    private Path p;
+    private int[] idle = new int[100];
+    private int idleIndex = 0;
+    private Workers[] workerGroups = new Workers[10];
+    private int groupIndex = 0;
+    private boolean canBuildRocket = false;
+    private MapLocation closestKarbDepot = null;
 
     public Workforce(GameController gc, Path p) {
         this.gc = gc;
         this.p = p;
         createGroup();
-        closestKarbDepot = p.baseLoc;
+        //closestKarbDepot = p.baseLoc;
     }
     public void conductTurn() throws Exception{
-
-        System.out.println("There are " + idleIndex + " workers");
+        System.out.println("\n\n\n\nWorker turn starting");
+        //System.out.println("There are " + idleIndex + " workers");
         while(groupIndex < 2){
             createGroup();
         }
 
-        numWorkers = idleIndex;
+        int numWorkers = idleIndex;
         while(idleIndex > 0){
             if(idleIndex >= numWorkers/2) {
                 //System.out.println("Worker " + idleIndex + " added to group 0");
@@ -35,15 +34,15 @@ public class Workforce{
             }
         }
 
-        //System.out.println("Unbuilt fact index " + p.unbuiltFactIndex);
-        //System.out.println("p.currentBuiltFactories: " + p.currentBuiltFactories.size());
-        //System.out.println("p.getNumFactories: " + p.getNumFactories());
         for(int i = 0; i < groupIndex; i++) {
-            System.out.println("Work group " + i + " is in state: " +workerGroups[i].getState());
+            System.out.println("Work group " + i + " is in state: " + workerGroups[i].getState());
             if (gc.round() == 1 || numWorkers < 10) {
-                System.out.println("Worker group " + i + " is trying to replicate");
                 workerGroups[i].replicate();
-            } else if (!workerGroups[i].printInProgress && p.getNumFactories() < p.NUM_FACTORIES_WANTED){
+            } else if (workerGroups[i].getState() == WorkerStates.Build) {
+                System.out.println("Worker group " + i + " is going to just build this turn");
+
+            }else if (!workerGroups[i].printInProgress && p.getNumFactories() < p.NUM_FACTORIES_WANTED){
+                System.out.println("p.getNumFactories: " + p.getNumFactories());
                 MapLocation blueLoc = workerGroups[i].setBlueprint(UnitType.Factory);
                 if (blueLoc != null) {
                     short[][] hill = p.generateHill(blueLoc);
@@ -51,20 +50,19 @@ public class Workforce{
                     p.unbuiltFactIndex++;
                 }
             } else if (canBuildRocket && p.rocketIndex == 0) {
-                //System.out.println("Let's build a rocket!");
+                System.out.println("rocketIndex: " + p.rocketIndex);
                 MapLocation blueLoc = workerGroups[i].setBlueprint(UnitType.Rocket);
                 if (blueLoc != null) {
                     short[][] hill = p.generateHill(blueLoc);
                     p.firstRocketLocHill = hill;
                     workerGroups[i].changeToTargetMap(hill);
                     p.rocketIndex++;
-                    //hillChosen = true;
                 }
-            }else if (!p.closestKarbLocs.isEmpty() && workerGroups[i].getState() != WorkerStates.Build) {
+            }else if (!p.closestKarbLocs.isEmpty()  && workerGroups[i].getState() != WorkerStates.SetBlueprint) {
                 workerGroups[i].setState(WorkerStates.GatherKarbonite);
                 System.out.println("The workers want to gather");
                 System.out.println("PQ says there are " + p.closestKarbLocs.getSize() + " deposits left");
-                if (gc.karboniteAt(closestKarbDepot) == 0) {
+                if (closestKarbDepot == null || gc.karboniteAt(closestKarbDepot) == 0) {
                     boolean viable = false;
                     while (!viable && !p.closestKarbLocs.isEmpty()) {
                         MapLocation newLoc = p.closestKarbLocs.pop().toMapLocation();
@@ -72,14 +70,13 @@ public class Workforce{
                         if (gc.canSenseLocation(newLoc)) {
                             if (newLoc != null && gc.karboniteAt(newLoc) != 0) {
                                 viable = true;
-                                System.out.println("A new spot was found: " + newLoc.toString());
 
+                                System.out.println("A new spot was found: " + newLoc.toString());
                                 System.out.println("Amount of karbs at newLoc " + gc.karboniteAt(newLoc));
 
                                 short[][] hill = p.generateHill(newLoc);
                                 workerGroups[i].changeToTargetMap(hill);
                                 workerGroups[i].setHarvestPoint(newLoc);
-                                System.out.println("There was!");
                             } else {
                                 System.out.println("No spot here!");
                             }
@@ -97,6 +94,7 @@ public class Workforce{
                     }
                 }
             }else if(p.closestKarbLocs.isEmpty()){
+                System.out.println(workerGroups[i].getState() + " but switching to Standby");
                 workerGroups[i].setState(WorkerStates.Standby);
             }
         }
@@ -110,11 +108,6 @@ public class Workforce{
         }
         idleIndex = 0;
     }
-
-
-//    public void addRocket(Unit unit){
-//        workerGroups[0].addRocket(unit);
-//    }
 
     public void createGroup(){
         workerGroups[groupIndex] = new Workers(gc, p);
@@ -130,24 +123,7 @@ public class Workforce{
     }
 
     public void addWorker(int id){
-        /*use this code later
-        boolean present = false;
-        for(int i = 0; i <= idleIndex; i++){
-            if(idle[i] == id){
-                present = true;
-                break;
-            }
-        }
-
-        if(!present){
-            System.out.println("Adding worker to the idle list");
-            idle[idleIndex] = id;
-            idleIndex++;
-        }*/
-
         idle[idleIndex] = id;
         idleIndex++;
-
-
     }
 }

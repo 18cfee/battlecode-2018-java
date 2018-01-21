@@ -21,7 +21,7 @@ public class Player {
         while (true) {
             try {
                 p.round = (int)gc.round();
-                System.out.println("Current round: " + p.round + " bugs: "+ count);
+                System.out.println("\n\nCurrent round: " + p.round + " bugs: "+ count);
                 if(!gc.researchInfo().hasNextInQueue()){
                     gc.queueResearch(UnitType.Rocket);
                     gc.queueResearch(UnitType.Worker);
@@ -62,7 +62,7 @@ public class Player {
                     VecUnit units = gc.units();
                     Team myTeam = gc.team();
 
-                    if(!workforce.isCanBuildRocket() && gc.round() > 100){
+                    if(!workforce.isCanBuildRocket() && gc.researchInfo().getLevel(UnitType.Rocket) >= 1){
                         workforce.setCanBuildRocket(true);
                     }
 
