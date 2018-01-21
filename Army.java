@@ -33,15 +33,26 @@ public class Army {
         carlsRangers.conductTurn();
         baseProtection.conductTurn();
         marsTroops.conductTurn();
-        for(AggresiveRangers beasts: rangers){
+        ArrayList<Integer> beastsToRemove = new ArrayList<>(4);
+        for (int i = 0; i < rangers.size(); i++) {
+            AggresiveRangers beasts = rangers.get(i);
             beasts.conductTurn();
+            if(beasts.ids.size() == 0){
+                beastsToRemove.add(i);
+            }
+        }
+        // removes the empty groups
+        for(Integer i: beastsToRemove){
+            rangers.remove(i);
         }
         factoryProduce();
         rocketShouldLaunchIfItCan();
         resetSize();
         rocketId = -1;
     }
+    private int shouldEmptyBaseRound = -1;
     public void addUnit(int id) throws Exception{
+        // get the group info from last round then clear
         if(fighterRound != p.round){
             troops.clear();
             for (int i = 0; i < rangers.size(); i++) {
@@ -64,6 +75,10 @@ public class Army {
                 AggresiveRangers group = new AggresiveRangers(gc,p);
                 rangers.add(group);
                 group.add(id);
+                shouldEmptyBaseRound = p.round;
+                numDefenders = 0;
+            } else if(shouldEmptyBaseRound == p.round){
+                rangers.get(rangers.size()-1).add(id);
             } else {
                 baseProtection.add(id);
             }
