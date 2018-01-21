@@ -14,7 +14,7 @@ public class AggresiveRangers extends Fighter{
     @Override
     public void conductTurn() throws Exception{
         if(noUnits())return;
-        System.out.println("it is making it into the aggressive rangers");
+        System.out.println("aggressive rangers");
         if(!noEnemies() && seesEnemy == false && groupTargetCooldown == 0){
             seesEnemy = true;
             Enemy enemy = enemies.get(0);

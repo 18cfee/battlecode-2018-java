@@ -19,6 +19,7 @@ public class Army {
     private final static int MAXUnits = 95;
     private int armyRound = 0;
     private int fighterRound = 0;
+    private int numGroupsCreated = 0;
     public Army(GameController gc, Path p){
         this.gc = gc;
         this.p = p;
@@ -51,17 +52,20 @@ public class Army {
         rocketId = -1;
     }
     private int shouldEmptyBaseRound = -1;
+    private int oldNumRangerGroups = 0;
     public void addUnit(int id) throws Exception{
         // get the group info from last round then clear
         if(fighterRound != p.round){
+            fighterRound = p.round;
             troops.clear();
-            for (int i = 0; i < rangers.size(); i++) {
+            oldNumRangerGroups = rangers.size();
+            for (int i = 0; i < oldNumRangerGroups; i++) {
                 troops.add(rangers.get(i).ids);
             }
             numDefenders = baseProtection.ids.size();
         }
         // assign all the rangers back to there groups
-        for (int i = 0; i < rangers.size(); i++) {
+        for (int i = 0; i < oldNumRangerGroups; i++) {
             if(troops.get(i).contains(id)){
                 rangers.get(i).add(id);
                 size++;
@@ -77,8 +81,11 @@ public class Army {
                 group.add(id);
                 shouldEmptyBaseRound = p.round;
                 numDefenders = 0;
+                numGroupsCreated++;
+                System.out.println("num of aggressives fffffffffffffffffffffffffffffff " + numGroupsCreated);
             } else if(shouldEmptyBaseRound == p.round){
                 rangers.get(rangers.size()-1).add(id);
+                System.out.println("id added to new ranger group " + id);
             } else {
                 baseProtection.add(id);
             }
