@@ -27,22 +27,23 @@ public class Workforce{
         numWorkers = idleIndex;
         while(idleIndex > 0){
             if(idleIndex >= numWorkers/2) {
-                System.out.println("Worker " + idleIndex + " added to group 0");
+                //System.out.println("Worker " + idleIndex + " added to group 0");
                 workerGroups[0].add(idle[--idleIndex]);
             }else{
-                System.out.println("Worker " + idleIndex + " added to group 1");
+                //System.out.println("Worker " + idleIndex + " added to group 1");
                 workerGroups[1].add(idle[--idleIndex]);
             }
         }
 
+        System.out.println("Unbuilt fact index " + p.unbuiltFactIndex);
+        System.out.println("p.currentBuiltFactories: " + p.currentBuiltFactories.size());
+        System.out.println("p.getNumFactories: " + p.getNumFactories());
         for(int i = 0; i < groupIndex; i++) {
+            System.out.println("Work group " + i + " is in state: " +workerGroups[i].getState());
             if (gc.round() == 1 || numWorkers < 10) {
                 System.out.println("Worker group " + i + " is trying to replicate");
                 workerGroups[i].replicate();
             } else if (p.unbuiltFactIndex == p.currentBuiltFactories.size() && p.getNumFactories() < p.NUM_FACTORIES_WANTED){
-                //System.out.println("built: " + p.currentBuiltFactories.size());
-                //System.out.println("unbuilt: " + p.getNumFactories());
-                //System.out.println("There aren't any factories yet");
                 MapLocation blueLoc = workerGroups[i].setBlueprint(UnitType.Factory);
                 if (blueLoc != null) {
                     short[][] hill = p.generateHill(blueLoc);
@@ -59,7 +60,7 @@ public class Workforce{
                     p.rocketIndex++;
                     //hillChosen = true;
                 }
-            }else /* if (workerGroups[i].getState() == WorkerStates.GatherKarbonite)*/ {
+            }else if (!p.closestKarbLocs.isEmpty()) {
                 workerGroups[i].setState(WorkerStates.GatherKarbonite);
                 System.out.println("The workers want to gather");
                 System.out.println("PQ says there are " + p.closestKarbLocs.getSize() + " deposits left");
@@ -92,6 +93,7 @@ public class Workforce{
                     }
                     if (!viable) {
                         System.out.println("All out of karbonite on this planet");
+                        workerGroups[i].setState(WorkerStates.Standby);
                     }
                 }
             }

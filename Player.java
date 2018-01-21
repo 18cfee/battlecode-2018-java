@@ -43,6 +43,7 @@ public class Player {
                         } else if (unit.unitType() == UnitType.Factory) {
                             if(unit.structureIsBuilt() == 1){
                                 sprint.addFact(unit);
+                                p.addFactory(id);
                             }
                         } else if (unit.unitType() == UnitType.Rocket) {
                             Direction random = p.getRandDirection();

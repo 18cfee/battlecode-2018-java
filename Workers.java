@@ -3,14 +3,10 @@ import bc.*;
 public class Workers extends Group{
     int factBlueId = -1;
     int rocketBlueId = -1;
-//    int unbuiltRocketIndex = 0;
-//    int builtRocketIndex = 0;
-//    int[] unbuiltRocket = new int[5];
     MapLocation harvestPoint = null;
-
     GameController gc;
     Path p;
-    public WorkerStates state = WorkerStates.DefaultState;
+    public WorkerStates state = WorkerStates.Standby;
 
     public Workers(GameController gc, Path p){
         super(gc, p);
@@ -91,6 +87,8 @@ public class Workers extends Group{
                 //System.out.println("There is a karbonite loc");
                 gatherKarbonite();
             }
+        }else if(state == WorkerStates.Standby){
+            standby();
         }
 
         //moveToTarget(hill);
@@ -134,6 +132,14 @@ public class Workers extends Group{
         }
     }
 
+    void standby() throws Exception{
+        short[][] hill = p.generateHill(p.baseLoc);
+        for(int i = 0; i < movableIndex; i++){
+            if(gc.unit(moveAbles[i]).location().mapLocation().distanceSquaredTo(p.baseLoc) > 5){
+                moveToTarget(hill);
+            }
+        }
+    }
     void gatherKarbonite() throws Exception{
         for(Integer id: ids){
             if(gc.canHarvest(id, gc.unit(id).location().mapLocation().directionTo(harvestPoint))){
