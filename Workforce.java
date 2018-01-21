@@ -43,7 +43,7 @@ public class Workforce{
             if (gc.round() == 1 || numWorkers < 10) {
                 System.out.println("Worker group " + i + " is trying to replicate");
                 workerGroups[i].replicate();
-            } else if (p.unbuiltFactIndex <= Path.NUM_FACTORIES_WANTED && p.getNumFactories() < p.NUM_FACTORIES_WANTED){
+            } else if (!workerGroups[i].printInProgress && p.getNumFactories() < p.NUM_FACTORIES_WANTED){
                 MapLocation blueLoc = workerGroups[i].setBlueprint(UnitType.Factory);
                 if (blueLoc != null) {
                     short[][] hill = p.generateHill(blueLoc);
@@ -96,6 +96,8 @@ public class Workforce{
                         workerGroups[i].setState(WorkerStates.Standby);
                     }
                 }
+            }else if(p.closestKarbLocs.isEmpty()){
+                workerGroups[i].setState(WorkerStates.Standby);
             }
         }
 

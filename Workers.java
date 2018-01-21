@@ -8,6 +8,7 @@ public class Workers extends Group{
     GameController gc;
     Path p;
     public WorkerStates state = WorkerStates.Standby;
+    boolean printInProgress = false;
 
     public Workers(GameController gc, Path p){
         super(gc, p);
@@ -34,6 +35,7 @@ public class Workers extends Group{
             //System.out.println("Trying to find blueprint loc, worker attempting: " + ids[i]);
             if(gc.canBlueprint(id, type, rand)){
                 state = WorkerStates.Build;
+                printInProgress = true;
                 System.out.println("I found a spot to place it");
                 gc.blueprint(id, type, rand);
                 VecUnit units = gc.senseNearbyUnitsByType(gc.unit(id).location().mapLocation(), 50, type);
@@ -125,6 +127,7 @@ public class Workers extends Group{
                 }
             }
         }else{
+            printInProgress = false;
             setState(WorkerStates.Standby);
         }
     }
@@ -162,9 +165,13 @@ public class Workers extends Group{
 
     void standby() throws Exception{
         short[][] hill = p.generateHill(p.baseLoc);
+        System.out.println("Trying to go to standby mode");
         for(int i = 0; i < movableIndex; i++){
-            if(gc.unit(moveAbles[i]).location().mapLocation().distanceSquaredTo(p.baseLoc) > 5){
+            if(gc.unit(moveAbles[i]).location().mapLocation().distanceSquaredTo(p.baseLoc) > 10){
+                System.out.println("In standby position");
                 moveToTarget(hill);
+            }else{
+                System.out.println("Not in position yet");
             }
         }
     }
