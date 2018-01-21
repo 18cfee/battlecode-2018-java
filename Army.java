@@ -31,8 +31,6 @@ public class Army {
         troops = new ArrayList<>();
     }
     public void conductTurn() throws Exception{
-        if(rangers.size()!=0)
-        System.out.println("Beg of turn "+ rangers.get(rangers.size()-1).ids.size() + " " +gc.round());
         carlsRangers.conductTurn();
         baseProtection.conductTurn();
         marsTroops.conductTurn();
@@ -40,7 +38,6 @@ public class Army {
         for (int i = 0; i < rangers.size(); i++) {
             AggresiveRangers beasts = rangers.get(i);
             beasts.conductTurn();
-            System.out.println("pre removal "+ beasts.ids.size());
             if(beasts.ids.size() == 0){
                 beastsToRemove.add(i);
             }
@@ -53,33 +50,25 @@ public class Army {
         rocketShouldLaunchIfItCan();
         resetSize();
         rocketId = -1;
-        if(rangers.size()!=0)
-        System.out.println("End of turn ffffffffffffffffffffff"+ rangers.get(rangers.size()-1).ids.size() + " " +gc.round());
     }
     private int shouldEmptyBaseRound = -1;
     private int oldNumRangerGroups = 0;
     AggresiveRangers group = null;
     public void addUnit(int id) throws Exception{
         // get the group info from last round then clear
-        if(rangers.size()!=0)System.out.println("beg of add dfsdfsdfsdfsdfsdf"+ rangers.get(rangers.size()-1).ids.size() + " " +gc.round());
         if(fighterRound != p.round){
-            if(rangers.size()!=0)System.out.println("beg of add iniit ffffffffffffffffffffff"+ rangers.get(rangers.size()-1).ids.size() + " " +gc.round());
             group = null;
             fighterRound = p.round;
             troops.clear();
             oldNumRangerGroups = rangers.size();
-            System.out.println(oldNumRangerGroups+ "update late");
             for (int i = 0; i < oldNumRangerGroups; i++) {
-                System.out.println(rangers.get(i).size());
                 troops.add((HashSet<Integer>)rangers.get(i).ids.clone());
             }
             numDefenders = baseProtection.ids.size();
             //System.out.println("thinks there are this many on d: " + numDefenders);
-            if(rangers.size()!=0)System.out.println("beg of end iniit ffffffffffffffffffffff"+ rangers.get(rangers.size()-1).ids.size() + " " +gc.round());
         }
         // assign all the rangers back to there groups
         for (int i = 0; i < oldNumRangerGroups; i++) {
-            System.out.println(troops.get(i).size() + " troops at this moment and time");
             if(troops.get(i).contains(id)){
                 //System.out.println("id assigned to old rangers: " + id);
                 rangers.get(i).add(id);
@@ -99,11 +88,7 @@ public class Army {
             baseProtection.ids.clear();
             numGroupsCreated++;
         } else if(shouldEmptyBaseRound == p.round){
-            System.out.println(rangers.get(rangers.size()-1).ids.size() + "before");
             group.add(id);
-            System.out.println(rangers.get(rangers.size()-1).ids.size() + "after");
-            System.out.println(rangers.size());
-            //System.out.println("id added to new ranger group " + id);
         } else {
             baseProtection.add(id);
         }
