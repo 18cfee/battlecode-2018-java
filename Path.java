@@ -235,4 +235,20 @@ public class Path {
     public boolean onMap(MapLoc loc){
         return (0 <= loc.x && loc.x < planetWidth && 0 <= loc.y && loc.y < planetHeight);
     }
+    public int movesToBase(MapLoc loc){
+        return hillToBase[loc.x][loc.y];
+    }
+    public int movesToBase(MapLocation loc){
+        return hillToBase[loc.getX()][loc.getY()];
+    }
+    public void moveIfPossible(int id){
+        int randomN = random.nextInt(8);
+        for (int i = 0; i < 8; i++) {
+            int d = (randomN + i)%8;
+            Direction dir = directions[d];
+            if (gc.canMove(id,dir) && gc.isMoveReady(id)){
+                gc.moveRobot(id,dir);
+            }
+        }
+    }
 }

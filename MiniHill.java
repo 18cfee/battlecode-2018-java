@@ -21,7 +21,7 @@ public class MiniHill {
     public MapLoc getMapLoc(){
         return destination;
     }
-    public boolean generateMiniRing(MapLoc centerLoc, HashSet<Integer> ids){
+    public boolean generateMini(MapLoc centerLoc, HashSet<Integer> ids) throws Exception{
         destination = centerLoc;
         bounds = new MaxGCoordinates(destination,ids,gc,p);
         long start = System.currentTimeMillis();
@@ -47,7 +47,7 @@ public class MiniHill {
         }
         long end = System.currentTimeMillis();
         System.out.println("asdfasdfsdfasdf mini hill attention goooooooooooooo" + (end - start));
-        Debug.printHill(hill);
+        //Debug.printHill(hill);
         for (int i = 0; i < bounds.locs.length; i++) {
             short val = getHillValue(bounds.locs[i]);
             // at least one of the units can not reach the target via the minimap
@@ -55,7 +55,57 @@ public class MiniHill {
         }
         return true;
     }
-    public void moveUnit(int id){
+    public boolean generateMiniRing(MapLoc centerLoc, HashSet<Integer> ids) throws Exception{
+        destination = centerLoc;
+        bounds = new MaxGCoordinates(destination,ids,gc,p);
+        long start = System.currentTimeMillis();
+        hill = new short[bounds.width][bounds.height];
+        setHillValue(destination,(short)1);
+        ArrayDeque<MapLoc> toCheck = new ArrayDeque<>();
+        toCheck.addLast(destination);
+        while(!toCheck.isEmpty()){
+            MapLoc cur = toCheck.removeFirst();
+            short dis = getHillValue(cur);
+            for (int i = 0; i < 8; i++) {
+                MapLoc newLoc = cur.add(p.numsDirections[i]);
+                if(previouslyUncheckedMapLoc(newLoc)){
+                    if (tooClose(destination,newLoc)) {
+                        toCheck.addLast(newLoc);
+                        setHillValue(newLoc,(short)2);
+                    } else if (closeEnough(destination,newLoc)) {
+                        toCheck.addLast(newLoc);
+                        setHillValue(newLoc,(short)1);
+                    } else if(!p.passable(newLoc)){
+                        //mark as unreachable
+                        setHillValue(newLoc,p.greatestPathNum);
+                    } else {
+                        toCheck.addLast(newLoc);
+                        setHillValue(newLoc,(short)(dis+1));
+                    }
+                }
+            }
+        }
+        long end = System.currentTimeMillis();
+        System.out.println("asdfasdfsdfasdf mini hill attention goooooooooooooo" + (end - start));
+        //Debug.printHill(hill);
+        for (int i = 0; i < bounds.locs.length; i++) {
+            short val = getHillValue(bounds.locs[i]);
+            // at least one of the units can not reach the target via the minimap
+            if(val == 0) return false;
+        }
+        return true;
+    }
+    private boolean tooClose(MapLoc a, MapLoc b){
+        int dif1 = Math.abs(a.x - b.x);
+        int dif2 = Math.abs(a.y - b.y);
+        return (Math.max(dif1,dif2) <= p.RANGERDANGER);
+    }
+    private boolean closeEnough(MapLoc a, MapLoc b){
+        int dif1 = Math.abs(a.x - b.x);
+        int dif2 = Math.abs(a.y - b.y);
+        return (Math.max(dif1,dif2) <= p.RANGERRANGE);
+    }
+    public void moveUnit(int id) throws Exception{
         MapLoc cur = new MapLoc(gc.unit(id).location().mapLocation());
         short curVal = getHillValue(cur);
         short min = p.greatestPathNum;
@@ -114,9 +164,9 @@ public class MiniHill {
         hill[loc.x - bounds.x1][loc.y - bounds.y1] = dis;
     }
     public short getHillValue(MapLoc loc){
-        System.out.println("what is going on");
-        System.out.println(loc.x + " " + loc.y);
-        Debug.printHill(hill);
+        //System.out.println("what is going on");
+        //System.out.println(loc.x + " " + loc.y);
+        //Debug.printHill(hill);
         return hill[loc.x - bounds.x1][loc.y - bounds.y1];
     }
     public boolean generateCompactHill(MapLocation destination){

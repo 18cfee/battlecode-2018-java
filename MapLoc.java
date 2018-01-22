@@ -37,5 +37,4 @@ public class MapLoc {
             return new MapLocation(planet, x, y);
         }
     }
-
 }
