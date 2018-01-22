@@ -13,6 +13,7 @@ public class Army {
     ArrayList<RocketBoarders> rangers;
     ArrayList<HashSet<Integer>> troops;
     HashSet<Integer> tempOldFactories;
+    AggresiveRangers killEm;
     int size = 0;
     private final static int MAXUnits = 95;
     private int armyRound = 0;
@@ -27,11 +28,13 @@ public class Army {
         tempOldFactories = new HashSet<>();
         rangers = new ArrayList<>();
         troops = new ArrayList<>();
+        killEm = new AggresiveRangers(gc,p);
     }
     public void conductTurn() throws Exception{
         long time = System.currentTimeMillis();
         carlsRangers.conductTurn();
         baseProtection.conductTurn();
+        killEm.conductTurn();
 //        marsTroops.conductTurn();
         ArrayList<Integer> beastsToRemove = new ArrayList<>(4);
         for (int i = 0; i < rangers.size(); i++) {
@@ -55,7 +58,9 @@ public class Army {
     private int oldNumRangerGroups = 0;
     RocketBoarders group = null;
     private int attackSize = 10;
+    private HashSet<Integer> oldAttack;
     public void addUnit(int id) throws Exception{
+        size++;
         // get the group info from last round then clear
         if(fighterRound != p.round){
             group = null;
@@ -66,6 +71,7 @@ public class Army {
                 troops.add((HashSet<Integer>)rangers.get(i).ids.clone());
             }
             numDefenders = baseProtection.ids.size();
+            oldAttack = (HashSet<Integer>)killEm.ids.clone();
             //System.out.println("thinks there are this many on d: " + numDefenders);
         }
         // assign all the rangers back to there groups
@@ -73,15 +79,21 @@ public class Army {
             if(troops.get(i).contains(id)){
                 //System.out.println("id assigned to old rangers: " + id);
                 rangers.get(i).add(id);
-                size++;
                 return;
             }
+        }
+        // assign attackers back to attackers
+        if(oldAttack.contains(id)){
+            killEm.add(id);
+            return;
         }
 //        if(gc.round() > 500 && gc.round()%2 == 0){
 //            marsTroops.add(id);
 //        } else {
-        if(numDefenders > attackSize ){
+        if(numDefenders > attackSize) {
             attackSize += 10;
+            killEm.add(id);
+            // assign units to an attack group
         }else if(numDefenders > 20 && shouldBuildRocket() && !shouldBeDefending()){
             group = new RocketBoarders(gc,p);
             group.attainRocketId();
@@ -96,8 +108,6 @@ public class Army {
         } else {
             baseProtection.add(id);
         }
-//        }
-        size++;
     }
     private boolean shouldBuildRocket(){
         return false;
