@@ -32,6 +32,7 @@ public class Path {
     private int numKarbLocs = 0;
     HashSet<Integer> currentBuiltFactories;
     public Rocket rockets;
+    public final static int NUM_ROCKETS_WANTED = 3;
 
     public Path(GameController gc,Planet planet){
         rockets = new Rocket(this);
