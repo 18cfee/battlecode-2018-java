@@ -27,19 +27,17 @@ public class Workers extends Group{
         changeToTargetMap(currentHill);
         for(Integer id: ids){
             if(gc.unit(id).location().mapLocation().distanceSquaredTo(p.baseLoc) < 9) {
-
-                if (gc.canBlueprint(id, type, rand)) {
-
-                    state = WorkerStates.Build;
-                    printInProgress = true;
-                    gc.blueprint(id, type, rand);
-
-                    VecUnit units = gc.senseNearbyUnitsByType(gc.unit(id).location().mapLocation(), 2, type);
-
-                    for (int j = 0; j < units.size(); j++) {
-                        if (units.get(j).structureIsBuilt() == 0 && (type == UnitType.Factory || type == UnitType.Rocket) && units.get(j).team() == gc.team()) {
-                            blueID = units.get(j).id();
-                            return units.get(j).location().mapLocation();
+                for (Direction d: p.directions) {
+                    if (gc.canBlueprint(id, type, d)) {
+                        state = WorkerStates.Build;
+                        printInProgress = true;
+                        gc.blueprint(id, type, d);
+                        VecUnit units = gc.senseNearbyUnitsByType(gc.unit(id).location().mapLocation(), 2, type);
+                        for (int j = 0; j < units.size(); j++) {
+                            if (units.get(j).structureIsBuilt() == 0 && (type == UnitType.Factory || type == UnitType.Rocket) && units.get(j).team() == gc.team()) {
+                                blueID = units.get(j).id();
+                                return units.get(j).location().mapLocation();
+                            }
                         }
                     }
                 }
@@ -51,10 +49,12 @@ public class Workers extends Group{
     }
 
     public void replicate(){
-        Direction random = p.getRandDirection();
         for(Integer id: ids){
-            if(gc.canReplicate(id,random)){
-                gc.replicate(id,random);
+            for(Direction d: p.directions){
+                if(gc.canReplicate(id,d)){
+                    gc.replicate(id,d);
+                    break;
+                }
             }
         }
     }
