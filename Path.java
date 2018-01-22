@@ -170,8 +170,8 @@ public class Path {
         }
         return false;
     }
-    private long totalTimeInFunc = 0;
-    private int functionCalled = 0;
+    long totalTimeInFunc = 0;
+    int functionCalled = 0;
     public short[][] generateHill(MapLocation destination){
         functionCalled++;
         long start = System.currentTimeMillis();

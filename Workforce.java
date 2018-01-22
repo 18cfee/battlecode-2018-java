@@ -14,7 +14,6 @@ public class Workforce{
         this.gc = gc;
         this.p = p;
         createGroup();
-        //closestKarbDepot = p.baseLoc;
     }
     public void conductTurn() throws Exception{
         System.out.println("\n\n\n\nWorker turn starting");
@@ -55,7 +54,7 @@ public class Workforce{
                 System.out.println("rocketIndex: " + p.rocketIndex);
                 MapLocation blueLoc = workerGroups[i].setBlueprint(UnitType.Rocket);
 
-            }else if (!p.closestKarbLocs.isEmpty()  && workerGroups[i].getState() != WorkerStates.SetBlueprint) {
+            }else if (!p.closestKarbLocs.isEmpty()  && workerGroups[i].getState() != WorkerStates.SetBlueprint  || (!p.closestKarbLocs.isEmpty() && workerGroups[i].getState() == WorkerStates.GatherKarbonite)) {
                 gatherKarbonite(workerGroups[i]);
             }else if(p.closestKarbLocs.isEmpty()){
                 System.out.println(workerGroups[i].getState() + " but switching to Standby");
@@ -66,11 +65,7 @@ public class Workforce{
         gatherKarbonite(workerGroups[groupIndex-1]);
         for(int i = 0; i < groupIndex; i++){
             System.out.println("Worker group " + i + " conducting turn");
-            System.out.println("Workers in group");
-            for(int id : workerGroups[i].ids){
-                System.out.println("Worker ID: " + id);
-            }
-                if(workerGroups[i].groupIsAlive == true) {
+            if(workerGroups[i].groupIsAlive) {
                 workerGroups[i].conductTurn();
             }
         }
@@ -102,10 +97,13 @@ public class Workforce{
                     }
                 } else{
                     viable = true;
-                    System.out.println("Too far away, moving closer");
-                    short[][] hill = p.generateHill(newLoc);
-                    group.changeToTargetMap(hill);
-                    group.setHarvestPoint(newLoc);
+                    if(group.karbLocInSight){
+                        short[][] hill = p.generateHill(newLoc);
+                        group.changeToTargetMap(hill);
+                        group.setHarvestPoint(newLoc);
+                        group.karbLocInSight = false;
+                        group.currentHill = hill;
+                    }
                 }
             }
             if (!viable) {
@@ -130,6 +128,6 @@ public class Workforce{
     public void addWorker(int id){
         idle[idleIndex] = id;
         idleIndex++;
-        System.out.println("Worker added to idleIndex: " + id);
+        //System.out.println("Worker added to idleIndex: " + id);
     }
 }

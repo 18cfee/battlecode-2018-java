@@ -7,8 +7,10 @@ public class Workers extends Group{
     private Path p;
     public WorkerStates state = WorkerStates.Standby;
     boolean printInProgress = false;
-    private short[][] currentHill = null;
+    short[][] currentHill = null;
+    private short[][] baseHill = null;
     boolean groupIsAlive = false;
+    boolean karbLocInSight = false;
 
     public Workers(GameController gc, Path p){
         super(gc, p);
@@ -21,7 +23,8 @@ public class Workers extends Group{
         Direction rand = p.getRandDirection();
         if(state != WorkerStates.SetBlueprint){
             state = WorkerStates.SetBlueprint;
-            currentHill = p.generateHill(p.baseLoc);
+            baseHill = p.generateHill(p.baseLoc);
+            currentHill = baseHill;
         }
 
         changeToTargetMap(currentHill);
@@ -107,16 +110,8 @@ public class Workers extends Group{
     }
 
     void standby() throws Exception{
-        currentHill = p.generateHill(p.baseLoc);
-        System.out.println("Trying to go to standby mode");
-        for(int i = 0; i < movableIndex; i++){
-            if(gc.unit(moveAbles[i]).location().mapLocation().distanceSquaredTo(p.baseLoc) > 10){
-                System.out.println("In standby position");
-                moveToTarget(currentHill);
-            }else{
-                System.out.println("Not in position yet");
-            }
-        }
+        //System.out.println("Trying to go to standby mode");
+        moveToTarget(baseHill);
     }
     void gatherKarbonite() throws Exception{
         for(Integer id: ids){
