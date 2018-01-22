@@ -1,6 +1,8 @@
 import bc.MapLocation;
 import bc.Planet;
 
+import java.util.BitSet;
+
 public class Debug {
 
     public static void printCoords(MapLocation a){
@@ -19,6 +21,20 @@ public class Debug {
     public static void attention(){
         for (int i = 0; i < 100; i++) {
             System.out.println("GEt my attention bit ttiiiiiiiiiiiiiiiiiiiiiiiiiiime");
+        }
+    }
+    public static void passable(BitSet[] set){
+        for (int i = 0; i < set.length; i++) {
+            BitSet curSet = set[i];
+            for (int j = 0; j < curSet.length(); j++) {
+                if(curSet.get(j)){
+                    System.out.print(1 + " ");
+                } else {
+                    System.out.print(0 + " ");
+                }
+
+            }
+            System.out.println();
         }
     }
 //    long totalCarbs = 0;

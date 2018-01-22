@@ -91,6 +91,8 @@ public class Rocket {
             }
             passable[i] = cur;
         }
+        //Debug.passable(passable);
+        //System.out.println("second");
         for (int i = 0; i < marsWidth; i++) {
             for (int j = 0; j < marsHeight; j++) {
                 if(passable[i].get(j)){
@@ -100,12 +102,13 @@ public class Rocket {
                         int x = i + numDir[0];
                         int y = j + numDir[1];
                         if(p.onMap(x,y)){
-                            passable[x].set(y,false);
+                            passable[x].clear(y);
                         }
                     }
                 }
             }
         }
+        ///Debug.passable(passable);
     }
     public void clearRocketsIfNoUnits(){
         if(p.round!=roundNumber){

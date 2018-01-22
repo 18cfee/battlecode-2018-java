@@ -38,7 +38,6 @@ public class Path {
     int maxDistanceFromBase = 12;
 
     public Path(GameController gc,Planet planet){
-        rockets = new Rocket(this,gc);
         currentBuiltFactories = new HashSet<>(10);
         this.planet = planet;
         this.gc = gc;
@@ -63,6 +62,7 @@ public class Path {
             hillToBase = generateHill(baseLoc);
         }
         totalKarbOnEarth = calculateTotalKarbOnEarth();
+        rockets = new Rocket(this,gc);
     }
     private MapLocation chooseBaseLocation(){
         int maxGreenPercent = 0;
