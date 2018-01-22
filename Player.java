@@ -16,7 +16,6 @@ public class Player {
         Workforce workforce = new Workforce(gc, p);
         Fighter mars = new Fighter(gc,p);
         ArrayList<Group> newlist = new ArrayList<>();
-        Rocket rockets = new Rocket(p);
         newlist.add(mars);
         int count = 0;
         while (true) {
@@ -84,12 +83,12 @@ public class Player {
                                 sprint.addFact(unit);
                             }
                         } else if (unit.unitType() == UnitType.Rocket) {
-                            rockets.addRocket(unit);
+                            p.rockets.addRocket(unit);
                         }else{
                             sprint.addUnit(id);
                         }
                     }
-                    rockets.clearRocketsIfNoUnits();
+                    p.rockets.clearRocketsIfNoUnits();
                     sprint.conductTurn();
                     workforce.conductTurn();
                     workers.resetWorkerIndexCount();

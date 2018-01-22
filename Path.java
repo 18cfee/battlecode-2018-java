@@ -31,8 +31,9 @@ public class Path {
     public MPQ closestKarbLocs;
     private int numKarbLocs = 0;
     HashSet<Integer> currentBuiltFactories;
-
+    public Rocket rockets;
     public Path(GameController gc,Planet planet){
+        rockets = new Rocket(this);
         currentBuiltFactories = new HashSet<>(10);
         this.planet = planet;
         this.gc = gc;
