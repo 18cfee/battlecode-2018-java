@@ -1,3 +1,3 @@
 public enum WorkerStates {
-    Replicate, Build, GatherKarbonite, Standby, SetBlueprint;
+    Build, GatherKarbonite, Standby, SetBlueprint;
 }

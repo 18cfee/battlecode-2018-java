@@ -8,6 +8,7 @@ public class Workers extends Group{
     public WorkerStates state = WorkerStates.Standby;
     boolean printInProgress = false;
     private short[][] currentHill = null;
+    boolean groupIsAlive = false;
 
     public Workers(GameController gc, Path p){
         super(gc, p);
@@ -16,11 +17,11 @@ public class Workers extends Group{
     }
 
     public MapLocation setBlueprint(UnitType type)throws Exception{
+        System.out.println("Setting up a blueprint");
         Direction rand = p.getRandDirection();
-        System.out.println(rand);
+        state = WorkerStates.SetBlueprint;
+        currentHill = p.generateHill(p.baseLoc);
         for(Integer id: ids){
-            currentHill = p.generateHill(p.baseLoc);
-            state = WorkerStates.SetBlueprint;
             if(gc.unit(id).location().mapLocation().distanceSquaredTo(p.baseLoc) < 9) {
 
                 if (gc.canBlueprint(id, type, rand)) {
@@ -28,12 +29,14 @@ public class Workers extends Group{
                     state = WorkerStates.Build;
                     printInProgress = true;
                     gc.blueprint(id, type, rand);
+
                     VecUnit units = gc.senseNearbyUnitsByType(gc.unit(id).location().mapLocation(), 2, type);
+
                     for (int j = 0; j < units.size(); j++) {
-                        if (units.get(j).structureIsBuilt() == 0 && type == UnitType.Factory) {
+                        if (units.get(j).structureIsBuilt() == 0 && type == UnitType.Factory && units.get(j).team() == gc.team()) {
                             blueID = units.get(j).id();
                             return units.get(j).location().mapLocation();
-                        } else if (units.get(j).structureIsBuilt() == 0 && type == UnitType.Rocket) {
+                        } else if (units.get(j).structureIsBuilt() == 0 && type == UnitType.Rocket && units.get(j).team() == gc.team()) {
                             blueID = units.get(j).id();
                             return units.get(j).location().mapLocation();
                         }
@@ -54,6 +57,7 @@ public class Workers extends Group{
             }
         }
     }
+
     @Override
     public void conductTurn() throws Exception{
         // this basically makes sure things have been reset we need it at the beggining of all conduct turns for
@@ -115,10 +119,13 @@ public class Workers extends Group{
     }
     void gatherKarbonite() throws Exception{
         for(Integer id: ids){
-            if(gc.canHarvest(id, gc.unit(id).location().mapLocation().directionTo(harvestPoint))){
-                gc.harvest(id, gc.unit(id).location().mapLocation().directionTo(harvestPoint));
-            }else{
-                moveToTarget(hill);
+            System.out.println("Worker ID of gatherer: " + id);
+            if(gc.canSenseUnit(id)) {
+                if (gc.canHarvest(id, gc.unit(id).location().mapLocation().directionTo(harvestPoint))) {
+                    gc.harvest(id, gc.unit(id).location().mapLocation().directionTo(harvestPoint));
+                } else {
+                    moveToTarget(hill);
+                }
             }
         }
     }

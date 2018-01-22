@@ -11,7 +11,7 @@ public class Player {
         // Direction is a normal java enum.
         Path p = new Path(gc,gc.planet());
         Workers workers = new Workers(gc,p);
-        workers.setState(WorkerStates.Replicate);
+        workers.setState(WorkerStates.Standby);
         Army sprint = new Army(gc,p);
         Workforce workforce = new Workforce(gc, p);
         Fighter mars = new Fighter(gc,p);

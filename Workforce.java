@@ -18,7 +18,7 @@ public class Workforce{
     }
     public void conductTurn() throws Exception{
         System.out.println("\n\n\n\nWorker turn starting");
-        //System.out.println("There are " + idleIndex + " workers");
+        System.out.println("There are " + idleIndex + " workers");
         while(groupIndex < 2){
             createGroup();
         }
@@ -34,9 +34,15 @@ public class Workforce{
             }
         }
 
+        for(int i = 0; i < groupIndex; i++){
+            workerGroups[i].groupIsAlive = true;
+        }
+
         for(int i = 0; i < groupIndex; i++) {
             System.out.println("Work group " + i + " is in state: " + workerGroups[i].getState());
-            if (gc.round() == 1 || numWorkers < 10) {
+            if(workerGroups[i].noUnits()) {
+                workerGroups[i].groupIsAlive = false;
+            }else if (gc.round() == 1 || numWorkers < 10) {
                 workerGroups[i].replicate();
             } else if (workerGroups[i].getState() == WorkerStates.Build) {
                 System.out.println("Worker group " + i + " is going to just build this turn");
@@ -101,7 +107,13 @@ public class Workforce{
 
         for(int i = 0; i < groupIndex; i++){
             System.out.println("Worker group " + i + " conducting turn");
-            workerGroups[i].conductTurn();
+            System.out.println("Workers in group");
+            for(int id : workerGroups[i].ids){
+                System.out.println("Worker ID: " + id);
+            }
+                if(workerGroups[i].groupIsAlive == true) {
+                workerGroups[i].conductTurn();
+            }
         }
         for(int i = 0; i < groupIndex; i++){
             workerGroups[i].resetWorkerIndexCount();
@@ -125,5 +137,6 @@ public class Workforce{
     public void addWorker(int id){
         idle[idleIndex] = id;
         idleIndex++;
+        System.out.println("Worker added to idleIndex: " + id);
     }
 }
