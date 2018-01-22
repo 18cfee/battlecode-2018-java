@@ -12,11 +12,15 @@ public class Rocket {
     private Path p;
     private GameController gc;
     private Stack<MapLocation> destinationStack;
+    private Stack<Integer> unClaimedIds;
+    private HashMap<Integer,Integer> idToRoundLastModified;
     public Rocket(Path p, GameController gc) {
         unbuiltIds = new HashSet<>();
         builtRockets = new HashMap<>();
         this.p = p;
         this.gc = gc;
+        unClaimedIds = new Stack<>();
+        idToRoundLastModified = new HashMap<>();
     }
     public void addRocket(Unit unit){
         if(p.round != roundNumber){
@@ -28,6 +32,7 @@ public class Rocket {
             unbuiltIds.add(unit.id());
         } else {
             builtRockets.put(unit.id(),unit.location().mapLocation());
+            unClaimedIds.push(unit.id());
         }
     }
     public void rocketsShouldLauchIfPossible(){
@@ -35,13 +40,31 @@ public class Rocket {
             Unit unit = gc.unit(id);
             int garisonMax = (int)unit.structureMaxCapacity();
             int curLoad = (int)unit.structureGarrison().size();
-            if(curLoad == garisonMax && !destinationStack.empty()){
+            // last
+            if((curLoad == garisonMax || tooManyRoundsSinceLastInsert(id)) && !destinationStack.empty()){
                 MapLocation dest = destinationStack.pop();
                 if (gc.canLaunchRocket(id,dest)){
                     gc.launchRocket(id,dest);
                 }
             }
         }
+    }
+    public void tryAddToRocket(int rocketId, int unitId){
+        if(gc.canLoad(rocketId,unitId)){
+            gc.load(rocketId,unitId);
+            idToRoundLastModified.put(rocketId,p.round);
+        }
+    }
+    private boolean tooManyRoundsSinceLastInsert(int rocketId){
+        return p.round > idToRoundLastModified.get(rocketId) + 15;
+    }
+    public int takeRocket(){
+        int id = unClaimedIds.pop();
+        idToRoundLastModified.put(id,p.round);
+        return id;
+    }
+    public boolean availableRocket(){
+        return unClaimedIds.size() > 0;
     }
     private void generateLaunchQ(){
         PlanetMap mars = gc.startingMap(Planet.Mars);

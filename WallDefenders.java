@@ -5,49 +5,40 @@ import java.util.ArrayDeque;
 import java.util.BitSet;
 import java.util.HashSet;
 
-public class Defenders extends Fighter {
-    Defenders(GameController gc, Path p){
+public class WallDefenders extends Fighter {
+    WallDefenders(GameController gc, Path p){
         super(gc,p);
     }
     public int rocket;
-    private short[][] baseHill = null;
-    private MapLocation base = null;
-    private Wall wall;
+    private Wall wall = null;
     private int wallThresh = 4;
     @Override
     public void conductTurn() throws Exception{
         //System.out.println("it is making it into defenders");
         if(noUnits())return;
-        if(base == null){
-            //not ready to go
-            if(p.baseLoc == null){
-                return;
-            } else {
-                base = p.baseLoc;
-                baseHill = p.generateHill(base);
-                wall = new Wall(gc,p,baseHill,base);
-            }
+        if(wall == null){
+            wall = new Wall(gc,p,p.hillToBase,p.baseLoc);
         }
         moveToTarget(wall.hillToTargetWall);
         if(wallThresh < size()){
             wall.growTargetWall();
             //5 more units on each layer
-            wallThresh += 5;
+            wallThresh += 10;
         }
         //else loadRocketIfPossible(rocket);
         shootAtSomething();
     }
-    public void loadRocketIfPossible(int rocketId){
-
-        if(rocketId == -1 ) return;
-        //.println("gathering around rocket");
-        baseHill = p.firstRocketLocHill;
-        for (int i = 0; i < movableIndex; i++) {
-            if (gc.canLoad(rocketId,moveAbles[i])){
-                gc.load(rocketId,moveAbles[i]);
-            }
-        }
-    }
+//    public void loadRocketIfPossible(int rocketId){
+//
+//        if(rocketId == -1 ) return;
+//        //.println("gathering around rocket");
+//        baseHill = p.firstRocketLocHill;
+//        for (int i = 0; i < movableIndex; i++) {
+//            if (gc.canLoad(rocketId,moveAbles[i])){
+//                gc.load(rocketId,moveAbles[i]);
+//            }
+//        }
+//    }
 }
 
 class Wall{
