@@ -19,8 +19,11 @@ public class Workers extends Group{
     public MapLocation setBlueprint(UnitType type)throws Exception{
         System.out.println("Setting up a blueprint");
         Direction rand = p.getRandDirection();
-        state = WorkerStates.SetBlueprint;
-        currentHill = p.generateHill(p.baseLoc);
+        if(state != WorkerStates.SetBlueprint){
+            state = WorkerStates.SetBlueprint;
+            currentHill = p.generateHill(p.baseLoc);
+        }
+
         for(Integer id: ids){
             if(gc.unit(id).location().mapLocation().distanceSquaredTo(p.baseLoc) < 9) {
 
@@ -33,10 +36,7 @@ public class Workers extends Group{
                     VecUnit units = gc.senseNearbyUnitsByType(gc.unit(id).location().mapLocation(), 2, type);
 
                     for (int j = 0; j < units.size(); j++) {
-                        if (units.get(j).structureIsBuilt() == 0 && type == UnitType.Factory && units.get(j).team() == gc.team()) {
-                            blueID = units.get(j).id();
-                            return units.get(j).location().mapLocation();
-                        } else if (units.get(j).structureIsBuilt() == 0 && type == UnitType.Rocket && units.get(j).team() == gc.team()) {
+                        if (units.get(j).structureIsBuilt() == 0 && (type == UnitType.Factory || type == UnitType.Rocket) && units.get(j).team() == gc.team()) {
                             blueID = units.get(j).id();
                             return units.get(j).location().mapLocation();
                         }
@@ -91,17 +91,22 @@ public class Workers extends Group{
     }
 
     void contBuilding() throws Exception{
-        if(gc.unit(blueID).structureIsBuilt() != 1) {
-            for (Integer id : ids) {
-                if (gc.canBuild(id, blueID)) {
-                    gc.build(id, blueID);
-                } else {
-                    moveToTarget(hill);
+        if(gc.canSenseUnit(blueID)) {
+            if (gc.unit(blueID).structureIsBuilt() != 1) {
+                for (Integer id : ids) {
+                    if (gc.canBuild(id, blueID)) {
+                        gc.build(id, blueID);
+                    } else {
+                        moveToTarget(hill);
+                    }
                 }
+            } else {
+                printInProgress = false;
+                setState(WorkerStates.Standby);
             }
         }else{
-            printInProgress = false;
-            setState(WorkerStates.Standby);
+            System.out.println("Blueprinted unit destroyed, going to Standby mode");
+            state = WorkerStates.Standby;
         }
     }
 
@@ -119,7 +124,7 @@ public class Workers extends Group{
     }
     void gatherKarbonite() throws Exception{
         for(Integer id: ids){
-            System.out.println("Worker ID of gatherer: " + id);
+            //System.out.println("Worker ID of gatherer: " + id);
             if(gc.canSenseUnit(id)) {
                 if (gc.canHarvest(id, gc.unit(id).location().mapLocation().directionTo(harvestPoint))) {
                     gc.harvest(id, gc.unit(id).location().mapLocation().directionTo(harvestPoint));
