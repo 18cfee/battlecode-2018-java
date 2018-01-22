@@ -11,7 +11,7 @@ public class Player {
         // Direction is a normal java enum.
         Path p = new Path(gc,gc.planet());
         Workers workers = new Workers(gc,p);
-        workers.setState(WorkerStates.Replicate);
+        workers.setState(WorkerStates.Standby);
         Army sprint = new Army(gc,p);
         Workforce workforce = new Workforce(gc, p);
         Fighter mars = new Fighter(gc,p);
@@ -43,6 +43,7 @@ public class Player {
                         } else if (unit.unitType() == UnitType.Factory) {
                             if(unit.structureIsBuilt() == 1){
                                 sprint.addFact(unit);
+                                p.addFactory(id);
                             }
                         } else if (unit.unitType() == UnitType.Rocket) {
                             Direction random = p.getRandDirection();
@@ -61,7 +62,7 @@ public class Player {
                     VecUnit units = gc.units();
                     Team myTeam = gc.team();
 
-                    if(!workforce.isCanBuildRocket() && gc.round() > 100){
+                    if(!workforce.isCanBuildRocket() && gc.researchInfo().getLevel(UnitType.Rocket) >= 1){
                         workforce.setCanBuildRocket(true);
                     }
 
@@ -82,18 +83,12 @@ public class Player {
                                 sprint.addFact(unit);
                             }
                         } else if (unit.unitType() == UnitType.Rocket) {
-                            if(unit.structureIsBuilt() == 1){
-                                System.out.println("The rocket is already built");
-                                sprint.addRocket(unit);
-                                //workforce.addRocket(unit);
-                            } else {
-                                System.out.println("The rocket isn't built yet");
-                                //workforce.addRocket(unit);
-                            }
+                            p.rockets.addRocket(unit);
                         }else{
                             sprint.addUnit(id);
                         }
                     }
+                    p.rockets.clearRocketsIfNoUnits();
                     sprint.conductTurn();
                     workforce.conductTurn();
                     workers.resetWorkerIndexCount();
@@ -106,7 +101,7 @@ public class Player {
             }
 
             //not working
-            System.out.println(gc.getTimeLeftMs());
+            //System.out.println(gc.getTimeLeftMs());
             gc.nextTurn();
         }
     }

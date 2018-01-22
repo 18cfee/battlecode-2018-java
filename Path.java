@@ -31,7 +31,10 @@ public class Path {
     public MPQ closestKarbLocs;
     private int numKarbLocs = 0;
     HashSet<Integer> currentBuiltFactories;
+    public Rocket rockets;
+
     public Path(GameController gc,Planet planet){
+        rockets = new Rocket(this);
         currentBuiltFactories = new HashSet<>(10);
         this.planet = planet;
         this.gc = gc;
@@ -112,8 +115,12 @@ public class Path {
         }
     }
 
+    public void addFactory(int id){
+            currentBuiltFactories.add(id);
+    }
+
     public int getNumFactories(){
-        return unbuiltFactIndex;
+        return currentBuiltFactories.size();
     }
     public int getNumRockets(){
         return rocketIndex;
@@ -162,8 +169,8 @@ public class Path {
         }
         return false;
     }
-    private long functionCalled = 0;
     private long totalTimeInFunc = 0;
+    private int functionCalled = 0;
     public short[][] generateHill(MapLocation destination){
         functionCalled++;
         long start = System.currentTimeMillis();
@@ -226,7 +233,7 @@ public class Path {
         closestKarbLocs = new MPQ(numKarbLocs+1);
         for(MapLoc loc : karbLocs){
             closestKarbLocs.insert(loc);
-            System.out.println("New centerLoc added to pq!");
+            //System.out.println("New loc added to pq!");
         }
         return totalCarbs;
     }
