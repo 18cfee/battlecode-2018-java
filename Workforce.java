@@ -40,6 +40,7 @@ public class Workforce{
 
         for(int i = 0; i < groupIndex - 1; i++) {
             System.out.println("Work group " + i + " is in state: " + workerGroups[i].getState());
+            System.out.println("numRockets: " + p.rockets.getNumberOfBuiltRockets() + "\nnumUnbuiltRockets: " + p.rockets.getNumUnBuiltRockets() + canBuildRocket);
             if(workerGroups[i].noUnits()) {
                 workerGroups[i].groupIsAlive = false;
             }else if (gc.round() == 1 || numWorkers < 10) {
@@ -48,11 +49,9 @@ public class Workforce{
                 System.out.println("Worker group " + i + " is going to just build this turn");
 
             }else if (!workerGroups[i].printInProgress && p.getNumFactories() < p.NUM_FACTORIES_WANTED){
-                System.out.println("p.getNumFactories: " + p.getNumFactories());
                 MapLocation blueLoc = workerGroups[i].setBlueprint(UnitType.Factory);
 
             } else if (canBuildRocket && p.rockets.getNumUnBuiltRockets() == 0 && p.rockets.getNumberOfBuiltRockets() < p.NUM_ROCKETS_WANTED){
-                System.out.println("rocketIndex: " + p.rocketIndex);
                 MapLocation blueLoc = workerGroups[i].setBlueprint(UnitType.Rocket);
 
             }else if (!p.closestKarbLocs.isEmpty()  && workerGroups[i].getState() != WorkerStates.SetBlueprint) {
@@ -66,11 +65,11 @@ public class Workforce{
         gatherKarbonite(workerGroups[groupIndex-1]);
         for(int i = 0; i < groupIndex; i++){
             System.out.println("Worker group " + i + " conducting turn");
-            System.out.println("Workers in group");
+            //System.out.println("Workers in group");
             for(int id : workerGroups[i].ids){
-                System.out.println("Worker ID: " + id);
+                //System.out.println("Worker ID: " + id);
             }
-                if(workerGroups[i].groupIsAlive == true) {
+                if(workerGroups[i].groupIsAlive) {
                 workerGroups[i].conductTurn();
             }
         }
@@ -114,6 +113,7 @@ public class Workforce{
             }
         }
     }
+
     public void createGroup(){
         workerGroups[groupIndex] = new Workers(gc, p);
         groupIndex++;
@@ -130,6 +130,6 @@ public class Workforce{
     public void addWorker(int id){
         idle[idleIndex] = id;
         idleIndex++;
-        System.out.println("Worker added to idleIndex: " + id);
+        //System.out.println("Worker added to idleIndex: " + id);
     }
 }

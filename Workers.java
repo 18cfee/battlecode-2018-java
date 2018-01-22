@@ -26,10 +26,10 @@ public class Workers extends Group{
 
         changeToTargetMap(currentHill);
         for(Integer id: ids){
-            if(gc.unit(id).location().mapLocation().distanceSquaredTo(p.baseLoc) < 9) {
+            if(gc.unit(id).location().mapLocation().distanceSquaredTo(p.baseLoc) < p.maxDistanceFromBase) {
 
                 if (gc.canBlueprint(id, type, rand)) {
-
+                    System.out.println("Setting down blueprint");
                     state = WorkerStates.Build;
                     printInProgress = true;
                     gc.blueprint(id, type, rand);
@@ -44,6 +44,7 @@ public class Workers extends Group{
                     }
                 }
             }else{
+                System.out.println("Getting closer to base");
                 moveToTarget(currentHill);
             }
         }
@@ -65,7 +66,6 @@ public class Workers extends Group{
         // groups
         if(noUnits()) return;
         System.out.println("Total karb: " + gc.karbonite());
-        System.out.println("Worker state: " + state);
         if(state == WorkerStates.Build) {
             //System.out.println("I'm in the build state, and I'm building:");
             for (Integer id: ids){
@@ -108,13 +108,9 @@ public class Workers extends Group{
 
     void standby() throws Exception{
         currentHill = p.generateHill(p.baseLoc);
-        System.out.println("Trying to go to standby mode");
         for(int i = 0; i < movableIndex; i++){
             if(gc.unit(moveAbles[i]).location().mapLocation().distanceSquaredTo(p.baseLoc) > 10){
-                System.out.println("In standby position");
                 moveToTarget(currentHill);
-            }else{
-                System.out.println("Not in position yet");
             }
         }
     }
