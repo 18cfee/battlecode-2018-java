@@ -23,18 +23,21 @@ public class Path {
     //public final static int MAX_NUM_FACTS = 20;
     //public int builtFactIndex = 0;
     //public int [] builtFactary = new int [MAX_NUM_FACTS];
-    public final static int NUM_FACTORIES_WANTED = 2;
+    public final static int NUM_FACTORIES_WANTED = 3;
     int rocketIndex = 0;
     public MapLocation baseLoc = null;
     public short[][] firstRocketLocHill = null;
-    //public MapLocation placeToLandOnMars;
+    public short[][] secondRocketLocHill = null;
+    MapLocation firstRocketLoc = null;
+    MapLocation secondRocketLoc = null;
+    public MapLocation placeToLandOnMars;
     public long totalKarbOnEarth;
     public ArrayList<MapLoc> karbLocs;
     public MPQ closestKarbLocs;
     private int numKarbLocs = 0;
     HashSet<Integer> currentBuiltFactories;
     public Rocket rockets;
-    public final static int NUM_ROCKETS_WANTED = 3;
+    public final static int NUM_ROCKETS_WANTED = 2;
     int maxDistanceFromBase = 12;
 
     public Path(GameController gc,Planet planet){

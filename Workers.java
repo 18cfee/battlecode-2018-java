@@ -17,6 +17,53 @@ public class Workers extends Group{
         this.p = p;
     }
 
+    public void setRBlueprint() throws Exception{
+        System.out.println("starting to build a rocket");
+        if(p.firstRocketLocHill == null){
+            p.firstRocketLoc = setBlueprint(UnitType.Rocket);
+            if(p.firstRocketLoc != null) {
+                p.firstRocketLocHill = currentHill;
+                System.out.println("Location of first rocket hill " + p.firstRocketLoc.toString());
+            }else{
+                System.out.println("Could not find a firstLoc");
+                moveToTarget(p.hillToBase);
+            }
+        }else if(p.secondRocketLoc == null){
+            if(p.secondRocketLocHill == null) {
+                p.secondRocketLoc = setBlueprint(UnitType.Rocket);
+                if (p.secondRocketLoc != null){
+                    p.secondRocketLocHill = currentHill;
+                    System.out.println("Location of second rocket hill " + p.secondRocketLoc.toString());
+                }else{
+                    System.out.println("Could not find a secondLoc");
+                    moveToTarget(p.hillToBase);
+                }
+            }
+        }else if(!gc.hasUnitAtLocation(p.firstRocketLoc)){
+            for(int id : ids){
+                if(gc.unit(id).location().mapLocation().isAdjacentTo(p.firstRocketLoc) && gc.canBlueprint(id, UnitType.Factory, gc.unit(id).location().mapLocation().directionTo(p.firstRocketLoc))){
+                    System.out.println("Placed rocket in firstRocketLoc");
+                    gc.blueprint(id, UnitType.Factory, gc.unit(id).location().mapLocation().directionTo(p.firstRocketLoc));
+                    return;
+                }
+            }
+            moveToTarget(p.firstRocketLocHill);
+        }else if(!gc.hasUnitAtLocation(p.secondRocketLoc)){
+            for(int id : ids){
+                if(gc.unit(id).location().mapLocation().isAdjacentTo(p.firstRocketLoc) && gc.canBlueprint(id, UnitType.Factory, gc.unit(id).location().mapLocation().directionTo(p.secondRocketLoc))){
+                    System.out.println("Placed rocket in secondRocketLoc");
+                    gc.blueprint(id, UnitType.Factory, gc.unit(id).location().mapLocation().directionTo(p.secondRocketLoc));
+                    return;
+                }
+            }
+            moveToTarget(p.secondRocketLocHill);
+        }else{
+            System.out.println("There were no null locations and a unit at each location");
+        }
+
+        System.out.println("Didn't place a blueprint");
+        moveToTarget(p.hillToBase);
+    }
     public MapLocation setBlueprint(UnitType type)throws Exception{
         System.out.println("Setting up a blueprint");
         if(state != WorkerStates.SetBlueprint){
@@ -39,14 +86,15 @@ public class Workers extends Group{
                                 return units.get(j).location().mapLocation();
                             }
                         }
-                    }else{
-                        System.out.println("Could not place a print");
                     }
                 }
+                System.out.println("Couldn't place in any direction");
             }else{
+                System.out.println("Not in range of base");
                 moveToTarget(currentHill);
             }
         }
+        System.out.println("Could not place a print at all");
         return null;
     }
 
