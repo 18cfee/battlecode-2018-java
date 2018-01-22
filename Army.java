@@ -59,6 +59,7 @@ public class Army {
     RocketBoarders group = null;
     private int attackSize = 10;
     private HashSet<Integer> oldAttack;
+    boolean haveIncreasedAttacketsThisRound = false;
     public void addUnit(int id) throws Exception{
         size++;
         // get the group info from last round then clear
@@ -72,6 +73,7 @@ public class Army {
             }
             numDefenders = baseProtection.ids.size();
             oldAttack = (HashSet<Integer>)killEm.ids.clone();
+            haveIncreasedAttacketsThisRound = false;
             //System.out.println("thinks there are this many on d: " + numDefenders);
         }
         // assign all the rangers back to there groups
@@ -90,8 +92,11 @@ public class Army {
 //        if(gc.round() > 500 && gc.round()%2 == 0){
 //            marsTroops.add(id);
 //        } else {
-        if(numDefenders > attackSize) {
-            attackSize += 10;
+        if(numDefenders > attackSize || haveIncreasedAttacketsThisRound) {
+            if(!haveIncreasedAttacketsThisRound){
+                attackSize += 10;
+                haveIncreasedAttacketsThisRound = true;
+            }
             killEm.add(id);
             // assign units to an attack group
         }else if(numDefenders > 20 && shouldBuildRocket() && !shouldBeDefending()){
@@ -119,6 +124,7 @@ public class Army {
         Enemy enemy = new Enemy(unit);
         carlsRangers.addEnemy(enemy);
         baseProtection.addEnemy(enemy);
+        killEm.addEnemy(enemy);
         for(RocketBoarders group: rangers){
             group.addEnemy(enemy);
         }

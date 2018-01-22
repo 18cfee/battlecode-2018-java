@@ -4,32 +4,37 @@ import bc.MapLocation;
 import java.util.ArrayDeque;
 
 public class AggresiveRangers extends Fighter{
-    AggresiveRangers(GameController gc, Path p){
-        super(gc,p);
-    }
     private short[][] attackRingHill = null;
     private MapLocation target = null;
-    private boolean seesEnemy = false;
+    private boolean seesEnemy;
     private short groupTargetCooldown = 0;
+    AggresiveRangers(GameController gc, Path p){
+        super(gc,p);
+        seesEnemy = false;
+    }
     @Override
     public void conductTurn() throws Exception{
         if(noUnits())return;
-        System.out.println("            kill em with units: " + size());
-        //System.out.println("aggressive rangers " + size());
         if(!noEnemies() && seesEnemy == false && groupTargetCooldown == 0){
-            seesEnemy = true;
             Enemy enemy = enemies.get(0);
             if(enemy.hp > 0){
                 MapLocation a = gc.unit(enemy.id).location().mapLocation();
                 target = a;
                 attackRingHill = generateAttackRing(target);
                 groupTargetCooldown+= 25;
+                seesEnemy = true;
             }
-        } else if (seesEnemy = true && enemies.size() == 0){
+        } else if (seesEnemy == true && enemies.size() == 0){
             seesEnemy = false;
         }
-        if(attackRingHill!= null) moveToTarget(attackRingHill);
-        else roamRandom();
+        if(attackRingHill!= null){
+            System.out.println("roaming to hill");
+            moveToTarget(attackRingHill);
+        }
+        else{
+            System.out.println("roaming random");
+            roamRandom();
+        }
         shootOptimally();
         if(groupTargetCooldown > 0) groupTargetCooldown--;
     }
