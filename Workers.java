@@ -19,7 +19,6 @@ public class Workers extends Group{
 
     public MapLocation setBlueprint(UnitType type)throws Exception{
         System.out.println("Setting up a blueprint");
-        Direction rand = p.getRandDirection();
         if(state != WorkerStates.SetBlueprint){
             state = WorkerStates.SetBlueprint;
             currentHill = p.hillToBase;
