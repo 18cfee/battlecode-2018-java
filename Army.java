@@ -16,7 +16,7 @@ public class Army {
     HashSet<Integer> tempOldFactories;
     int size = 0;
     private int rocketId = -1;
-    private final static int MAXUnits = 95;
+    private final static int MAXUnits = 50;
     private int armyRound = 0;
     private int fighterRound = 0;
     private int numGroupsCreated = 0;

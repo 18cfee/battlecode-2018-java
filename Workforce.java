@@ -54,7 +54,7 @@ public class Workforce{
                 }
 
             } else if (canBuildRocket && p.rockets.getNumUnBuiltRockets() == 0 && p.rockets.getNumberOfBuiltRockets() < p.NUM_ROCKETS_WANTED) {
-                System.out.println("starting to build a rocket");
+
                 //MapLocation blueLoc = workerGroups[i].setRBlueprint();
                 workerGroups[i].setRBlueprint();
                 /*if (blueLoc != null){
