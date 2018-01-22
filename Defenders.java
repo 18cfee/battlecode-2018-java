@@ -15,7 +15,7 @@ public class Defenders extends Fighter {
     private Wall wall;
     @Override
     public void conductTurn() throws Exception{
-        System.out.println("it is making it into defenders");
+        //System.out.println("it is making it into defenders");
         if(noUnits())return;
         if(base == null){
             //not ready to go
@@ -38,7 +38,7 @@ public class Defenders extends Fighter {
     public void loadRocketIfPossible(int rocketId){
 
         if(rocketId == -1 ) return;
-        System.out.println("gathering around rocket");
+        //.println("gathering around rocket");
         baseHill = p.firstRocketLocHill;
         for (int i = 0; i < movableIndex; i++) {
             if (gc.canLoad(rocketId,moveAbles[i])){
@@ -66,7 +66,7 @@ class Wall{
         curWall.push(new MapLoc(startingPoint));
         targetNumFromBase = 1;
         hillToTargetWall = new short[p.planetWidth][p.planetHeight];
-        System.out.println("about to grow");
+        //System.out.println("about to grow");
         growTargetWall();
     }
     public void growTargetWall(){
@@ -89,7 +89,7 @@ class Wall{
                 }
             }
         }
-        System.out.println("about to generate gradient");
+        //System.out.println("about to generate gradient");
         curWall = newWall;
         generateWallGradient(curWall);
     }
@@ -127,7 +127,7 @@ class Wall{
     public int percentCoverageOfWall(){
         if(targetNumFromBase > maxWallSize) return 0;
         ArrayDeque<MapLoc> cloneWall = curWall.clone();
-        int size = 0;
+        int size = 1;
         int covered = 0;
         while(!cloneWall.isEmpty()){
             MapLoc cur = cloneWall.removeFirst();

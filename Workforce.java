@@ -41,7 +41,8 @@ public class Workforce{
             System.out.println("Work group " + i + " is in state: " + workerGroups[i].getState());
             if(workerGroups[i].noUnits()) {
                 workerGroups[i].groupIsAlive = false;
-            }else if (gc.round() == 1 || numWorkers < 10) {
+            }else if (gc.round() == 1 || (numWorkers < 10 && gc.round() < 20)) {
+                System.out.println("Trying to replicate this round");
                 workerGroups[i].replicate();
             } else if (workerGroups[i].getState() == WorkerStates.Build) {
                 System.out.println("Worker group " + i + " is going to just build this turn");
@@ -49,19 +50,27 @@ public class Workforce{
             }else if (!workerGroups[i].printInProgress && p.getNumFactories() < p.NUM_FACTORIES_WANTED){
                 System.out.println("p.getNumFactories: " + p.getNumFactories());
                 MapLocation blueLoc = workerGroups[i].setBlueprint(UnitType.Factory);
+                if(blueLoc != null) {
+                    workerGroups[i].currentHill = p.generateHill(blueLoc);
+                }
 
-            } else if (canBuildRocket && p.rockets.getNumUnBuiltRockets() == 0 && p.rockets.getNumberOfBuiltRockets() < p.NUM_ROCKETS_WANTED){
+            } else if (canBuildRocket && p.rockets.getNumUnBuiltRockets() == 0 && p.rockets.getNumberOfBuiltRockets() < p.NUM_ROCKETS_WANTED) {
                 System.out.println("rocketIndex: " + p.rocketIndex);
                 MapLocation blueLoc = workerGroups[i].setBlueprint(UnitType.Rocket);
+                if (blueLoc != null){
+                    workerGroups[i].currentHill = p.generateHill(blueLoc);
+                }
 
             }else if (!p.closestKarbLocs.isEmpty()  && workerGroups[i].getState() != WorkerStates.SetBlueprint  || (!p.closestKarbLocs.isEmpty() && workerGroups[i].getState() == WorkerStates.GatherKarbonite)) {
                 gatherKarbonite(workerGroups[i]);
+                System.out.println("Worker state right after gathering method: " + workerGroups[i].getState());
             }else if(p.closestKarbLocs.isEmpty()){
                 System.out.println(workerGroups[i].getState() + " but switching to Standby");
                 workerGroups[i].setState(WorkerStates.Standby);
             }
         }
 
+        System.out.println("start of gathering for last group");
         gatherKarbonite(workerGroups[groupIndex-1]);
         for(int i = 0; i < groupIndex; i++){
             System.out.println("Worker group " + i + " conducting turn");
@@ -75,13 +84,13 @@ public class Workforce{
 
     private void gatherKarbonite(Workers group) throws Exception{
         group.setState(WorkerStates.GatherKarbonite);
-        System.out.println("The workers want to gather");
+        System.out.println("The workers want to gather. State: " + group.getState());
         System.out.println("PQ says there are " + p.closestKarbLocs.getSize() + " deposits left");
         if (closestKarbDepot == null || gc.karboniteAt(closestKarbDepot) == 0) {
             boolean viable = false;
             while (!viable && !p.closestKarbLocs.isEmpty()) {
                 MapLocation newLoc = p.closestKarbLocs.pop().toMapLocation();
-                System.out.println("PQ says there are " + p.closestKarbLocs.getSize() + " deposits left");
+                //System.out.println("PQ says there are " + p.closestKarbLocs.getSize() + " deposits left");
                 if (gc.canSenseLocation(newLoc)) {
                     if (newLoc != null && gc.karboniteAt(newLoc) != 0) {
                         viable = true;
@@ -90,7 +99,7 @@ public class Workforce{
                         System.out.println("Amount of karbs at newLoc " + gc.karboniteAt(newLoc));
 
                         short[][] hill = p.generateHill(newLoc);
-                        group.changeToTargetMap(hill);
+                        group.currentHill = hill;
                         group.setHarvestPoint(newLoc);
                     } else {
                         System.out.println("No spot here!");
@@ -99,7 +108,6 @@ public class Workforce{
                     viable = true;
                     if(group.karbLocInSight){
                         short[][] hill = p.generateHill(newLoc);
-                        group.changeToTargetMap(hill);
                         group.setHarvestPoint(newLoc);
                         group.karbLocInSight = false;
                         group.currentHill = hill;
@@ -108,6 +116,10 @@ public class Workforce{
             }
             if (!viable) {
                 System.out.println("All out of karbonite on this planet");
+                group.setState(WorkerStates.Standby);
+            }
+        }else{
+            if(p.closestKarbLocs.isEmpty()){
                 group.setState(WorkerStates.Standby);
             }
         }

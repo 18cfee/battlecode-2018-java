@@ -26,6 +26,9 @@ public class MapLoc {
     public MapLoc add(int x, int y){
         return new MapLoc(this.x + x,this.y + y);
     }
+    public MapLoc add(int[] dir){
+        return new MapLoc(this.x + dir[0],this.y + dir[1]);
+    }
 
     public MapLocation toMapLocation(){
         if(planet == null){

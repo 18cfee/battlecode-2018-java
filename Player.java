@@ -38,7 +38,7 @@ public class Player {
                         int id = unit.id();
                         if(loc.isInGarrison() || loc.isInSpace()){ // do nothing with unit
                         } else if(unit.team() != myTeam){
-                            mars.addEnemy(unit);
+                            mars.addEnemy(new Enemy(unit));
                         } else if (unit.unitType() == UnitType.Worker) {
                             workforce.addWorker(id);
                         } else if (unit.unitType() == UnitType.Factory) {
@@ -57,8 +57,8 @@ public class Player {
                     }
                     mars.conductTurn();
                 } else {
-                    System.out.println("Current karb count: " + gc.karbonite());
-                    System.out.println(workers.state);
+                    //System.out.println("Current karb count: " + gc.karbonite());
+                    //System.out.println(workers.state);
                     //Place Units into their groups
                     VecUnit units = gc.units();
                     Team myTeam = gc.team();
@@ -104,7 +104,6 @@ public class Player {
             //System.out.println(gc.getTimeLeftMs());
             gc.nextTurn();
         }
-
     }
 }
 

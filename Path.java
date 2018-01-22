@@ -33,6 +33,7 @@ public class Path {
     HashSet<Integer> currentBuiltFactories;
     public Rocket rockets;
     public final static int NUM_ROCKETS_WANTED = 3;
+    int maxDistanceFromBase = 12;
 
     public Path(GameController gc,Planet planet){
         rockets = new Rocket(this);
@@ -185,7 +186,7 @@ public class Path {
             for(Direction d : directions){
                 MapLocation newLoc = cur.add(d);
                 if(previouslyUncheckedMapLoc(newLoc,hill)){
-                    if(map.isPassableTerrainAt(newLoc) != 1){
+                    if(!passable(newLoc)){
                         //mark as unreachable
                         hill[newLoc.getX()][newLoc.getY()] = greatestPathNum;
                     } else {
