@@ -21,6 +21,8 @@ public class Rocket {
         this.gc = gc;
         unClaimedIds = new Stack<>();
         idToRoundLastModified = new HashMap<>();
+        destinationStack = new Stack<>();
+        generateLaunchQ();
     }
     public void addRocket(Unit unit){
         if(p.round != roundNumber){
@@ -35,13 +37,22 @@ public class Rocket {
             unClaimedIds.push(unit.id());
         }
     }
-    public void rocketsShouldLauchIfPossible(){
+    private boolean noRockets(){
+        if(builtRockets.size() == 0) return true;
+        if(p.round != roundNumber){
+            builtRockets.clear();
+            roundNumber = p.round;
+            return true;
+        }
+        return false;
+    }
+    public void rocketsShouldLauchIfPossible() throws Exception{
+        if(noRockets()) return;
         for(Integer id: builtRockets.keySet()){
             Unit unit = gc.unit(id);
             int garisonMax = (int)unit.structureMaxCapacity();
             int curLoad = (int)unit.structureGarrison().size();
-            // last
-            if((curLoad == garisonMax || tooManyRoundsSinceLastInsert(id)) && !destinationStack.empty()){
+            if(((curLoad == garisonMax || tooManyRoundsSinceLastInsert(id) || true) && !destinationStack.empty())){
                 MapLocation dest = destinationStack.pop();
                 if (gc.canLaunchRocket(id,dest)){
                     gc.launchRocket(id,dest);
@@ -56,7 +67,7 @@ public class Rocket {
         }
     }
     private boolean tooManyRoundsSinceLastInsert(int rocketId){
-        return p.round > idToRoundLastModified.get(rocketId) + 15;
+        return (idToRoundLastModified.containsKey(rocketId) && p.round > idToRoundLastModified.get(rocketId) + 15);
     }
     public int takeRocket(){
         int id = unClaimedIds.pop();
@@ -86,8 +97,10 @@ public class Rocket {
                     destinationStack.push(new MapLocation(Planet.Mars,i,j));
                     // mark neighbors unpassable
                     for(int[] numDir: p.numsDirections){
-                        if(p.onMap(i,j)){
-                            passable[i].set(j,false);
+                        int x = i + numDir[0];
+                        int y = j + numDir[1];
+                        if(p.onMap(x,y)){
+                            passable[x].set(y,false);
                         }
                     }
                 }

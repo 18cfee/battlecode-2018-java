@@ -92,6 +92,7 @@ public class Player {
                     p.rockets.clearRocketsIfNoUnits();
                     sprint.conductTurn();
                     workforce.conductTurn();
+                    p.rockets.rocketsShouldLauchIfPossible();
                 }
             } catch (Exception e){
                 // todo set indexes to 0 in here
