@@ -50,20 +50,11 @@ public class Workforce{
             }else if (!workerGroups[i].printInProgress && p.getNumFactories() < p.NUM_FACTORIES_WANTED){
                 System.out.println("p.getNumFactories: " + p.getNumFactories());
                 MapLocation blueLoc = workerGroups[i].setBlueprint(UnitType.Factory);
-                if (blueLoc != null) {
-                    short[][] hill = p.generateHill(blueLoc);
-                    workerGroups[i].changeToTargetMap(hill);
-                    p.unbuiltFactIndex++;
-                }
-            } else if (canBuildRocket && p.rocketIndex == 0) {
+
+            } else if (canBuildRocket && p.rockets.getNumUnBuiltRockets() == 0) {
                 System.out.println("rocketIndex: " + p.rocketIndex);
                 MapLocation blueLoc = workerGroups[i].setBlueprint(UnitType.Rocket);
-                if (blueLoc != null) {
-                    short[][] hill = p.generateHill(blueLoc);
-                    p.firstRocketLocHill = hill;
-                    workerGroups[i].changeToTargetMap(hill);
-                    p.rocketIndex++;
-                }
+
             }else if (!p.closestKarbLocs.isEmpty()  && workerGroups[i].getState() != WorkerStates.SetBlueprint) {
                 workerGroups[i].setState(WorkerStates.GatherKarbonite);
                 System.out.println("The workers want to gather");

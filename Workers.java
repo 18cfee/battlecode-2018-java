@@ -24,6 +24,7 @@ public class Workers extends Group{
             currentHill = p.generateHill(p.baseLoc);
         }
 
+        changeToTargetMap(currentHill);
         for(Integer id: ids){
             if(gc.unit(id).location().mapLocation().distanceSquaredTo(p.baseLoc) < 9) {
 
