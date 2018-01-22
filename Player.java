@@ -25,8 +25,8 @@ public class Player {
                 System.out.println("Current round: " + p.round + " bugs: "+ count);
                 if(!gc.researchInfo().hasNextInQueue()){
                     gc.queueResearch(UnitType.Rocket);
-                    gc.queueResearch(UnitType.Worker);
                     gc.queueResearch(UnitType.Ranger);
+                    gc.queueResearch(UnitType.Worker);
                     gc.queueResearch(UnitType.Knight);
                 }
                 if (gc.planet() != Planet.Earth) {
@@ -63,7 +63,7 @@ public class Player {
                     VecUnit units = gc.units();
                     Team myTeam = gc.team();
 
-                    if(!workforce.isCanBuildRocket() && gc.researchInfo().getLevel(UnitType.Rocket) >= 2){
+                    if(!workforce.isCanBuildRocket() && gc.researchInfo().getLevel(UnitType.Rocket) >= 1){
                         workforce.setCanBuildRocket(true);
                     }
 

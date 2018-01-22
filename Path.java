@@ -3,6 +3,8 @@ import bc.*;
 import java.util.*;
 
 public class Path {
+    public final static int RANGERRANGE = 5; // everything within a square that big
+    public final static int RANGERDANGER = 3; // any smaller and might no be able to shoot
     private PlanetMap map;
     GameController gc;
     int planetHeight;
@@ -39,7 +41,7 @@ public class Path {
     int maxDistanceFromBase = 12;
 
     public Path(GameController gc,Planet planet){
-        rockets = new Rocket(this);
+        rockets = new Rocket(this,gc);
         currentBuiltFactories = new HashSet<>(10);
         this.planet = planet;
         this.gc = gc;
@@ -60,18 +62,6 @@ public class Path {
             //startLoc = gc.myUnits().get(0).location().mapLocation();
         }
         if(planet == Planet.Earth){
-            int height = (int)gc.startingMap(Planet.Mars).getHeight();
-            int width = (int)gc.startingMap(Planet.Mars).getWidth();
-            loop:
-            for (int i = 0; i < width; i++) {
-                for (int j = 0; j < height; j++) {
-                    if(gc.startingMap(Planet.Mars).isPassableTerrainAt
-                            (new MapLocation(Planet.Mars,i,j)) != 0){
-                        placeToLandOnMars = new MapLocation(Planet.Mars,i,j);
-                        break loop;
-                    }
-                }
-            }
             baseLoc = chooseBaseLocation();
             hillToBase = generateHill(baseLoc);
         }

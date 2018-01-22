@@ -1,18 +1,26 @@
-import bc.MapLocation;
-import bc.Unit;
+import bc.*;
 
+import java.util.BitSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Stack;
 
 public class Rocket {
     private HashSet<Integer> unbuiltIds;
     private HashMap<Integer, MapLocation> builtRockets;
     private int roundNumber = 0;
     private Path p;
-    public Rocket(Path p) {
+    private GameController gc;
+    private Stack<MapLocation> destinationStack;
+    private Stack<Integer> unClaimedIds;
+    private HashMap<Integer,Integer> idToRoundLastModified;
+    public Rocket(Path p, GameController gc) {
         unbuiltIds = new HashSet<>();
         builtRockets = new HashMap<>();
         this.p = p;
+        this.gc = gc;
+        unClaimedIds = new Stack<>();
+        idToRoundLastModified = new HashMap<>();
     }
     public void addRocket(Unit unit){
         if(p.round != roundNumber){
@@ -24,6 +32,66 @@ public class Rocket {
             unbuiltIds.add(unit.id());
         } else {
             builtRockets.put(unit.id(),unit.location().mapLocation());
+            unClaimedIds.push(unit.id());
+        }
+    }
+    public void rocketsShouldLauchIfPossible(){
+        for(Integer id: builtRockets.keySet()){
+            Unit unit = gc.unit(id);
+            int garisonMax = (int)unit.structureMaxCapacity();
+            int curLoad = (int)unit.structureGarrison().size();
+            // last
+            if((curLoad == garisonMax || tooManyRoundsSinceLastInsert(id)) && !destinationStack.empty()){
+                MapLocation dest = destinationStack.pop();
+                if (gc.canLaunchRocket(id,dest)){
+                    gc.launchRocket(id,dest);
+                }
+            }
+        }
+    }
+    public void tryAddToRocket(int rocketId, int unitId){
+        if(gc.canLoad(rocketId,unitId)){
+            gc.load(rocketId,unitId);
+            idToRoundLastModified.put(rocketId,p.round);
+        }
+    }
+    private boolean tooManyRoundsSinceLastInsert(int rocketId){
+        return p.round > idToRoundLastModified.get(rocketId) + 15;
+    }
+    public int takeRocket(){
+        int id = unClaimedIds.pop();
+        idToRoundLastModified.put(id,p.round);
+        return id;
+    }
+    public boolean availableRocket(){
+        return unClaimedIds.size() > 0;
+    }
+    private void generateLaunchQ(){
+        PlanetMap mars = gc.startingMap(Planet.Mars);
+        int marsWidth = (int)mars.getWidth();
+        int marsHeight = (int)mars.getHeight();
+        BitSet[] passable = new BitSet[marsWidth];
+        for (int i = 0; i < marsWidth; i++) {
+            BitSet cur = new BitSet(marsHeight);
+            for (int j = 0; j < marsHeight; j++) {
+                if (mars.isPassableTerrainAt(new MapLocation(Planet.Mars,i,j)) == 1){
+                    cur.set(j);
+                }
+            }
+            passable[i] = cur;
+        }
+        for (int i = 0; i < marsWidth; i++) {
+            for (int j = 0; j < marsHeight; j++) {
+                if(passable[i].get(j)){
+                    destinationStack.push(new MapLocation(Planet.Mars,i,j));
+                    // mark neighbors unpassable
+                    for(int[] numDir: p.numsDirections){
+                        if(p.onMap(i,j)){
+                            passable[i].set(j,false);
+                        }
+                    }
+                }
+            }
         }
     }
     public void clearRocketsIfNoUnits(){
