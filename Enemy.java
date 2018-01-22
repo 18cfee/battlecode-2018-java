@@ -6,14 +6,12 @@ public class Enemy {
     public int id;
     public int hp;
     public BasicEnemyTypes type;
-    public int x;
-    public int y;
+    public MapLoc loc;
     Enemy(BasicEnemyTypes type, int id, int hp, int x, int y){
         this.type = type;
         this.hp = hp;
         this.id = id;
-        this.x = x;
-        this.y = y;
+        this.loc = new MapLoc(x,y);
     }
     Enemy(UnitType type, int id, int hp, MapLocation location){
         if(UnitType.Factory == type){
@@ -27,8 +25,7 @@ public class Enemy {
         }
         this.hp = hp;
         this.id = id;
-        this.x = location.getX();
-        this.y = location.getY();
+        this.loc = new MapLoc(location);
     }
     Enemy(Unit enemy){
         UnitType type = enemy.unitType();
@@ -43,9 +40,10 @@ public class Enemy {
         }
         this.hp = (int)enemy.health();
         this.id = enemy.id();
-        MapLocation location = enemy.location().mapLocation();
-        this.x = location.getX();
-        this.y = location.getY();
+        loc = new MapLoc(enemy.location().mapLocation());
+    }
+    public MapLoc getMapLoc(){
+        return loc;
     }
 }
 

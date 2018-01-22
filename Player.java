@@ -92,6 +92,7 @@ public class Player {
                     p.rockets.clearRocketsIfNoUnits();
                     sprint.conductTurn();
                     workforce.conductTurn();
+                    // after other things to give them a chance to conduct turn
                     p.rockets.rocketsShouldLauchIfPossible();
                 }
             } catch (Exception e){

@@ -52,7 +52,7 @@ public class Rocket {
             Unit unit = gc.unit(id);
             int garisonMax = (int)unit.structureMaxCapacity();
             int curLoad = (int)unit.structureGarrison().size();
-            if(((curLoad == garisonMax || tooManyRoundsSinceLastInsert(id) || true) && !destinationStack.empty())){
+            if(((curLoad == garisonMax || tooManyRoundsSinceLastInsert(id) || roundNumber == 749) && !destinationStack.empty())){
                 MapLocation dest = destinationStack.pop();
                 if (gc.canLaunchRocket(id,dest)){
                     gc.launchRocket(id,dest);

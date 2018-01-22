@@ -7,7 +7,7 @@ public class Army {
     GameController gc;
     Path p;
     Fighter carlsRangers;
-    WallDefenders baseProtection;
+    Defenders baseProtection;
     private int numDefenders = 0;
     RocketBoarders marsTroops;
     ArrayList<RocketBoarders> rangers;
@@ -23,7 +23,7 @@ public class Army {
         this.gc = gc;
         this.p = p;
         carlsRangers = new RangersTargetNextUnit(gc,p);
-        baseProtection = new WallDefenders(gc,p);
+        baseProtection = new Defenders(gc,p);
         //marsTroops = new RocketBoarders(gc,p);
         tempOldFactories = new HashSet<>();
         rangers = new ArrayList<>();
@@ -57,7 +57,7 @@ public class Army {
     private int shouldCreateRocketGroup = -1;
     private int oldNumRangerGroups = 0;
     RocketBoarders group = null;
-    private int attackSize = 10;
+    private int attackSize = 30;
     private HashSet<Integer> oldAttack;
     boolean haveIncreasedAttacketsThisRound = false;
     public void addUnit(int id) throws Exception{
