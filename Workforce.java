@@ -55,10 +55,11 @@ public class Workforce{
 
             } else if (canBuildRocket && p.rockets.getNumUnBuiltRockets() == 0 && p.rockets.getNumberOfBuiltRockets() < p.NUM_ROCKETS_WANTED) {
                 System.out.println("starting to build a rocket");
-                MapLocation blueLoc = workerGroups[i].setRBlueprint();
-                if (blueLoc != null){
+                //MapLocation blueLoc = workerGroups[i].setRBlueprint();
+                workerGroups[i].setRBlueprint();
+                /*if (blueLoc != null){
                     workerGroups[i].currentHill = p.generateHill(blueLoc);
-                }
+                }*/
 
             }else if (!p.closestKarbLocs.isEmpty()  && workerGroups[i].getState() != WorkerStates.SetBlueprint  || (!p.closestKarbLocs.isEmpty() && workerGroups[i].getState() == WorkerStates.GatherKarbonite)) {
                 gatherKarbonite(workerGroups[i]);
