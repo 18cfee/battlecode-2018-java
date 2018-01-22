@@ -169,7 +169,11 @@ public class Path {
         }
         return false;
     }
+    private long totalTimeInFunc = 0;
+    private int functionCalled = 0;
     public short[][] generateHill(MapLocation destination){
+        functionCalled++;
+        long start = System.currentTimeMillis();
         short hill[][] = new short[planetWidth][planetHeight];
         hill[destination.getX()][destination.getY()] = 1;
         ArrayDeque<MapLocation> toCheck = new ArrayDeque<MapLocation>();
@@ -190,6 +194,9 @@ public class Path {
                 }
             }
         }
+        long end = System.currentTimeMillis();
+        totalTimeInFunc+=(end - start);
+        System.out.println("asdfasdfsdfasdf milis attention " + totalTimeInFunc + " Num times called " + functionCalled);
         // todo smaller versions need to know if a path was found
         return hill;
     }
