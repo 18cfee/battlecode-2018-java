@@ -9,6 +9,7 @@ public class Workforce{
     private int groupIndex = 0;
     private boolean canBuildRocket = false;
     private MapLocation closestKarbDepot = null;
+    private int karbsLastTurn = 0;
 
     public Workforce(GameController gc, Path p) {
         this.gc = gc;
@@ -84,34 +85,49 @@ public class Workforce{
 
     private void gatherKarbonite(Workers group) throws Exception{
         group.setState(WorkerStates.GatherKarbonite);
-        System.out.println("The workers want to gather. State: " + group.getState());
+        if(closestKarbDepot != null) {
+            System.out.println("Karbonite at last loc: " + gc.karboniteAt(closestKarbDepot));
+        }
         System.out.println("PQ says there are " + p.closestKarbLocs.getSize() + " deposits left");
         if (closestKarbDepot == null || gc.karboniteAt(closestKarbDepot) == 0) {
+            System.out.println("Looking for a new location to gather");
             boolean viable = false;
-            while (!viable && !p.closestKarbLocs.isEmpty()) {
-                MapLocation newLoc = p.closestKarbLocs.pop().toMapLocation();
-                //System.out.println("PQ says there are " + p.closestKarbLocs.getSize() + " deposits left");
-                if (gc.canSenseLocation(newLoc)) {
-                    if (newLoc != null && gc.karboniteAt(newLoc) != 0) {
-                        viable = true;
+            if(p.closestKarbLocs.peek() != null && gc.canSenseLocation(p.closestKarbLocs.peek().toMapLocation())) {
+                group.setState(WorkerStates.GatherKarbonite);
+                while (!viable && !p.closestKarbLocs.isEmpty()) {
+                    MapLocation newLoc = p.closestKarbLocs.pop().toMapLocation();
+                    if (gc.canSenseLocation(newLoc)) {
+                        if (newLoc != null && gc.karboniteAt(newLoc) != 0) {
+                            viable = true;
 
-                        System.out.println("A new spot was found: " + newLoc.toString());
-                        System.out.println("Amount of karbs at newLoc " + gc.karboniteAt(newLoc));
-
-                        short[][] hill = p.generateHill(newLoc);
-                        group.currentHill = hill;
-                        group.setHarvestPoint(newLoc);
+                            System.out.println("A new spot was found: " + newLoc.toString());
+                            System.out.println("Amount of karbs at newLoc " + gc.karboniteAt(newLoc));
+                            if(group.karbLocInSight) {
+                                short[][] hill = p.generateHill(newLoc);
+                                group.currentHill = hill;
+                                group.setHarvestPoint(newLoc);
+                            }
+                            group.karbLocInSight = true;
+                        } else {
+                            System.out.println("No spot here!");
+                        }
                     } else {
-                        System.out.println("No spot here!");
+                        viable = true;
+                        if (group.karbLocInSight) {
+                            short[][] hill = p.generateHill(newLoc);
+                            group.setHarvestPoint(newLoc);
+                            group.karbLocInSight = false;
+                            group.currentHill = hill;
+                        }
                     }
-                } else{
-                    viable = true;
-                    if(group.karbLocInSight){
-                        short[][] hill = p.generateHill(newLoc);
-                        group.setHarvestPoint(newLoc);
-                        group.karbLocInSight = false;
-                        group.currentHill = hill;
-                    }
+                }
+            }else{
+                viable = true;
+                group.karbLocInSight = false;
+                if(group.getState() != WorkerStates.checkingNewLoc){
+                    short[][] hill = p.generateHill(p.closestKarbLocs.peek().toMapLocation());
+                    group.currentHill = hill;
+                    group.setState(WorkerStates.GatherKarbonite);
                 }
             }
             if (!viable) {
