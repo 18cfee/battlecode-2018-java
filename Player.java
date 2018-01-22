@@ -63,7 +63,7 @@ public class Player {
                     VecUnit units = gc.units();
                     Team myTeam = gc.team();
 
-                    if(!workforce.isCanBuildRocket() && gc.researchInfo().getLevel(UnitType.Rocket) >= 1){
+                    if(!workforce.isCanBuildRocket() && gc.researchInfo().getLevel(UnitType.Rocket) >= 2){
                         workforce.setCanBuildRocket(true);
                     }
 

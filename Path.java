@@ -25,6 +25,9 @@ public class Path {
     int rocketIndex = 0;
     public MapLocation baseLoc = null;
     public short[][] firstRocketLocHill = null;
+    public short[][] secondRocketLocHill = null;
+    MapLocation firstRocketLoc = null;
+    MapLocation secondRocketLoc = null;
     public MapLocation placeToLandOnMars;
     public long totalKarbOnEarth;
     public ArrayList<MapLoc> karbLocs;
@@ -32,7 +35,7 @@ public class Path {
     private int numKarbLocs = 0;
     HashSet<Integer> currentBuiltFactories;
     public Rocket rockets;
-    public final static int NUM_ROCKETS_WANTED = 3;
+    public final static int NUM_ROCKETS_WANTED = 2;
     int maxDistanceFromBase = 12;
 
     public Path(GameController gc,Planet planet){

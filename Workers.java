@@ -17,6 +17,40 @@ public class Workers extends Group{
         this.p = p;
     }
 
+    public MapLocation setRBlueprint() throws Exception{
+
+        if(p.firstRocketLocHill == null){
+            p.firstRocketLoc = setBlueprint(UnitType.Rocket);
+            p.firstRocketLocHill = currentHill;
+            System.out.println("Location of first rocket hill " + p.firstRocketLoc.toString());
+        }else{
+            if(p.secondRocketLocHill == null) {
+                p.secondRocketLoc = setBlueprint(UnitType.Rocket);
+                p.secondRocketLocHill = currentHill;
+                System.out.println("Location of second rocket hill " + p.secondRocketLoc.toString());
+            }
+        }
+
+        if(!gc.hasUnitAtLocation(p.firstRocketLoc)){
+            for(int id : ids){
+                if(gc.unit(id).location().mapLocation().isAdjacentTo(p.firstRocketLoc) && gc.canBlueprint(id, UnitType.Factory, gc.unit(id).location().mapLocation().directionTo(p.firstRocketLoc))){
+                    gc.blueprint(id, UnitType.Factory, gc.unit(id).location().mapLocation().directionTo(p.firstRocketLoc));
+                    return p.firstRocketLoc;
+                }
+            }
+            moveToTarget(p.firstRocketLocHill);
+        }else if(!gc.hasUnitAtLocation(p.secondRocketLoc)){
+            for(int id : ids){
+                if(gc.unit(id).location().mapLocation().isAdjacentTo(p.firstRocketLoc) && gc.canBlueprint(id, UnitType.Factory, gc.unit(id).location().mapLocation().directionTo(p.secondRocketLoc))){
+                    gc.blueprint(id, UnitType.Factory, gc.unit(id).location().mapLocation().directionTo(p.secondRocketLoc));
+                    return p.secondRocketLoc;
+                }
+            }
+            moveToTarget(p.secondRocketLocHill);
+        }
+        System.out.println("Didn't place a blueprint");
+        return p.baseLoc;
+    }
     public MapLocation setBlueprint(UnitType type)throws Exception{
         System.out.println("Setting up a blueprint");
         Direction rand = p.getRandDirection();
@@ -28,16 +62,15 @@ public class Workers extends Group{
         changeToTargetMap(currentHill);
         for(Integer id: ids){
             if(gc.unit(id).location().mapLocation().distanceSquaredTo(p.baseLoc) < 12) {
-
                 if (gc.canBlueprint(id, type, rand)) {
 
                     state = WorkerStates.Build;
                     printInProgress = true;
                     gc.blueprint(id, type, rand);
-
                     VecUnit units = gc.senseNearbyUnitsByType(gc.unit(id).location().mapLocation(), 2, type);
 
                     for (int j = 0; j < units.size(); j++) {
+                        System.out.println("Tried to place, but couldn't");
                         if (units.get(j).structureIsBuilt() == 0 && (type == UnitType.Factory || type == UnitType.Rocket) && units.get(j).team() == gc.team()) {
                             blueID = units.get(j).id();
                             return units.get(j).location().mapLocation();
@@ -50,7 +83,8 @@ public class Workers extends Group{
                 moveToTarget(currentHill);
             }
         }
-        return null;
+        System.out.println("Could not place a print at all");
+        return p.baseLoc;
     }
 
     public void replicate(){

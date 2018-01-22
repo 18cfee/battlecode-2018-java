@@ -48,15 +48,14 @@ public class Workforce{
                 System.out.println("Worker group " + i + " is going to just build this turn");
 
             }else if (!workerGroups[i].printInProgress && p.getNumFactories() < p.NUM_FACTORIES_WANTED){
-                System.out.println("p.getNumFactories: " + p.getNumFactories());
                 MapLocation blueLoc = workerGroups[i].setBlueprint(UnitType.Factory);
                 if(blueLoc != null) {
                     workerGroups[i].currentHill = p.generateHill(blueLoc);
                 }
 
             } else if (canBuildRocket && p.rockets.getNumUnBuiltRockets() == 0 && p.rockets.getNumberOfBuiltRockets() < p.NUM_ROCKETS_WANTED) {
-                System.out.println("rocketIndex: " + p.rocketIndex);
-                MapLocation blueLoc = workerGroups[i].setBlueprint(UnitType.Rocket);
+                System.out.println("starting to build a rocket");
+                MapLocation blueLoc = workerGroups[i].setRBlueprint();
                 if (blueLoc != null){
                     workerGroups[i].currentHill = p.generateHill(blueLoc);
                 }
