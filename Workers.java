@@ -86,11 +86,6 @@ public class Workers extends Group{
         this.state = state;
     }
 
-    void resetWorkerIndexCount(){
-//        builtRocketIndex = 0;
-//        unbuiltRocketIndex = 0;
-    }
-
     void contBuilding() throws Exception{
         if(gc.canSenseUnit(blueID)) {
             if (gc.unit(blueID).structureIsBuilt() != 1) {
