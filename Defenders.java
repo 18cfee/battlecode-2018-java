@@ -13,6 +13,7 @@ public class Defenders extends Fighter {
     private short[][] baseHill = null;
     private MapLocation base = null;
     private Wall wall;
+    private int wallThresh = 4;
     @Override
     public void conductTurn() throws Exception{
         //System.out.println("it is making it into defenders");
@@ -28,11 +29,12 @@ public class Defenders extends Fighter {
             }
         }
         moveToTarget(wall.hillToTargetWall);
-        if(wall.percentCoverageOfWall() > 90){
+        if(wallThresh < size()){
             wall.growTargetWall();
+            //5 more units on each layer
+            wallThresh += 5;
         }
         //else loadRocketIfPossible(rocket);
-
         shootAtSomething();
     }
     public void loadRocketIfPossible(int rocketId){

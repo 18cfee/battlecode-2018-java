@@ -34,7 +34,7 @@ public class Army {
         long time = System.currentTimeMillis();
         carlsRangers.conductTurn();
         baseProtection.conductTurn();
-        marsTroops.conductTurn();
+//        marsTroops.conductTurn();
         ArrayList<Integer> beastsToRemove = new ArrayList<>(4);
         for (int i = 0; i < rangers.size(); i++) {
             AggresiveRangers beasts = rangers.get(i);
@@ -48,7 +48,7 @@ public class Army {
 //            rangers.remove(i);
 //        }
         factoryProduce();
-        rocketShouldLaunchIfItCan();
+//        rocketShouldLaunchIfItCan();
         resetSize();
         rocketId = -1;
         long end = System.currentTimeMillis();
@@ -128,17 +128,17 @@ public class Army {
             p.currentBuiltFactories.add(id);
         }
     }
-    public void addRocket(Unit unit){
-        rocketId = unit.id();
-        marsTroops.rocket = rocketId;
-        //System.out.println("rocket garrison: " + unit.structureGarrison().size());
-    }
-    public void rocketShouldLaunchIfItCan(){
-        if(rocketId == -1) return;
-        if(((gc.unit(rocketId).structureGarrison().size() == 12) || (gc.round() > 700)) && gc.canLaunchRocket(rocketId, p.placeToLandOnMars)){
-            gc.launchRocket(rocketId, p.placeToLandOnMars);
-        }
-    }
+//    public void addRocket(Unit unit){
+//        rocketId = unit.id();
+//        marsTroops.rocket = rocketId;
+//        System.out.println("rocket garrison: " + unit.structureGarrison().size());
+//    }
+//    public void rocketShouldLaunchIfItCan(){
+//        if(rocketId == -1) return;
+//        if(((gc.unit(rocketId).structureGarrison().size() == 12) || (gc.round() > 700)) && gc.canLaunchRocket(rocketId, p.placeToLandOnMars)){
+//            gc.launchRocket(rocketId, p.placeToLandOnMars);
+//        }
+//    }
     public void factoryProduce(){
         if(size > MAXUnits) return;
         // this means no units were added so the add method was never called

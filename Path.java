@@ -25,7 +25,7 @@ public class Path {
     int rocketIndex = 0;
     public MapLocation baseLoc = null;
     public short[][] firstRocketLocHill = null;
-    public MapLocation placeToLandOnMars;
+    //public MapLocation placeToLandOnMars;
     public long totalKarbOnEarth;
     public ArrayList<MapLoc> karbLocs;
     public MPQ closestKarbLocs;
@@ -36,7 +36,7 @@ public class Path {
     int maxDistanceFromBase = 12;
 
     public Path(GameController gc,Planet planet){
-        rockets = new Rocket(this);
+        rockets = new Rocket(this,gc);
         currentBuiltFactories = new HashSet<>(10);
         this.planet = planet;
         this.gc = gc;
@@ -57,18 +57,6 @@ public class Path {
             //startLoc = gc.myUnits().get(0).location().mapLocation();
         }
         if(planet == Planet.Earth){
-            int height = (int)gc.startingMap(Planet.Mars).getHeight();
-            int width = (int)gc.startingMap(Planet.Mars).getWidth();
-            loop:
-            for (int i = 0; i < width; i++) {
-                for (int j = 0; j < height; j++) {
-                    if(gc.startingMap(Planet.Mars).isPassableTerrainAt
-                            (new MapLocation(Planet.Mars,i,j)) != 0){
-                        placeToLandOnMars = new MapLocation(Planet.Mars,i,j);
-                        break loop;
-                    }
-                }
-            }
             baseLoc = chooseBaseLocation();
             hillToBase = generateHill(baseLoc);
         }
