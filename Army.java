@@ -15,7 +15,7 @@ public class Army {
     HashSet<Integer> tempOldFactories;
     AggresiveRangers killEm;
     int size = 0;
-    private final static int MAXUnits = 95;
+    private final static int MAXUnits = 200;
     private int armyRound = 0;
     private int fighterRound = 0;
     private int numGroupsCreated = 0;
@@ -60,6 +60,7 @@ public class Army {
     private HashSet<Integer> oldAttack;
     boolean haveIncreasedAttacketsThisRound = false;
     public void addUnit(int id) throws Exception{
+        //if(p.round%50 == 0){
         size++;
         // get the group info from last round then clear
         if(fighterRound != p.round){
