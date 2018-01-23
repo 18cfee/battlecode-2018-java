@@ -252,6 +252,7 @@ public class Path {
                 }
             }
         }
+        System.out.println("There are " + numKarbLocs + " karbonite locations on this map!");
         closestKarbLocs = new MPQ(numKarbLocs+1);
         for(MapLoc loc : karbLocs){
             closestKarbLocs.insert(loc);

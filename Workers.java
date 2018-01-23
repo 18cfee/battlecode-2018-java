@@ -74,7 +74,10 @@ public class Workers extends Group{
             }
         }else if(state == WorkerStates.GatherKarbonite){
             if(harvestPoint != null) {
+                System.out.println("There is a harvestPoint");
                 gatherKarbonite();
+            }else{
+                System.out.println("harvestPoint is null");
             }
         }else if(state == WorkerStates.Standby){
             standby();

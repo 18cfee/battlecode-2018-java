@@ -13,7 +13,6 @@ public class Workforce{
     public Workforce(GameController gc, Path p) {
         this.gc = gc;
         this.p = p;
-        createGroup();
     }
     public void conductTurn() throws Exception{
         while(groupIndex < 2){
@@ -38,6 +37,7 @@ public class Workforce{
         for(int i = 0; i < groupIndex - 1; i++) {
             if(workerGroups[i].noUnits()) {
                 workerGroups[i].groupIsAlive = false;
+                System.out.println("This group is dead");
             }else if (gc.round() == 1 || numWorkers < 10) {
                 workerGroups[i].replicate();
             } else if (workerGroups[i].getState() == WorkerStates.Build) {
@@ -72,23 +72,33 @@ public class Workforce{
     }
 
     private void gatherKarbonite(Workers group) throws Exception{
+        System.out.println("Starting to harvest");
         group.setState(WorkerStates.GatherKarbonite);
-        if (closestKarbDepot == null || gc.karboniteAt(closestKarbDepot) == 0) {
+        if(closestKarbDepot == null){
+            System.out.println("There is no location yet");
+        }else{
+            System.out.println(gc.karboniteAt(closestKarbDepot) + " karbonite at last location");
+        }
+        if (closestKarbDepot == null || gc.karboniteAt(closestKarbDepot) < 3) {
+            System.out.println("Either no location yet or the last one is empty");
             boolean viable = false;
             while (!viable && !p.closestKarbLocs.isEmpty()) {
+                System.out.println("Trying a new location");
                 if(p.closestKarbLocs.peek() != null && gc.canSenseLocation(p.closestKarbLocs.peek().toMapLocation())) {
-                    MapLocation newLoc = p.closestKarbLocs.pop().toMapLocation();
-                    //System.out.println("PQ says there are " + p.closestKarbLocs.getSize() + " deposits left");
-                    if (gc.canSenseLocation(newLoc)) {
-                        if (newLoc != null && gc.karboniteAt(newLoc) != 0) {
-                            viable = true;
-                            if(!group.karbLocInSight) {
-                                short[][] hill = p.generateHill(newLoc);
-                                group.currentHill = hill;
-                                group.setHarvestPoint(newLoc);
-                            }
-                            group.karbLocInSight = true;
+                    if(closestKarbDepot != null) {
+                        System.out.println("There is " + gc.karboniteAt(closestKarbDepot) + " karbonite at last location, moving on!");
+                    }
+                    closestKarbDepot = p.closestKarbLocs.pop().toMapLocation();
+                    System.out.println("PQ says there are " + p.closestKarbLocs.getSize() + " deposits left");
+                    if (closestKarbDepot != null && gc.karboniteAt(closestKarbDepot) != 0) {
+                        System.out.println("This is not a viable location");
+                        viable = true;
+                        if(!group.karbLocInSight) {
+                            short[][] hill = p.generateHill(closestKarbDepot);
+                            group.currentHill = hill;
+                            group.setHarvestPoint(closestKarbDepot);
                         }
+                        group.karbLocInSight = true;
                     }
                 }else{
                     viable = true;
@@ -98,6 +108,7 @@ public class Workforce{
                         group.karbLocInSight = false;
                         group.currentHill = hill;
                     }
+                    System.out.println("Can't see location, moving toward it");
                     group.karbLocInSight = false;
                 }
             }
@@ -106,8 +117,10 @@ public class Workforce{
             }
         }else{
             if(p.closestKarbLocs.isEmpty()){
+                System.out.println("The world is picked clean, going to standby");
                 group.setState(WorkerStates.Standby);
             }
+            System.out.println("Still karbs at loc, staying the course");
         }
     }
     public void createGroup(){
