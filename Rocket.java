@@ -60,11 +60,13 @@ public class Rocket {
             }
         }
     }
-    public void tryAddToRocket(int rocketId, int unitId){
+    public boolean successfullyAdded(int rocketId, int unitId){
         if(gc.canLoad(rocketId,unitId)){
             gc.load(rocketId,unitId);
             idToRoundLastModified.put(rocketId,p.round);
+            return true;
         }
+        return false;
     }
     private boolean tooManyRoundsSinceLastInsert(int rocketId){
         return (idToRoundLastModified.containsKey(rocketId) && p.round > idToRoundLastModified.get(rocketId) + 15);
@@ -128,4 +130,9 @@ public class Rocket {
     public int getNumberOfBuiltRockets(){
         return builtRockets.size();
     }
+    public MapLocation getMapLocation(int id){
+        if(builtRockets.containsKey(id))return builtRockets.get(id);
+        else return null;
+    }
+
 }

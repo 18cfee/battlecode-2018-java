@@ -99,7 +99,7 @@ public class Army {
             }
             killEm.add(id);
             // assign units to an attack group
-        }else if(numDefenders > 20 && shouldBuildRocket() && !shouldBeDefending()){
+        }else if(numDefenders > 20 && p.rockets.availableRocket() && !shouldBeDefending()){
             group = new RocketBoarders(gc,p);
             group.attainRocketId();
             rangers.add(group);
@@ -113,9 +113,6 @@ public class Army {
         } else {
             baseProtection.add(id);
         }
-    }
-    private boolean shouldBuildRocket(){
-        return false;
     }
     private boolean shouldBeDefending(){
         return false;
