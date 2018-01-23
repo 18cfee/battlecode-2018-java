@@ -50,9 +50,13 @@ public class Rocket {
         if(noRockets()) return;
         for(Integer id: builtRockets.keySet()){
             Unit unit = gc.unit(id);
+            VecUnit units = gc.senseNearbyUnitsByType(gc.unit(id).location().mapLocation(),2,UnitType.Ranger);
+            for (int i = 0; i < units.size(); i++) {
+                tryAddToRocket(id,units.get(i).id());
+            }
             int garisonMax = (int)unit.structureMaxCapacity();
             int curLoad = (int)unit.structureGarrison().size();
-            if(((true ||curLoad == garisonMax || tooManyRoundsSinceLastInsert(id) || roundNumber == 749) && !destinationStack.empty())){
+            if(((curLoad == garisonMax || tooManyRoundsSinceLastInsert(id) || roundNumber == 749) && !destinationStack.empty())){
                 MapLocation dest = destinationStack.pop();
                 if (gc.canLaunchRocket(id,dest)){
                     gc.launchRocket(id,dest);

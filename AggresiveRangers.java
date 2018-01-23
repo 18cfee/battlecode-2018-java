@@ -15,28 +15,27 @@ public class AggresiveRangers extends Fighter{
     @Override
     public void conductTurn() throws Exception{
         if(noUnits())return;
-        if(!noEnemies() && seesEnemy == false && groupTargetCooldown == 0){
+        if(!noEnemies() && seesEnemy == false && groupTargetCooldown < 0){
             Enemy enemy = enemies.get(0);
             if(enemy.hp > 0){
                 MapLocation a = gc.unit(enemy.id).location().mapLocation();
                 target = a;
                 attackRingHill = generateAttackRing(target);
-                groupTargetCooldown+= 25;
+                groupTargetCooldown= 25;
                 seesEnemy = true;
             }
-        } else if (seesEnemy == true && enemies.size() == 0){
+        } else if ((seesEnemy == true && enemies.size() == 0) || groupTargetCooldown < -35){
             seesEnemy = false;
         }
         if(attackRingHill!= null){
-            System.out.println("roaming to hill");
             moveToTarget(attackRingHill);
-        }
-        else{
-            System.out.println("roaming random");
+        } else if (p.centerMapHill != null){
+            moveToTarget(p.centerMapHill);
+        } else{
             roamRandom();
         }
         shootOptimally();
-        if(groupTargetCooldown > 0) groupTargetCooldown--;
+        groupTargetCooldown--;
     }
     private short[][] generateAttackRing(MapLocation loc){
         MapLoc destination = new MapLoc(loc);

@@ -90,10 +90,10 @@ public class Player {
                         }
                     }
                     p.rockets.clearRocketsIfNoUnits();
+                    p.rockets.rocketsShouldLauchIfPossible();
                     sprint.conductTurn();
                     workforce.conductTurn();
                     // after other things to give them a chance to conduct turn
-                    p.rockets.rocketsShouldLauchIfPossible();
                 }
             } catch (Exception e){
                 // todo set indexes to 0 in here
