@@ -50,13 +50,11 @@ public class Workers extends Group{
         return null;
     }
 
-    public void replicate(){
-        for(Integer id: ids){
-            for(Direction d: p.directions){
-                if(gc.canReplicate(id,d)){
-                    gc.replicate(id,d);
-                    break;
-                }
+    public void replicate(int id){
+        for(Direction d: p.directions){
+            if(gc.canReplicate(id,d)){
+                gc.replicate(id,d);
+                break;
             }
         }
     }

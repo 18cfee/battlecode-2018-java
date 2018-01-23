@@ -36,10 +36,13 @@ public class Workforce{
         }
 
         for(int i = 0; i < groupIndex - 1; i++) {
+            if(!workerGroups[i].noUnits()){
+                for(int j = 0; j < workerGroups[i].ids.size(); j++){
+                    if(workerGroups)
+                }
+            }
             if(workerGroups[i].noUnits()) {
                 workerGroups[i].groupIsAlive = false;
-            }else if (gc.round() == 1 || numWorkers < 10) {
-                workerGroups[i].replicate();
             } else if (workerGroups[i].getState() == WorkerStates.Build) {
 
             }else if (!workerGroups[i].printInProgress && p.getNumFactories() < p.NUM_FACTORIES_WANTED){
