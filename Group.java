@@ -1,7 +1,4 @@
-import bc.Direction;
-import bc.GameController;
-import bc.MapLocation;
-import bc.Unit;
+import bc.*;
 
 import java.util.HashSet;
 
@@ -75,7 +72,9 @@ public class Group {
     // calling this basically has units move to the set target
     protected void moveDownHill(int id, short[][] hill) throws Exception{
         Unit unit = gc.unit(id);
-        MapLocation cur = unit.location().mapLocation();
+        Location loc = unit.location();
+        if(loc.isInGarrison() || loc.isInSpace()) return;
+        MapLocation cur = loc.mapLocation();
         if(hill == null) {
             System.out.println("problem");
             return;
