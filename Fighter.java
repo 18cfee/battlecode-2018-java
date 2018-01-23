@@ -28,6 +28,13 @@ public class Fighter extends Group {
         super.add(id);
         if(gc.isAttackReady(id)){
             canShoot[numShooters++] = id;
+            if(numShooters == canShoot.length){
+                int[] temp = canShoot.clone();
+                canShoot = new int[temp.length*2];
+                for (int i = 0; i < temp.length; i++) {
+                    canShoot[i] = temp[i];
+                }
+            }
         }
     }
     @Override
