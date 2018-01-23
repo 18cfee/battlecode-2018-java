@@ -62,7 +62,9 @@ public class Rocket {
                 Unit temp = units.get(i);
                 int id3 = temp.id();
                 System.out.println("the unit was ready to move " +  gc.isMoveReady(id3));
-                System.out.println("a unit was succesffuly added to the rocket " + successfullyAdded(id,id3));
+                if(unit.unitType() == UnitType.Ranger){
+                    System.out.println("a unit was succesffuly added to the rocket " + successfullyAdded(id,id3));
+                }
                 System.out.println("the unit was ready to move " +  gc.isMoveReady(id3));
             }
             //

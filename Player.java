@@ -87,15 +87,15 @@ public class Player {
                             sprint.addUnit(id);
                         }
                     }
+                    p.rockets.rocketsShouldLaunchIfPossible();
                     sprint.conductTurn();
                     workforce.conductTurn();
                     // after other things to give them a chance to conduct turn
-                    p.rockets.rocketsShouldLaunchIfPossible();
                 }
             } catch (Exception e){
                 // todo set indexes to 0 in here
                 e.printStackTrace();
-                System.exit(0);
+                //System.exit(0);
                 count++;
             }
 
