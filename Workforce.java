@@ -79,16 +79,14 @@ public class Workforce{
                 if(p.closestKarbLocs.peek() != null && gc.canSenseLocation(p.closestKarbLocs.peek().toMapLocation())) {
                     MapLocation newLoc = p.closestKarbLocs.pop().toMapLocation();
                     //System.out.println("PQ says there are " + p.closestKarbLocs.getSize() + " deposits left");
-                    if (gc.canSenseLocation(newLoc)) {
-                        if (newLoc != null && gc.karboniteAt(newLoc) != 0) {
-                            viable = true;
-                            if(!group.karbLocInSight) {
-                                short[][] hill = p.generateHill(newLoc);
-                                group.currentHill = hill;
-                                group.setHarvestPoint(newLoc);
-                            }
-                            group.karbLocInSight = true;
+                    if (gc.karboniteAt(newLoc) != 0) {
+                        viable = true;
+                        if(!group.karbLocInSight) {
+                            short[][] hill = p.generateHill(newLoc);
+                            group.currentHill = hill;
+                            group.setHarvestPoint(newLoc);
                         }
+                        group.karbLocInSight = true;
                     }
                 }else{
                     viable = true;
