@@ -98,7 +98,7 @@ public class Player {
             } catch (Exception e){
                 // todo set indexes to 0 in here
                 e.printStackTrace();
-                //System.exit(0);
+                System.exit(0);
                 count++;
             }
 

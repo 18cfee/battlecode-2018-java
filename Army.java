@@ -173,11 +173,13 @@ public class Army {
         UnitType production = UnitType.Ranger;
         for (Integer factId: p.currentBuiltFactories) {
             //System.out.println("Num in garrison: " + gc.unit(factId).structureGarrison().size());
-            if(gc.canProduceRobot(factId,production)){
-                gc.produceRobot(factId,production);
-            }
-            if(gc.unit(factId).structureGarrison().size() > 0){
-                tryToUnloadInAlDirections(factId);
+            if(p.sensableUnitNotInGarisonOrSpace(factId)){
+                if(gc.canProduceRobot(factId,production)){
+                    gc.produceRobot(factId,production);
+                }
+                if(gc.unit(factId).structureGarrison().size() > 0){
+                    tryToUnloadInAlDirections(factId);
+                }
             }
         }
     }

@@ -1,5 +1,6 @@
 import bc.Direction;
 import bc.GameController;
+import bc.Location;
 import bc.MapLocation;
 
 import java.util.ArrayDeque;
@@ -106,7 +107,9 @@ public class MiniHill {
         return (Math.max(dif1,dif2) <= p.RANGERRANGE);
     }
     public void moveUnit(int id) throws Exception{
-        MapLoc cur = new MapLoc(gc.unit(id).location().mapLocation());
+        Location loc = gc.unit(id).location();
+        if(loc.isInGarrison() || loc.isInSpace()) return;
+        MapLoc cur = new MapLoc(loc.mapLocation());
         short curVal = getHillValue(cur);
         short min = p.greatestPathNum;
         Direction topChoice = null;

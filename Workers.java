@@ -26,7 +26,9 @@ public class Workers extends Group{
 
         changeToTargetMap(currentHill);
         for(Integer id: ids){
-            if(gc.unit(id).location().mapLocation().distanceSquaredTo(p.baseLoc) < 9) {
+            if(!p.sensableUnitNotInGarisonOrSpace(id)){
+              // DO NOTHING WITH THIS UNIT
+            } else if(gc.unit(id).location().mapLocation().distanceSquaredTo(p.baseLoc) < 9) {
                 for (Direction d: p.directions) {
                     if (gc.canBlueprint(id, type, d)) {
                         state = WorkerStates.Build;

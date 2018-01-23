@@ -69,6 +69,14 @@ public class Path {
         totalKarbOnEarth = calculateTotalKarbOnEarth();
         rockets = new Rocket(this,gc);
     }
+    public boolean sensableUnitNotInGarisonOrSpace(int id){
+        if(!gc.canSenseUnit(id)){
+            return false;
+        } else {
+            Location loc = gc.unit(id).location();
+            return (!loc.isInGarrison() || !loc.isInSpace());
+        }
+    }
     private MapLocation findCenterLoc(){
         for (int i = 0; i < planetWidth; i++) {
             for (int j = 0; j < planetHeight; j++) {
