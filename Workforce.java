@@ -38,7 +38,7 @@ public class Workforce{
         for(int i = 0; i < groupIndex - 1; i++) {
             if(workerGroups[i].noUnits()) {
                 workerGroups[i].groupIsAlive = false;
-            }else if (gc.round() == 1 || (numWorkers < 10 && gc.round() < 20)) {
+            }else if (gc.round() == 1 || numWorkers < 10) {
                 workerGroups[i].replicate();
             } else if (workerGroups[i].getState() == WorkerStates.Build) {
 
@@ -76,26 +76,29 @@ public class Workforce{
         if (closestKarbDepot == null || gc.karboniteAt(closestKarbDepot) == 0) {
             boolean viable = false;
             while (!viable && !p.closestKarbLocs.isEmpty()) {
-                MapLocation newLoc = p.closestKarbLocs.pop().toMapLocation();
-                //System.out.println("PQ says there are " + p.closestKarbLocs.getSize() + " deposits left");
-                if (gc.canSenseLocation(newLoc)) {
-                    if (newLoc != null && gc.karboniteAt(newLoc) != 0) {
-                        viable = true;
-
-
-                        short[][] hill = p.generateHill(newLoc);
-                        group.currentHill = hill;
-                        group.setHarvestPoint(newLoc);
-                    } else {
+                if(p.closestKarbLocs.peek() != null && gc.canSenseLocation(p.closestKarbLocs.peek().toMapLocation())) {
+                    MapLocation newLoc = p.closestKarbLocs.pop().toMapLocation();
+                    //System.out.println("PQ says there are " + p.closestKarbLocs.getSize() + " deposits left");
+                    if (gc.canSenseLocation(newLoc)) {
+                        if (newLoc != null && gc.karboniteAt(newLoc) != 0) {
+                            viable = true;
+                            if(!group.karbLocInSight) {
+                                short[][] hill = p.generateHill(newLoc);
+                                group.currentHill = hill;
+                                group.setHarvestPoint(newLoc);
+                            }
+                            group.karbLocInSight = true;
+                        }
                     }
-                } else{
+                }else{
                     viable = true;
-                    if(group.karbLocInSight){
-                        short[][] hill = p.generateHill(newLoc);
-                        group.setHarvestPoint(newLoc);
+                    if (group.karbLocInSight) {
+                        short[][] hill = p.generateHill(p.closestKarbLocs.peek().toMapLocation());
+                        group.setHarvestPoint(p.closestKarbLocs.peek().toMapLocation());
                         group.karbLocInSight = false;
                         group.currentHill = hill;
                     }
+                    group.karbLocInSight = false;
                 }
             }
             if (!viable) {
