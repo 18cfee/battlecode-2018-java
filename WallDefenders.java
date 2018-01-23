@@ -26,7 +26,7 @@ public class WallDefenders extends Fighter {
             wallThresh += 10;
         }
         //else loadRocketIfPossible(rocket);
-        shootAtSomething();
+        shootOptimally();
     }
 //    public void loadRocketIfPossible(int rocketId){
 //

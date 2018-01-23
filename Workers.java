@@ -18,7 +18,6 @@ public class Workers extends Group{
     }
 
     public MapLocation setBlueprint(UnitType type)throws Exception{
-        System.out.println("Setting up a blueprint");
         if(state != WorkerStates.SetBlueprint){
             state = WorkerStates.SetBlueprint;
             currentHill = p.hillToBase;
@@ -42,7 +41,6 @@ public class Workers extends Group{
                             }
                         }
                     }else{
-                        System.out.println("Could not place a print");
                     }
                 }
             }else{
@@ -68,8 +66,6 @@ public class Workers extends Group{
         // this basically makes sure things have been reset we need it at the beggining of all conduct turns for
         // groups
         if(noUnits()) return;
-        System.out.println("Total karb: " + gc.karbonite());
-        System.out.println("Worker state: " + state);
 
         if(state == WorkerStates.Build) {
             //System.out.println("I'm in the build state, and I'm building:");
@@ -106,7 +102,6 @@ public class Workers extends Group{
                 setState(WorkerStates.Standby);
             }
         }else{
-            System.out.println("Blueprinted unit destroyed, going to Standby mode");
             state = WorkerStates.Standby;
         }
     }

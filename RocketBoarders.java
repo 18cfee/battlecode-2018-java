@@ -9,10 +9,8 @@ public class RocketBoarders extends Fighter {
     @Override
     public void conductTurn() throws Exception{
         if(noUnits()) return;
-        System.out.println("it is making it into rocket boarders: " + rocketId);
-        System.out.println("size of boarders " + size());
         roamRandom();
-        shootAtSomething();
+        shootOptimally();
     }
     public void attainRocketId(){
         //todo

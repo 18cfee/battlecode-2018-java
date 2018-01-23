@@ -221,7 +221,6 @@ public class Path {
         }
         long end = System.currentTimeMillis();
         totalTimeInFunc+=(end - start);
-        System.out.println("asdfasdfsdfasdf milis attention " + totalTimeInFunc + " Num times called " + functionCalled);
         // todo smaller versions need to know if a path was found
         return hill;
     }
@@ -253,8 +252,6 @@ public class Path {
                 }
             }
         }
-        System.out.println("Starting the pq");
-        System.out.println("There are " + numKarbLocs + " karbonite locations on this planet!");
         closestKarbLocs = new MPQ(numKarbLocs+1);
         for(MapLoc loc : karbLocs){
             closestKarbLocs.insert(loc);

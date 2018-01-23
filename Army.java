@@ -52,7 +52,6 @@ public class Army {
 //        rocketShouldLaunchIfItCan();
         resetSize();
         long end = System.currentTimeMillis();
-        System.out.println("conduct turn took: " + (end - time));
     }
     private int shouldCreateRocketGroup = -1;
     private int oldNumRangerGroups = 0;

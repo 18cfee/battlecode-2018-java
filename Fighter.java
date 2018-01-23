@@ -34,21 +34,20 @@ public class Fighter extends Group {
     public void conductTurn() throws Exception{
         if(noUnits()) return;
         roamRandom();
-        shootAtSomething();
+        shootOptimally();
     }
-    public void shootAtSomething ()throws Exception{
-        if(noEnemies() || noShooters()) return; // not just for efficiency
-        for (int i = 0; i < numShooters; i++) {
-            for (Enemy enemy: enemies) {
-                if(enemy.hp > 0 && gc.canAttack(canShoot[i],enemy.id)){
-                    System.out.println("shot at " + enemy.id);
-                    gc.attack(canShoot[i],enemy.id);
-                    enemy.hp -= gc.unit(canShoot[i]).damage();
-                    break;
-                }
-            }
-        }
-    }
+//    public void shootAtSomething ()throws Exception{
+//        if(noEnemies() || noShooters()) return; // not just for efficiency
+//        for (int i = 0; i < numShooters; i++) {
+//            for (Enemy enemy: enemies) {
+//                if(enemy.hp > 0 && gc.canAttack(canShoot[i],enemy.id)){
+//                    gc.attack(canShoot[i],enemy.id);
+//                    enemy.hp -= gc.unit(canShoot[i]).damage();
+//                    break;
+//                }
+//            }
+//        }
+//    }
     protected boolean noShooters(){
         if(numShooters == 0) return true;
         if(shooterTurn != p.round){

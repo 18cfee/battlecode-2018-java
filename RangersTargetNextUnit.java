@@ -14,7 +14,6 @@ public class RangersTargetNextUnit extends Fighter{
     @Override
     public void conductTurn() throws Exception{
         if(noUnits())return;
-        System.out.println("it is making it into rangers next unit");
         if(baseDef == null){
             //not ready to go
             if(p.baseLoc == null){
@@ -41,7 +40,7 @@ public class RangersTargetNextUnit extends Fighter{
             seesEnemy = false;
         }
         moveToTarget(baseHill);
-        shootAtSomething();
+        shootOptimally();
         if(groupTargetCooldown > 0) groupTargetCooldown--;
     }
 }

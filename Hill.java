@@ -42,7 +42,6 @@ public class Hill {
             }
         }
         long end = System.currentTimeMillis();
-        System.out.println("asdfasdfsdfasdf milis attention goooooooooooooo" + (end - start));
         // todo smaller versions need to know if a path was found
     }
     public boolean generateCompactHill(MapLocation destination){

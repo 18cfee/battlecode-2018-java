@@ -38,11 +38,9 @@ public class Defenders extends Fighter {
             target = null;
         }
         if(target!= null){
-            System.out.println("roaming to hill");
             moveToMiniHill(miniHill);
         }
         else{
-            System.out.println("roaming random");
             roamRandomlyInRangeOfBase();
         }
         shootOptimally();

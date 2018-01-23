@@ -76,7 +76,6 @@ public class Group {
         if(loc.isInGarrison() || loc.isInSpace()) return;
         MapLocation cur = loc.mapLocation();
         if(hill == null) {
-            System.out.println("problem");
             return;
         }
         short dirVal = hill[cur.getX()][cur.getY()];
