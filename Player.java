@@ -46,9 +46,11 @@ public class Player {
                                 p.addFactory(id);
                             }
                         } else if (unit.unitType() == UnitType.Rocket) {
-                            Direction random = p.getRandDirection();
-                            if(gc.canUnload(unit.id(),random)){
-                                gc.unload(unit.id(),random);
+                            for (int t = 0; t < 8; t++) {
+                                Direction dir = p.directions[t];
+                                if(gc.canUnload(id,dir)){
+                                    gc.unload(id,dir);
+                                }
                             }
                         }else{
                             mars.add(id);
