@@ -15,6 +15,9 @@ public class Workforce{
         this.p = p;
         createGroup();
     }
+    public void resetIdleIndex(){
+        idleIndex = 0;
+    }
     public void conductTurn() throws Exception{
         while(groupIndex < 2){
             createGroup();
