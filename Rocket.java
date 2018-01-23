@@ -56,7 +56,7 @@ public class Rocket {
 
             Unit unit = gc.unit(id);
             // this is hacky but want to try
-
+            System.out.println("attention we are in the rocket area rn so be ery careful sdfsdfsdfsdfsdfsdfsdfsdf");
             VecUnit units = gc.senseNearbyUnitsByTeam(getMapLocation(id),2,gc.team());
             for (int i = 0; i < units.size(); i++) {
                 Unit temp = units.get(i);

@@ -41,7 +41,6 @@ public class Fighter extends Group {
         for (int i = 0; i < numShooters; i++) {
             for (Enemy enemy: enemies) {
                 if(enemy.hp > 0 && gc.canAttack(canShoot[i],enemy.id)){
-                    System.out.println("shot at " + enemy.id);
                     gc.attack(canShoot[i],enemy.id);
                     enemy.hp -= gc.unit(canShoot[i]).damage();
                     break;

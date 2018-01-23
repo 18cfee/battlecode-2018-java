@@ -14,7 +14,6 @@ public class RangersTargetNextUnit extends Fighter{
     @Override
     public void conductTurn() throws Exception{
         if(noUnits())return;
-        System.out.println("it is making it into rangers next unit");
         if(baseDef == null){
             //not ready to go
             if(p.baseLoc == null){

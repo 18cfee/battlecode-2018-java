@@ -7,7 +7,7 @@ public class Army {
     GameController gc;
     Path p;
     Fighter carlsRangers;
-    Defenders baseProtection;
+    WallDefenders baseProtection;
     private int numDefenders = 0;
     RocketBoarders marsTroops;
     ArrayList<RocketBoarders> rangers;
@@ -15,7 +15,7 @@ public class Army {
     HashSet<Integer> tempOldFactories;
     AggresiveRangers killEm;
     int size = 0;
-    private final static int MAXUnits = 10;
+    private final static int MAXUnits = 95;
     private int armyRound = 0;
     private int fighterRound = 0;
     private int numGroupsCreated = 0;
@@ -23,7 +23,7 @@ public class Army {
         this.gc = gc;
         this.p = p;
         carlsRangers = new RangersTargetNextUnit(gc,p);
-        baseProtection = new Defenders(gc,p);
+        baseProtection = new WallDefenders(gc,p);
         //marsTroops = new RocketBoarders(gc,p);
         tempOldFactories = new HashSet<>();
         rangers = new ArrayList<>();
@@ -52,7 +52,6 @@ public class Army {
 //        rocketShouldLaunchIfItCan();
         resetSize();
         long end = System.currentTimeMillis();
-        System.out.println("conduct turn took: " + (end - time));
     }
     private int shouldCreateRocketGroup = -1;
     private int oldNumRangerGroups = 0;
@@ -107,7 +106,7 @@ public class Army {
             numDefenders = 0;
             baseProtection.ids.clear();
             numGroupsCreated++;
-        } else if(shouldCreateRocketGroup == p.round && group.size() < 14){
+        } else if(shouldCreateRocketGroup == p.round && group.size() < 10){
             group.add(id);
         } else {
             baseProtection.add(id);

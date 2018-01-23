@@ -39,7 +39,7 @@ public class Path {
     public Rocket rockets;
     public final static int NUM_ROCKETS_WANTED = 2;
     int maxDistanceFromBase = 12;
-
+    short[][] centerMapHill = null;
     public Path(GameController gc,Planet planet){
         currentBuiltFactories = new HashSet<>(10);
         this.planet = planet;
@@ -63,9 +63,34 @@ public class Path {
         if(planet == Planet.Earth){
             baseLoc = chooseBaseLocation();
             hillToBase = generateHill(baseLoc);
+            setMiddleThird();
+            MapLocation temp2 = findCenterLoc();
+            if(temp2 != null){
+                centerMapHill = generateHill(findCenterLoc());
+            }
         }
         totalKarbOnEarth = calculateTotalKarbOnEarth();
         rockets = new Rocket(this,gc);
+    }
+    private MapLocation findCenterLoc(){
+        for (int i = 0; i < planetWidth; i++) {
+            for (int j = 0; j < planetHeight; j++) {
+               if(passable[i].get(j) && hillToBase[i][j] > 7 && hillToBase[i][j] < 24 && middleThirdMap(i,j)){
+                   return new MapLocation(planet,i,j);
+               }
+            }
+        }
+        return null;
+    }
+    private int min3x, min3y, max3x, max3y;
+    private void setMiddleThird(){
+        min3x = planetWidth/3;
+        max3x = min3x*2;
+        min3y = planetHeight/3;
+        max3y = min3y*2;
+    }
+    private boolean middleThirdMap(int x, int y){
+        return (min3x <= x && x <= max3x && min3y <= y && y <= max3y);
     }
     private MapLocation chooseBaseLocation(){
         int maxGreenPercent = 0;
@@ -223,8 +248,6 @@ public class Path {
                 }
             }
         }
-        System.out.println("Starting the pq");
-        System.out.println("There are " + numKarbLocs + " karbonite locations on this planet!");
         closestKarbLocs = new MPQ(numKarbLocs+1);
         for(MapLoc loc : karbLocs){
             closestKarbLocs.insert(loc);

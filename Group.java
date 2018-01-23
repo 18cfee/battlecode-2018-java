@@ -77,7 +77,6 @@ public class Group {
         Unit unit = gc.unit(id);
         MapLocation cur = unit.location().mapLocation();
         if(hill == null) {
-            System.out.println("problem");
             return;
         }
         short dirVal = hill[cur.getX()][cur.getY()];

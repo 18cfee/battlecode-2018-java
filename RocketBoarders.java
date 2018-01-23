@@ -29,9 +29,7 @@ public class RocketBoarders extends Fighter {
         }
         for (int i = 0; i < movableIndex; i++) {
             int id = moveAbles[i];
-            if(!p.rockets.successfullyAdded(rocketId,id)){
-                moveDownHill(id,hillToRocket);
-            }
+            moveDownHill(id,hillToRocket);
         }
     }
 //    public boolean loadRocketIfPossible(int rocketId){

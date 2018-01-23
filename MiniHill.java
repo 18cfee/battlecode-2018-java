@@ -46,7 +46,6 @@ public class MiniHill {
             }
         }
         long end = System.currentTimeMillis();
-        System.out.println("asdfasdfsdfasdf mini hill attention goooooooooooooo" + (end - start));
         //Debug.printHill(hill);
         for (int i = 0; i < bounds.locs.length; i++) {
             short val = getHillValue(bounds.locs[i]);
@@ -86,7 +85,6 @@ public class MiniHill {
             }
         }
         long end = System.currentTimeMillis();
-        System.out.println("asdfasdfsdfasdf mini hill attention goooooooooooooo" + (end - start));
         //Debug.printHill(hill);
         for (int i = 0; i < bounds.locs.length; i++) {
             short val = getHillValue(bounds.locs[i]);

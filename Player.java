@@ -20,7 +20,6 @@ public class Player {
         while (true) {
             try {
                 p.round = (int)gc.round();
-                System.out.println("asdfasdfsdfasdf milis attention " + p.totalTimeInFunc + " Num times called " + p.functionCalled);
                 System.out.println("Current round: " + p.round + " bugs: "+ count);
                 if(!gc.researchInfo().hasNextInQueue()){
                     gc.queueResearch(UnitType.Rocket);
