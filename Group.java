@@ -49,10 +49,7 @@ public class Group {
         if(noUnits()) return;
         for (int i = 0; i < movableIndex; i++) {
             int id = moveAbles[i];
-            Direction toMove = p.getRandDirection();
-            if(gc.isMoveReady(id) && gc.canMove(id,toMove)){
-                gc.moveRobot(id,toMove);
-            }
+            p.moveIfPossible(id);
         }
     }
     protected boolean shouldContinueRoamingRandomly(){

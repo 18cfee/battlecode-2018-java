@@ -39,12 +39,12 @@ public class Player {
                         } else if(unit.team() != myTeam){
                             mars.addEnemy(new Enemy(unit));
                         } else if (unit.unitType() == UnitType.Worker) {
-                            workforce.addWorker(id);
+                            //workforce.addWorker(id);
                         } else if (unit.unitType() == UnitType.Factory) {
-                            if(unit.structureIsBuilt() == 1){
-                                sprint.addFact(unit);
-                                p.addFactory(id);
-                            }
+//                            if(unit.structureIsBuilt() == 1){
+//                                sprint.addFact(unit);
+//                                p.addFactory(id);
+//                            }
                         } else if (unit.unitType() == UnitType.Rocket) {
                             for (int t = 0; t < 8; t++) {
                                 Direction dir = p.directions[t];
