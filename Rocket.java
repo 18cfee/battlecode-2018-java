@@ -1,9 +1,6 @@
 import bc.*;
 
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Stack;
+import java.util.*;
 
 public class Rocket {
     private HashSet<Integer> unbuiltIds;
@@ -12,16 +9,18 @@ public class Rocket {
     private Path p;
     private GameController gc;
     private Stack<MapLocation> destinationStack;
-    private Stack<Integer> unClaimedIds;
+    private ArrayList<Integer> availableIds;
     private HashMap<Integer,Integer> idToRoundLastModified;
+    private HashSet<Integer> oldIds;
     public Rocket(Path p, GameController gc) {
         unbuiltIds = new HashSet<>();
         builtRockets = new HashMap<>();
         this.p = p;
         this.gc = gc;
-        unClaimedIds = new Stack<>();
+        availableIds = new ArrayList<>();
         idToRoundLastModified = new HashMap<>();
         destinationStack = new Stack<>();
+        oldIds = new HashSet<>(20);
         generateLaunchQ();
     }
     public void addRocket(Unit unit){
@@ -29,12 +28,16 @@ public class Rocket {
             roundNumber = p.round;
             unbuiltIds.clear();
             builtRockets.clear();
+            availableIds.clear();
         }
+        int id = unit.id();
         if(unit.structureIsBuilt() == 0){
-            unbuiltIds.add(unit.id());
+            unbuiltIds.add(id);
         } else {
             builtRockets.put(unit.id(),unit.location().mapLocation());
-            unClaimedIds.push(unit.id());
+            if(!oldIds.contains(id)){
+                availableIds.add(id);
+            }
         }
     }
     private boolean noRockets(){
@@ -42,11 +45,12 @@ public class Rocket {
         if(p.round != roundNumber){
             builtRockets.clear();
             roundNumber = p.round;
+            availableIds.clear();
             return true;
         }
         return false;
     }
-    public void rocketsShouldLauchIfPossible() throws Exception{
+    public void rocketsShouldLaunchIfPossible() throws Exception{
         if(noRockets()) return;
         for(Integer id: builtRockets.keySet()){
             Unit unit = gc.unit(id);
@@ -72,12 +76,14 @@ public class Rocket {
         return (idToRoundLastModified.containsKey(rocketId) && p.round > idToRoundLastModified.get(rocketId) + 15);
     }
     public int takeRocket(){
-        int id = unClaimedIds.pop();
-        idToRoundLastModified.put(id,p.round);
-        return id;
+        System.out.println("number of rockets on stack " + availableIds.size());
+            int id = availableIds.get(0);
+            idToRoundLastModified.put(id,p.round);
+            oldIds.add(id);
+            return id;
     }
     public boolean availableRocket(){
-        return unClaimedIds.size() > 0;
+        return availableIds.size() > 0;
     }
     private void generateLaunchQ(){
         PlanetMap mars = gc.startingMap(Planet.Mars);
@@ -112,11 +118,10 @@ public class Rocket {
         }
         ///Debug.passable(passable);
     }
-    public void clearRocketsIfNoUnits(){
-        if(p.round!=roundNumber){
-            unbuiltIds.clear();
-            builtRockets.clear();
-        }
+    public void clearRockets(){
+        unbuiltIds.clear();
+        builtRockets.clear();
+        availableIds.clear();
     }
     public int getNumUnBuiltRockets(){
         return unbuiltIds.size();

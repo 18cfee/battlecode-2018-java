@@ -101,7 +101,6 @@ public class Army {
             // assign units to an attack group
         }else if(numDefenders > 20 && p.rockets.availableRocket() && !shouldBeDefending()){
             group = new RocketBoarders(gc,p);
-            group.attainRocketId();
             rangers.add(group);
             group.add(id);
             shouldCreateRocketGroup = p.round;

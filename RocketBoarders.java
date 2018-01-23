@@ -8,7 +8,8 @@ public class RocketBoarders extends Fighter {
         super(gc,p);
         rocketId = p.rockets.takeRocket();
         MapLocation loc = p.rockets.getMapLocation(rocketId);
-        if(p.firstRocketLoc != null && loc.equals(p.firstRocketLoc)){
+        if(p.firstRocketLoc != null &&
+                loc.equals(p.firstRocketLoc)){
             hillToRocket = p.firstRocketLocHill;
         } else if (p.secondRocketLoc != null && loc.equals(p.secondRocketLoc)) {
             hillToRocket = p.secondRocketLocHill;

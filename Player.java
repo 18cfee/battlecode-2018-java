@@ -1,7 +1,6 @@
 import bc.*;
 
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Stack;
 
 public class Player {
@@ -62,7 +61,7 @@ public class Player {
                     //Place Units into their groups
                     VecUnit units = gc.units();
                     Team myTeam = gc.team();
-
+                    p.rockets.clearRockets();
                     if(!workforce.isCanBuildRocket() && gc.researchInfo().getLevel(UnitType.Rocket) >= 1){
                         workforce.setCanBuildRocket(true);
                     }
@@ -89,11 +88,10 @@ public class Player {
                             sprint.addUnit(id);
                         }
                     }
-                    p.rockets.clearRocketsIfNoUnits();
                     sprint.conductTurn();
                     workforce.conductTurn();
                     // after other things to give them a chance to conduct turn
-                    p.rockets.rocketsShouldLauchIfPossible();
+                    p.rockets.rocketsShouldLaunchIfPossible();
                 }
             } catch (Exception e){
                 // todo set indexes to 0 in here
