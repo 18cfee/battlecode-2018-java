@@ -40,7 +40,7 @@ public class Workforce {
 
         for (int i = 0; i < groupIndex - 1; i++) {
             if (!workerGroups[i].noUnits() && numWorkers < 10) {
-                System.out.println("Trying to replicate");
+                //System.out.println("Trying to replicate");
                 for (int id : workerGroups[i].ids) {
                     workerGroups[i].replicate(id);
                 }
