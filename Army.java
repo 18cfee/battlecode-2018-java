@@ -15,7 +15,7 @@ public class Army {
     HashSet<Integer> tempOldFactories;
     AggresiveRangers killEm;
     int size = 0;
-    private final static int MAXUnits = 95;
+    private final static int MAXUnits = 10;
     private int armyRound = 0;
     private int fighterRound = 0;
     private int numGroupsCreated = 0;

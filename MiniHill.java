@@ -107,7 +107,7 @@ public class MiniHill {
     }
     public void moveUnit(int id) throws Exception{
         MapLoc cur = new MapLoc(gc.unit(id).location().mapLocation());
-        short curVal = getHillValue(cur);
+        //short curVal = getHillValue(cur);
         short min = p.greatestPathNum;
         Direction topChoice = null;
         for (int direction = 0; direction < 8; direction++) {

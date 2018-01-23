@@ -53,7 +53,19 @@ public class Rocket {
     public void rocketsShouldLaunchIfPossible() throws Exception{
         if(noRockets()) return;
         for(Integer id: builtRockets.keySet()){
+
             Unit unit = gc.unit(id);
+            // this is hacky but want to try
+
+            VecUnit units = gc.senseNearbyUnitsByTeam(getMapLocation(id),2,gc.team());
+            for (int i = 0; i < units.size(); i++) {
+                Unit temp = units.get(i);
+                int id3 = temp.id();
+                System.out.println("the unit was ready to move " +  gc.isMoveReady(id3));
+                System.out.println("a unit was succesffuly added to the rocket " + successfullyAdded(id,id3));
+                System.out.println("the unit was ready to move " +  gc.isMoveReady(id3));
+            }
+            //
             int garisonMax = (int)unit.structureMaxCapacity();
             int curLoad = (int)unit.structureGarrison().size();
             if(((true ||curLoad == garisonMax || tooManyRoundsSinceLastInsert(id) || roundNumber == 749) && !destinationStack.empty())){
