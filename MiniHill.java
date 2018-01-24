@@ -115,7 +115,7 @@ public class MiniHill {
             Direction dir = p.directions[direction];
             int[] dirR = p.numsDirections[direction];
             MapLoc newLoc = cur.add(dirR);
-            if(inHill(newLoc) && gc.canMove(id,dir)){
+            if(inHill(newLoc) && p.canMove(id,dir)){
                 short grad = getHillValue(newLoc);
                 if (grad < min) {
                     min = grad;

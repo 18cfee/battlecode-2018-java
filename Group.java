@@ -80,7 +80,7 @@ public class Group {
         Direction topChoice = null;
         for (int i = 0; i < 8; i++) {
             Direction dir = p.directions[i];
-            if(gc.canMove(id,dir)){
+            if(p.canMove(id,dir)){
                 int[] dirR = p.numsDirections[i];
                 MapLocation newLoc = new MapLocation(p.planet,dirR[0]+ cur.getX(),dirR[1]+cur.getY());
                 short grad = hill[newLoc.getX()][newLoc.getY()];

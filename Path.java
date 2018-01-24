@@ -94,6 +94,9 @@ public class Path {
         min3y = planetHeight/3;
         max3y = min3y*2;
     }
+    public boolean canMove(int id, Direction dir){
+        return gc.canMove(id,dir);
+    }
     private boolean middleThirdMap(int x, int y){
         return (min3x <= x && x <= max3x && min3y <= y && y <= max3y);
     }
@@ -187,7 +190,7 @@ public class Path {
         int startD = random.nextInt(8);
         for (int i = startD; i < startD + 8; i++) {
             Direction d = directions[i%8];
-            if(gc.isMoveReady(id) && gc.canMove(id,d)){
+            if(gc.isMoveReady(id) && canMove(id,d)){
                 gc.moveRobot(id,d);
                 return true;
             }
@@ -276,7 +279,7 @@ public class Path {
         for (int i = 0; i < 8; i++) {
             int d = (randomN + i)%8;
             Direction dir = directions[d];
-            if (gc.canMove(id,dir) && gc.isMoveReady(id)){
+            if (canMove(id,dir) && gc.isMoveReady(id)){
                 gc.moveRobot(id,dir);
             }
         }
