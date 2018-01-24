@@ -57,10 +57,14 @@ public class Rocket {
                 }
                 int garisonMax = (int) unit.structureMaxCapacity();
                 int curLoad = (int) unit.structureGarrison().size();
+                System.out.println("rocker garrison: " + curLoad);
+                System.out.println("destination stack: " + destinationStack.size());
                 if (((curLoad == garisonMax || tooManyRoundsSinceLastInsert(id) || roundNumber == 749) && !destinationStack.empty())) {
                     MapLocation dest = destinationStack.pop();
+                    System.out.println("popped off stack");
                     if (gc.canLaunchRocket(id, dest)) {
                         gc.launchRocket(id, dest);
+                        System.out.println("and launched");
                     }
                 }
             }
@@ -100,7 +104,7 @@ public class Rocket {
         //Debug.passable(passable);
         //System.out.println("second");
         for (int i = marsWidth - 1; i >= 0; i--) {
-            for (int j = marsHeight - 1; j >= marsHeight; j--) {
+            for (int j = marsHeight - 1; j >= 0; j--) {
                 if(passable[i].get(j)){
                     destinationStack.push(new MapLocation(Planet.Mars,i,j));
                     // mark neighbors unpassable

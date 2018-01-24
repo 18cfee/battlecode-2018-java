@@ -68,11 +68,8 @@ public class Group {
     }
     // calling this basically has units move to the set target
     protected void moveDownHill(int id, short[][] hill) throws Exception{
-        Unit unit = gc.unit(id);
-        Location loc = unit.location();
-        if(loc.isInGarrison() || loc.isInSpace()) return;
-        MapLocation cur = loc.mapLocation();
-        if(hill == null) {
+        MapLocation cur = p.getMapLocationIfLegit(id);
+        if(hill == null || cur == null) {
             return;
         }
         short dirVal = hill[cur.getX()][cur.getY()];

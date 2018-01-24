@@ -69,12 +69,24 @@ public class Path {
         totalKarbOnEarth = calculateTotalKarbOnEarth();
         rockets = new Rocket(this,gc);
     }
+
     public boolean sensableUnitNotInGarisonOrSpace(int id){
         if(!gc.canSenseUnit(id)){
             return false;
         } else {
             Location loc = gc.unit(id).location();
             return (!loc.isInGarrison() || !loc.isInSpace());
+        }
+    }
+    public  MapLocation getMapLocationIfLegit(int id) throws Exception{
+        if(!gc.canSenseUnit(id)){
+            return null;
+        } else {
+            Location loc = gc.unit(id).location();
+            if (loc.isInGarrison() || loc.isInSpace()){
+                return null;
+            }
+            return loc.mapLocation();
         }
     }
     private MapLocation findCenterLoc(){
