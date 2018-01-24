@@ -99,8 +99,8 @@ public class Rocket {
         }
         //Debug.passable(passable);
         //System.out.println("second");
-        for (int i = 0; i < marsWidth; i++) {
-            for (int j = 0; j < marsHeight; j++) {
+        for (int i = marsWidth - 1; i >= 0; i--) {
+            for (int j = marsHeight - 1; j >= marsHeight; j--) {
                 if(passable[i].get(j)){
                     destinationStack.push(new MapLocation(Planet.Mars,i,j));
                     // mark neighbors unpassable
