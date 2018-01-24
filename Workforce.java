@@ -75,7 +75,7 @@ public class Workforce {
             }
         }
 
-        idleIndex = 0;
+        resetIdleIndex();
     }
 
     private void gatherKarbonite(Workers group) throws Exception {
@@ -84,16 +84,20 @@ public class Workforce {
             boolean viable = false;
             while (!viable && !p.closestKarbLocs.isEmpty()) {
                 if (p.closestKarbLocs.peek() != null && gc.canSenseLocation(p.closestKarbLocs.peek().toMapLocation())) {
-                    MapLocation newLoc = p.closestKarbLocs.pop().toMapLocation();
+                    closestKarbDepot = p.closestKarbLocs.pop().toMapLocation();
                     //System.out.println("PQ says there are " + p.closestKarbLocs.getSize() + " deposits left");
-                    if (gc.karboniteAt(newLoc) != 0) {
-                        viable = true;
-                        if (!group.karbLocInSight) {
-                            short[][] hill = p.generateHill(newLoc);
-                            group.currentHill = hill;
-                            group.setHarvestPoint(newLoc);
+                    if(gc.hasUnitAtLocation(closestKarbDepot) && (gc.senseUnitAtLocation(closestKarbDepot).unitType() == UnitType.Factory || gc.senseUnitAtLocation(closestKarbDepot).unitType() == UnitType.Rocket)) {
+
+                    }else{
+                        if (gc.karboniteAt(closestKarbDepot) != 0) {
+                            viable = true;
+                            if (!group.karbLocInSight) {
+                                short[][] hill = p.generateHill(closestKarbDepot);
+                                group.currentHill = hill;
+                                group.setHarvestPoint(closestKarbDepot);
+                            }
+                            group.karbLocInSight = true;
                         }
-                        group.karbLocInSight = true;
                     }
                 } else {
                     viable = true;
