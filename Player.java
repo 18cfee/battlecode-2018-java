@@ -66,7 +66,6 @@ public class Player {
                     if(!workforce.isCanBuildRocket() && gc.researchInfo().getLevel(UnitType.Rocket) >= 1){
                         workforce.setCanBuildRocket(true);
                     }
-
                     if(gc.round() % 50 == 0){
                         System.out.println(gc.researchInfo().nextInQueue());
                     }

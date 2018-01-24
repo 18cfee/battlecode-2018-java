@@ -107,7 +107,12 @@ public class Path {
         max3y = min3y*2;
     }
     public boolean canMove(int id, Direction dir){
-        return gc.canMove(id,dir);
+        return gc.canMove(id,dir) && notMovingToLaunchArea(id,dir);
+    }
+    private boolean notMovingToLaunchArea(int id, Direction dir){
+        if(!rockets.isLaunchTurn()) return true;
+        MapLocation target = gc.unit(id).location().mapLocation().add(dir);
+        return !rockets.inLaunchPad(target);
     }
     private boolean middleThirdMap(int x, int y){
         return (min3x <= x && x <= max3x && min3y <= y && y <= max3y);
