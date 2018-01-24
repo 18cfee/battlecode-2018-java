@@ -14,7 +14,7 @@ public class Player {
         workers.setState(WorkerStates.Standby);
         Army sprint = new Army(gc,p);
         Workforce workforce = new Workforce(gc, p);
-        Fighter mars = new Fighter(gc,p);
+        AggresiveRangers mars = new AggresiveRangers(gc,p);
         ArrayList<Group> newlist = new ArrayList<>();
         newlist.add(mars);
         int count = 0;
