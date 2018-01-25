@@ -14,8 +14,13 @@ public class AggresiveRangers extends Fighter{
     }
     @Override
     public void conductTurn() throws Exception{
-        if(noUnits())return;
-        if(!noEnemies() && seesEnemy == false && groupTargetCooldown < 0){
+        if(noUnits()) {
+            groupTargetCooldown = 0;
+            seesEnemy = false;
+            attackRingHill = null;
+            return;
+        }
+        if(!noEnemies() && seesEnemy == false && groupTargetCooldown <= 0){
             Enemy enemy = enemies.get(0);
             if(enemy.hp > 0){
                 MapLocation a = gc.unit(enemy.id).location().mapLocation();

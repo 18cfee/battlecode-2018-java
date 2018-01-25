@@ -45,7 +45,7 @@ public class Group {
         if(noUnits())return;
         roamRandom();
     }
-    protected void roamRandom(){
+    protected void roamRandom() throws Exception{
         if(noUnits()) return;
         for (int i = 0; i < movableIndex; i++) {
             int id = moveAbles[i];
@@ -68,11 +68,8 @@ public class Group {
     }
     // calling this basically has units move to the set target
     protected void moveDownHill(int id, short[][] hill) throws Exception{
-        Unit unit = gc.unit(id);
-        Location loc = unit.location();
-        if(loc.isInGarrison() || loc.isInSpace()) return;
-        MapLocation cur = loc.mapLocation();
-        if(hill == null) {
+        MapLocation cur = p.getMapLocationIfLegit(id);
+        if(hill == null || cur == null) {
             return;
         }
         short dirVal = hill[cur.getX()][cur.getY()];
@@ -80,7 +77,7 @@ public class Group {
         Direction topChoice = null;
         for (int i = 0; i < 8; i++) {
             Direction dir = p.directions[i];
-            if(gc.canMove(id,dir)){
+            if(p.canMove(id,dir)){
                 int[] dirR = p.numsDirections[i];
                 MapLocation newLoc = new MapLocation(p.planet,dirR[0]+ cur.getX(),dirR[1]+cur.getY());
                 short grad = hill[newLoc.getX()][newLoc.getY()];
