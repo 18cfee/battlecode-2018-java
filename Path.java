@@ -5,7 +5,7 @@ import java.util.*;
 public class Path {
     public final static int RANGERRANGE = 5; // everything within a square that big
     public final static int RANGERDANGER = 3; // any smaller and might no be able to shoot
-    private PlanetMap map;
+    public PlanetMap map;
     GameController gc;
     int planetHeight;
     int planetWidth;
@@ -23,7 +23,7 @@ public class Path {
     //public final static int MAX_NUM_FACTS = 20;
     //public int builtFactIndex = 0;
     //public int [] builtFactary = new int [MAX_NUM_FACTS];
-    public final static int NUM_FACTORIES_WANTED = 2;
+    public final static int NUM_FACTORIES_WANTED = 3;
     int rocketIndex = 0;
     public MapLocation baseLoc = null;
     public short[][] firstRocketLocHill = null;
@@ -217,25 +217,27 @@ public class Path {
     }
     long totalTimeInFunc = 0;
     int functionCalled = 0;
-    public short[][] generateHill(MapLocation destination){
+    public short[][] generateHill(MapLocation target){
+        MapLoc destination = new MapLoc(target);
         functionCalled++;
         long start = System.currentTimeMillis();
         short hill[][] = new short[planetWidth][planetHeight];
-        hill[destination.getX()][destination.getY()] = 1;
-        ArrayDeque<MapLocation> toCheck = new ArrayDeque<MapLocation>();
+        hill[destination.x][destination.y] = 1;
+        ArrayDeque<MapLoc> toCheck = new ArrayDeque<>();
         toCheck.addLast(destination);
         while(!toCheck.isEmpty()){
-            MapLocation cur = toCheck.removeFirst();
-            short dis = hill[cur.getX()][cur.getY()];
-            for(Direction d : directions){
-                MapLocation newLoc = cur.add(d);
+            MapLoc cur = toCheck.removeFirst();
+            short dis = hill[cur.x][cur.y];
+            for (int i = 0; i < numsDirections.length; i++) {
+                int[] d = numsDirections[i];
+                MapLoc newLoc = cur.add(d);
                 if(previouslyUncheckedMapLoc(newLoc,hill)){
                     if(!passable(newLoc)){
                         //mark as unreachable
-                        hill[newLoc.getX()][newLoc.getY()] = greatestPathNum;
+                        hill[newLoc.x][newLoc.y] = greatestPathNum;
                     } else {
                         toCheck.addLast(newLoc);
-                        hill[newLoc.getX()][newLoc.getY()] = (short)(dis + 1);
+                        hill[newLoc.x][newLoc.y] = (short)(dis + 1);
                     }
                 }
             }
@@ -245,8 +247,8 @@ public class Path {
         // todo smaller versions need to know if a path was found
         return hill;
     }
-    private boolean previouslyUncheckedMapLoc(MapLocation a, short[][] hill){
-        return(map.onMap(a) && hill[a.getX()][a.getY()] == (short)0);
+    private boolean previouslyUncheckedMapLoc(MapLoc a, short[][] hill){
+        return(onMap(a) && hill[a.x][a.y] == (short)0);
     }
     public Direction getRandDirection(){
         int a = random.nextInt(8);
