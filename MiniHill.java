@@ -48,7 +48,7 @@ public class MiniHill {
         }
         long end = System.currentTimeMillis();
         //Debug.printHill(hill);
-        for (int i = 0; i < bounds.locs.length; i++) {
+        for (int i = 0; i < bounds.locSize; i++) {
             short val = getHillValue(bounds.locs[i]);
             // at least one of the units can not reach the target via the minimap
             if(val == 0) return false;
@@ -87,7 +87,7 @@ public class MiniHill {
         }
         long end = System.currentTimeMillis();
         //Debug.printHill(hill);
-        for (int i = 0; i < bounds.locs.length; i++) {
+        for (int i = 0; i < bounds.locSize; i++) {
             short val = getHillValue(bounds.locs[i]);
             // at least one of the units can not reach the target via the minimap
             if(val == 0) return false;
@@ -186,16 +186,17 @@ public class MiniHill {
 class MaxGCoordinates{
     public int x1, x2, y1, y2, width, height;
     public MapLoc[] locs;
+    public int locSize;
     private final static int buffer = 5;
     MaxGCoordinates(MapLoc destination, HashSet<Integer> ids, GameController gc,Path p) throws Exception{
         locs = new MapLoc[ids.size()];
-        int i = 0;
+        int index = 0;
         x1 = x2 = destination.x;
         y1 = y2 = destination.y;
         for (Integer id: ids) {
             MapLocation location = p.getMapLocationIfLegit(id);
             if(location != null){
-                locs[i++] = new MapLoc(location);
+                locs[index++] = new MapLoc(location);
                 int x = location.getX();
                 int y = location.getY();
                 x1 = Math.min(x1,x);
