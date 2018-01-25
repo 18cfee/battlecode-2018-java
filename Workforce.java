@@ -106,8 +106,8 @@ public class Workforce {
                 return;
             }
         } else {
+            group.karbLocInSight = false;
             if (p.closestKarbLocs.isEmpty()) {
-                group.karbLocInSight = false;
                 group.setState(WorkerStates.Standby);
                 return;
             }
