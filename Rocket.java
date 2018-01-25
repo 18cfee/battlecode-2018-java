@@ -16,7 +16,7 @@ public class Rocket {
     private HashMap<Integer,Integer> idToRoundLastModified;
     private BitSet[] launchPad;
     private HashMap<Integer,Integer> launchTurn;
-    private final static int TURNS_BEFORE_LAUNCH = 20;
+    private final static int TURNS_BEFORE_LAUNCH = 10;
     public Rocket(Path p, GameController gc) {
         unbuiltIds = new HashSet<>();
         builtRockets = new HashSet<>();
