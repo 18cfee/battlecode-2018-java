@@ -17,6 +17,8 @@ public class Rocket {
     private BitSet[] launchPad;
     private HashMap<Integer,Integer> launchTurn;
     private final static int TURNS_BEFORE_LAUNCH = 10;
+    private int marsWidth;
+    private int marsHeight;
     public Rocket(Path p, GameController gc) {
         unbuiltIds = new HashSet<>();
         builtRockets = new HashSet<>();
@@ -125,9 +127,14 @@ public class Rocket {
 //        return unClaimedIds.size() > 0;
 //    }
     private void generateLaunchQ(){
-        PlanetMap mars = gc.startingMap(Planet.Mars);
-        int marsWidth = (int)mars.getWidth();
-        int marsHeight = (int)mars.getHeight();
+        PlanetMap mars;
+        if(p.planet == Planet.Earth){
+            mars = gc.startingMap(Planet.Mars);
+        } else {
+            mars = p.map;
+        }
+        marsWidth = (int)mars.getWidth();
+        marsHeight = (int)mars.getHeight();
         BitSet[] passable = new BitSet[marsWidth];
         for (int i = 0; i < marsWidth; i++) {
             BitSet cur = new BitSet(marsHeight);

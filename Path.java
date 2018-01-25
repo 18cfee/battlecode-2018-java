@@ -5,7 +5,7 @@ import java.util.*;
 public class Path {
     public final static int RANGERRANGE = 5; // everything within a square that big
     public final static int RANGERDANGER = 3; // any smaller and might no be able to shoot
-    private PlanetMap map;
+    public PlanetMap map;
     GameController gc;
     int planetHeight;
     int planetWidth;
