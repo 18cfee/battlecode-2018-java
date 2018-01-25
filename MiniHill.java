@@ -194,13 +194,15 @@ class MaxGCoordinates{
         y1 = y2 = destination.y;
         for (Integer id: ids) {
             MapLocation location = p.getMapLocationIfLegit(id);
-            locs[i++] = new MapLoc(location);
-            int x = location.getX();
-            int y = location.getY();
-            x1 = Math.min(x1,x);
-            x2 = Math.max(x2,x);
-            y1 = Math.min(y1,y);
-            y2 = Math.max(y2,y);
+            if(location != null){
+                locs[i++] = new MapLoc(location);
+                int x = location.getX();
+                int y = location.getY();
+                x1 = Math.min(x1,x);
+                x2 = Math.max(x2,x);
+                y1 = Math.min(y1,y);
+                y2 = Math.max(y2,y);
+            }
         }
         x1 = Math.max(0,x1 - buffer);
         x2 = Math.min(x2 + buffer,p.planetWidth - 1);
