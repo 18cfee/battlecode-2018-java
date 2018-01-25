@@ -15,6 +15,8 @@ public class Rocket {
     private Stack<Integer> unClaimedIds;
     private HashMap<Integer,Integer> idToRoundLastModified;
     private BitSet[] launchPad;
+    private HashMap<Integer,Integer> launchTurn;
+    private final static int TURNS_BEFORE_LAUNCH = 20;
     public Rocket(Path p, GameController gc) {
         unbuiltIds = new HashSet<>();
         builtRockets = new HashSet<>();
@@ -29,6 +31,7 @@ public class Rocket {
             BitSet set = new BitSet(p.planetHeight);
             launchPad[i] = set;
         }
+        launchTurn = new HashMap<>();
     }
 
     public void addRocket(Unit unit){
@@ -38,9 +41,12 @@ public class Rocket {
         if(unit.structureIsBuilt() == 0){
             unbuiltIds.add(unit.id());
         } else {
-            builtRockets.add(unit.id());
-            unClaimedIds.push(unit.id());
-            addToLaunchPad(unit.location().mapLocation());
+            int id = unit.id();
+            builtRockets.add(id);
+            unClaimedIds.push(id);
+            if(launchTurn.containsKey(id)){
+                addToLaunchPad(unit.location().mapLocation());
+            }
         }
     }
     private void addToLaunchPad(MapLocation loc){
@@ -71,7 +77,7 @@ public class Rocket {
         return false;
     }
     public void rocketsShouldLauchIfPossible() throws Exception{
-        Debug.passable(launchPad);
+        willLaunchSoon++;
         if(noRockets()) return;
         for(Integer id: builtRockets){
             if(p.sensableUnitNotInGarisonOrSpace(id)) {
@@ -82,10 +88,15 @@ public class Rocket {
                 }
                 int garisonMax = (int) unit.structureMaxCapacity();
                 int curLoad = (int) unit.structureGarrison().size();
-                if (((curLoad == garisonMax || tooManyRoundsSinceLastInsert(id) || roundNumber == 749) && !destinationStack.empty())) {
+                if (((curLoad == garisonMax || tooManyRoundsSinceLastInsert(id) || roundNumber > 740 - TURNS_BEFORE_LAUNCH) && !destinationStack.empty())) {
                     MapLocation dest = destinationStack.pop();
-                    if (gc.canLaunchRocket(id, dest)) {
-                        //gc.launchRocket(id, dest);
+                    if (!launchTurn.containsKey(id)) {
+                        launchTurn.put(id,roundNumber + TURNS_BEFORE_LAUNCH);
+                        willLaunchSoon = 0;
+                    }
+                    if (gc.canLaunchRocket(id, dest) && (roundNumber > 745 - TURNS_BEFORE_LAUNCH || (launchTurn.get(id) <= roundNumber))) {
+                        gc.launchRocket(id, dest);
+                        launchTurn.remove(id);
                     }
                 }
             }
@@ -96,6 +107,10 @@ public class Rocket {
             gc.load(rocketId,unitId);
             idToRoundLastModified.put(rocketId,p.round);
         }
+    }
+    private int willLaunchSoon = 0;
+    public boolean isLaunchTurn(){
+        return (willLaunchSoon <= TURNS_BEFORE_LAUNCH + 1);
     }
     private boolean tooManyRoundsSinceLastInsert(int rocketId){
         return false;
@@ -141,9 +156,6 @@ public class Rocket {
             }
         }
         ///Debug.passable(passable);
-    }
-    public boolean isLaunchTurn(){
-        return true;
     }
     public boolean inLaunchPad(MapLocation loc){
         return launchPad[loc.getX()].get(loc.getY());

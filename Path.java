@@ -111,7 +111,7 @@ public class Path {
     }
     private boolean notMovingToLaunchArea(int id, Direction dir) throws Exception{
         if(!rockets.isLaunchTurn()) return true;
-        System.out.println("checking for rocket moves");
+        if(rockets.inLaunchPad(gc.unit(id).location().mapLocation())) return true;
         MapLocation target = gc.unit(id).location().mapLocation().add(dir);
         return !rockets.inLaunchPad(target);
     }
