@@ -1,5 +1,8 @@
 import bc.*;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+
 public class Workforce {
     private GameController gc;
     private Path p;
@@ -9,11 +12,20 @@ public class Workforce {
     private int groupIndex = 0;
     private boolean canBuildRocket = false;
     private MapLocation closestKarbDepot = null;
+    private ArrayList<Workers> gatherers;
+    private ArrayList<HashSet<Integer>> oldGroups;
+    private HashSet<Integer> tempOldWorkers;
+    private int workerRound = 0;
+    private Workers builders;
 
     public Workforce(GameController gc, Path p) {
         this.gc = gc;
         this.p = p;
         createGroup();
+        gatherers = new ArrayList<>();
+        oldGroups = new ArrayList<>();
+        tempOldWorkers = new HashSet<>();
+        builders = new Workers(gc, p);
     }
     public void resetIdleIndex(){
         idleIndex = 0;
@@ -118,7 +130,7 @@ public class Workforce {
         }
     }
 
-    public void createGroup() {
+    private void createGroup() {
         workerGroups[groupIndex] = new Workers(gc, p);
         groupIndex++;
     }
@@ -131,8 +143,41 @@ public class Workforce {
         return canBuildRocket;
     }
 
-    public void addWorker(int id) {
+    private HashSet<Integer> oldBuilders;
+    private int numWorkerGroups = 0;
+    public void addWorker(int id) throws Exception{
         idle[idleIndex] = id;
         idleIndex++;
+
+        if(workerRound != p.round){
+            workerRound = p.round;
+            oldGroups.clear();
+            numWorkerGroups = gatherers.size();
+            oldBuilders = (HashSet<Integer>)builders.ids.clone();
+        }
+
+        for(int i = 0; i < numWorkerGroups; i++){
+            if(oldGroups.get(i).contains(id)){
+                gatherers.get(i).add(id);
+                return;
+            }
+        }
+        if(oldBuilders.contains(id)){
+            builders.add(id);
+            return;
+        }
+
+        if(builders.size() < 4){
+            builders.add(id);
+            return;
+        }
+
+        for(int i = 0; i < gatherers.size(); i++){
+            if(gatherers.get(i).size() < 3){
+                gatherers.get(i).add(id);
+            }else if(i == gatherers.size() - 1){
+                gatherers.add(new Workers(gc, p));
+            }
+        }
     }
 }
