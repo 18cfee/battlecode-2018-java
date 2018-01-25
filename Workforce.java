@@ -170,7 +170,7 @@ public class Workforce {
         }
 
         if(oldGatherers.size() > 0) {
-            for (int i = 0; i < gatherers.size(); i++) {
+            for (int i = 0; i < oldGatherers.size(); i++) {
                 if (oldGatherers.get(i).contains(id)) {
                     gatherers.get(i).add(id);
                     return;
