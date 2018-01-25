@@ -48,7 +48,7 @@ public class MiniHill {
         }
         long end = System.currentTimeMillis();
         //Debug.printHill(hill);
-        for (int i = 0; i < bounds.locSize; i++) {
+        for (int i = 0; i < bounds.locs.length; i++) {
             short val = getHillValue(bounds.locs[i]);
             // at least one of the units can not reach the target via the minimap
             if(val == 0) return false;
@@ -87,7 +87,7 @@ public class MiniHill {
         }
         long end = System.currentTimeMillis();
         //Debug.printHill(hill);
-        for (int i = 0; i < bounds.locSize; i++) {
+        for (int i = 0; i < bounds.locs.length; i++) {
             short val = getHillValue(bounds.locs[i]);
             // at least one of the units can not reach the target via the minimap
             if(val == 0) return false;
@@ -115,7 +115,7 @@ public class MiniHill {
             Direction dir = p.directions[direction];
             int[] dirR = p.numsDirections[direction];
             MapLoc newLoc = cur.add(dirR);
-            if(inHill(newLoc) && p.canMove(id,dir)){
+            if(inHill(newLoc) && gc.canMove(id,dir)){
                 short grad = getHillValue(newLoc);
                 if (grad < min) {
                     min = grad;
@@ -183,27 +183,25 @@ public class MiniHill {
     }
 }
 
+
 class MaxGCoordinates{
     public int x1, x2, y1, y2, width, height;
     public MapLoc[] locs;
-    public int locSize;
     private final static int buffer = 5;
-    MaxGCoordinates(MapLoc destination, HashSet<Integer> ids, GameController gc,Path p) throws Exception{
+    MaxGCoordinates(MapLoc destination, HashSet<Integer> ids, GameController gc,Path p){
         locs = new MapLoc[ids.size()];
-        int index = 0;
+        int i = 0;
         x1 = x2 = destination.x;
         y1 = y2 = destination.y;
         for (Integer id: ids) {
-            MapLocation location = p.getMapLocationIfLegit(id);
-            if(location != null){
-                locs[index++] = new MapLoc(location);
-                int x = location.getX();
-                int y = location.getY();
-                x1 = Math.min(x1,x);
-                x2 = Math.max(x2,x);
-                y1 = Math.min(y1,y);
-                y2 = Math.max(y2,y);
-            }
+            MapLocation location = gc.unit(id).location().mapLocation();
+            locs[i++] = new MapLoc(location);
+            int x = location.getX();
+            int y = location.getY();
+            x1 = Math.min(x1,x);
+            x2 = Math.max(x2,x);
+            y1 = Math.min(y1,y);
+            y2 = Math.max(y2,y);
         }
         x1 = Math.max(0,x1 - buffer);
         x2 = Math.min(x2 + buffer,p.planetWidth - 1);

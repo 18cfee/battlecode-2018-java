@@ -9,7 +9,7 @@ public class Workers extends Group{
     boolean printInProgress = false;
     short[][] currentHill = null;
     boolean groupIsAlive = false;
-    boolean karbLocInSight = true;
+    boolean karbLocInSight = false;
 
     public Workers(GameController gc, Path p){
         super(gc, p);

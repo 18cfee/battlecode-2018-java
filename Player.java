@@ -14,7 +14,7 @@ public class Player {
         workers.setState(WorkerStates.Standby);
         Army sprint = new Army(gc,p);
         Workforce workforce = new Workforce(gc, p);
-        AggresiveRangers mars = new AggresiveRangers(gc,p);
+        Fighter mars = new Fighter(gc,p);
         ArrayList<Group> newlist = new ArrayList<>();
         newlist.add(mars);
         int count = 0;
@@ -66,6 +66,7 @@ public class Player {
                     if(!workforce.isCanBuildRocket() && gc.researchInfo().getLevel(UnitType.Rocket) >= 1){
                         workforce.setCanBuildRocket(true);
                     }
+
                     if(gc.round() % 50 == 0){
                         System.out.println(gc.researchInfo().nextInQueue());
                     }

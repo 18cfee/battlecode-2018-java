@@ -19,7 +19,7 @@ public class Army {
     private int armyRound = 0;
     private int fighterRound = 0;
     private int numGroupsCreated = 0;
-    private final static int NEED_TO_SAVE_FOR_ROCKETS_ROUND = 500;
+
     public Army(GameController gc, Path p){
         this.gc = gc;
         this.p = p;
@@ -163,7 +163,7 @@ public class Army {
 //            gc.launchRocket(rocketId, p.placeToLandOnMars);
 //        }
 //    }
-    public void factoryProduce() throws Exception{
+    public void factoryProduce(){
         if(size > MAXUnits) return;
         // this means no units were added so the add method was never called
         if(armyRound != p.round){
@@ -179,27 +179,22 @@ public class Army {
                     gc.produceRobot(factId,production);
                 }
                 if(gc.unit(factId).structureGarrison().size() > 0){
-                    // this should not produce in a launch pad
                     tryToUnloadInAlDirections(factId);
                 }
             }
         }
     }
 
-    private void tryToUnloadInAlDirections(int id) throws Exception{
+    private void tryToUnloadInAlDirections(int id){
         int num = p.random.nextInt(8);
         for (int i = 0; i < 8; i++) {
             Direction dir = p.directions[(i+num)%8];
-            if(gc.canUnload(id,dir) && notInLaunchArea(id,dir)){
+            if(gc.canUnload(id,dir)){
                 gc.unload(id,dir);
             }
         }
     }
-    private boolean notInLaunchArea(int id, Direction dir) throws Exception{
-        if(!p.rockets.isLaunchTurn()) return true;
-        MapLocation target = gc.unit(id).location().mapLocation().add(dir);
-        return !p.rockets.inLaunchPad(target);
-    }
+
     public int getArmySize(){
         return size;
     }
