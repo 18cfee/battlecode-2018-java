@@ -134,4 +134,7 @@ public class Rocket {
     public int getNumberOfBuiltRockets(){
         return builtRockets.size();
     }
+    public int getTotalRockets(){
+        return builtRockets.size() + unbuiltIds.size();
+    }
 }

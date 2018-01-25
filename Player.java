@@ -22,10 +22,15 @@ public class Player {
             try {
                 p.round = (int)gc.round();
                 if(!gc.researchInfo().hasNextInQueue()){
-                    gc.queueResearch(UnitType.Rocket);
                     gc.queueResearch(UnitType.Worker);
                     gc.queueResearch(UnitType.Ranger);
-                    gc.queueResearch(UnitType.Knight);
+                    gc.queueResearch(UnitType.Ranger);
+                    gc.queueResearch(UnitType.Rocket);
+                    gc.queueResearch(UnitType.Rocket);
+                    gc.queueResearch(UnitType.Rocket);
+                    gc.queueResearch(UnitType.Healer);
+                    gc.queueResearch(UnitType.Healer);
+                    gc.queueResearch(UnitType.Healer);
                 }
                 if (gc.planet() != Planet.Earth) {
                     VecUnit units = gc.units();
