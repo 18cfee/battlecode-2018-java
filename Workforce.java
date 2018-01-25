@@ -80,7 +80,7 @@ public class Workforce {
 
     private void gatherKarbonite(Workers group) throws Exception {
         group.setState(WorkerStates.GatherKarbonite);
-        if (closestKarbDepot == null || gc.karboniteAt(closestKarbDepot) == 0) {
+        if (closestKarbDepot == null || (gc.canSenseLocation(closestKarbDepot) && gc.karboniteAt(closestKarbDepot) == 0)) {
             boolean viable = false;
             while (!viable && !p.closestKarbLocs.isEmpty()) {
                 if (p.closestKarbLocs.peek() != null && gc.canSenseLocation(p.closestKarbLocs.peek().toMapLocation())) {
@@ -107,6 +107,7 @@ public class Workforce {
             }
         } else {
             if (p.closestKarbLocs.isEmpty()) {
+                group.karbLocInSight = false;
                 group.setState(WorkerStates.Standby);
                 return;
             }
