@@ -7,7 +7,6 @@ public class Workforce {
     private GameController gc;
     private Path p;
     private int[] idle = new int[100];
-    private int idleIndex = 0;
     private Workers[] workerGroups = new Workers[10];
     private int groupIndex = 0;
     private boolean canBuildRocket = false;
@@ -27,22 +26,8 @@ public class Workforce {
         oldGatherers = new ArrayList<>();
         builders = new Workers(gc, p);
     }
-    public void resetIdleIndex(){
-        idleIndex = 0;
-    }
-    public void conductTurn() throws Exception{
 
-        /*
-        int numWorkers = idleIndex;
-        while (idleIndex > 0) {
-            if (idleIndex >= numWorkers / 2) {
-                //System.out.println("Worker " + idleIndex + " added to group 0");
-                workerGroups[0].add(idle[--idleIndex]);
-            } else {
-                //System.out.println("Worker " + idleIndex + " added to group 1");
-                workerGroups[1].add(idle[--idleIndex]);
-            }
-        }*/
+    public void conductTurn() throws Exception{
 
         builders.groupIsAlive = true;
         for (Workers group : gatherers) {
@@ -86,8 +71,6 @@ public class Workforce {
                 group.conductTurn();
             }
         }
-
-        resetIdleIndex();
     }
 
     private void gatherKarbonite(Workers group) throws Exception {
