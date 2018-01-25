@@ -19,6 +19,7 @@ public class Army {
     private int armyRound = 0;
     private int fighterRound = 0;
     private int numGroupsCreated = 0;
+
     public Army(GameController gc, Path p){
         this.gc = gc;
         this.p = p;

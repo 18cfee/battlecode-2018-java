@@ -13,28 +13,26 @@ public class Workforce {
     private boolean canBuildRocket = false;
     private MapLocation closestKarbDepot = null;
     private ArrayList<Workers> gatherers;
-    private ArrayList<HashSet<Integer>> oldGroups;
-    private HashSet<Integer> tempOldWorkers;
+    private ArrayList<HashSet<Integer>> oldGatherers;
     private int workerRound = 0;
     private Workers builders;
+    private int numWorkers = 0;
+    private HashSet<Integer> oldBuilders;
 
     public Workforce(GameController gc, Path p) {
         this.gc = gc;
         this.p = p;
         createGroup();
         gatherers = new ArrayList<>();
-        oldGroups = new ArrayList<>();
-        tempOldWorkers = new HashSet<>();
+        oldGatherers = new ArrayList<>();
         builders = new Workers(gc, p);
     }
     public void resetIdleIndex(){
         idleIndex = 0;
     }
     public void conductTurn() throws Exception{
-        while(groupIndex < 2){
-            createGroup();
-        }
 
+        /*
         int numWorkers = idleIndex;
         while (idleIndex > 0) {
             if (idleIndex >= numWorkers / 2) {
@@ -44,46 +42,48 @@ public class Workforce {
                 //System.out.println("Worker " + idleIndex + " added to group 1");
                 workerGroups[1].add(idle[--idleIndex]);
             }
+        }*/
+
+        builders.groupIsAlive = true;
+        for (Workers group : gatherers) {
+            group.groupIsAlive = true;
         }
 
-        for (int i = 0; i < groupIndex; i++) {
-            workerGroups[i].groupIsAlive = true;
-        }
-
-        for (int i = 0; i < groupIndex - 1; i++) {
-            if (!workerGroups[i].noUnits() && numWorkers < 10) {
-                //System.out.println("Trying to replicate");
-                for (int id : workerGroups[i].ids) {
-                    workerGroups[i].replicate(id);
-                }
-            }
-            if (workerGroups[i].noUnits()) {
-                workerGroups[i].groupIsAlive = false;
-            } else if (workerGroups[i].getState() == WorkerStates.Build) {
-
-            } else if (!workerGroups[i].printInProgress && p.getNumFactories() < p.NUM_FACTORIES_WANTED) {
-                MapLocation blueLoc = workerGroups[i].setBlueprint(UnitType.Factory);
-                if (blueLoc != null) {
-                    workerGroups[i].currentHill = p.generateHill(blueLoc);
-                }
-
-            } else if (canBuildRocket && p.rockets.getNumUnBuiltRockets() == 0 && p.rockets.getNumberOfBuiltRockets() < p.NUM_ROCKETS_WANTED) {
-                MapLocation blueLoc = workerGroups[i].setBlueprint(UnitType.Rocket);
-                if (blueLoc != null) {
-                    workerGroups[i].currentHill = p.generateHill(blueLoc);
-                }
-
-            } else if (!p.closestKarbLocs.isEmpty() && workerGroups[i].getState() != WorkerStates.SetBlueprint || (!p.closestKarbLocs.isEmpty() && workerGroups[i].getState() == WorkerStates.GatherKarbonite)) {
-                gatherKarbonite(workerGroups[i]);
-            } else if (p.closestKarbLocs.isEmpty()) {
-                workerGroups[i].setState(WorkerStates.Standby);
+        if (!builders.noUnits() && numWorkers < 10) {
+            //System.out.println("Trying to replicate");
+            for (int id : builders.ids) {
+                builders.replicate(id);
             }
         }
 
-        gatherKarbonite(workerGroups[groupIndex - 1]);
-        for (int i = 0; i < groupIndex; i++) {
-            if (workerGroups[i].groupIsAlive) {
-                workerGroups[i].conductTurn();
+        if (builders.noUnits()) {
+            builders.groupIsAlive = false;
+        } else if (builders.getState() == WorkerStates.Build) {
+
+        } else if (!builders.printInProgress && p.getNumFactories() < p.NUM_FACTORIES_WANTED) {
+            MapLocation blueLoc = builders.setBlueprint(UnitType.Factory);
+            if (blueLoc != null) {
+                builders.currentHill = p.generateHill(blueLoc);
+            }
+        } else if (canBuildRocket && p.rockets.getNumUnBuiltRockets() == 0 && p.rockets.getNumberOfBuiltRockets() < p.NUM_ROCKETS_WANTED) {
+            MapLocation blueLoc = builders.setBlueprint(UnitType.Rocket);
+            if (blueLoc != null) {
+                builders.currentHill = p.generateHill(blueLoc);
+            }
+        } else {
+            builders.setState(WorkerStates.Standby);
+        }
+
+
+        builders.conductTurn();
+        for(Workers group : gatherers){
+            if(group.groupIsAlive) {
+                gatherKarbonite(group);
+            }
+        }
+        for (Workers group : gatherers) {
+            if (group.groupIsAlive) {
+                group.conductTurn();
             }
         }
 
@@ -92,7 +92,7 @@ public class Workforce {
 
     private void gatherKarbonite(Workers group) throws Exception {
         group.setState(WorkerStates.GatherKarbonite);
-        if (closestKarbDepot == null || gc.karboniteAt(closestKarbDepot) == 0) {
+        if (closestKarbDepot == null || (gc.canSenseLocation(closestKarbDepot) && gc.karboniteAt(closestKarbDepot) == 0)) {
             boolean viable = false;
             while (!viable && !p.closestKarbLocs.isEmpty()) {
                 if (p.closestKarbLocs.peek() != null && gc.canSenseLocation(p.closestKarbLocs.peek().toMapLocation())) {
@@ -118,6 +118,7 @@ public class Workforce {
                 return;
             }
         } else {
+            group.karbLocInSight = false;
             if (p.closestKarbLocs.isEmpty()) {
                 group.setState(WorkerStates.Standby);
                 return;
@@ -143,25 +144,21 @@ public class Workforce {
         return canBuildRocket;
     }
 
-    private HashSet<Integer> oldBuilders;
+
     private int numWorkerGroups = 0;
     public void addWorker(int id) throws Exception{
-        idle[idleIndex] = id;
-        idleIndex++;
-
-        if(workerRound != p.round){
+        if(workerRound != p.round) {
             workerRound = p.round;
-            oldGroups.clear();
+            oldGatherers.clear();
             numWorkerGroups = gatherers.size();
-            oldBuilders = (HashSet<Integer>)builders.ids.clone();
-        }
+            oldBuilders = (HashSet<Integer>) builders.ids.clone();
 
-        for(int i = 0; i < numWorkerGroups; i++){
-            if(oldGroups.get(i).contains(id)){
-                gatherers.get(i).add(id);
-                return;
+            for (int i = 0; i < numWorkerGroups; i++) {
+                oldGatherers.add((HashSet<Integer>)gatherers.get(i).ids.clone());
             }
+            numWorkers = 0;
         }
+        numWorkers++;
         if(oldBuilders.contains(id)){
             builders.add(id);
             return;
@@ -172,10 +169,24 @@ public class Workforce {
             return;
         }
 
-        for(int i = 0; i < gatherers.size(); i++){
-            if(gatherers.get(i).size() < 3){
+        if(oldGatherers.size() > 0) {
+            for (int i = 0; i < gatherers.size(); i++) {
+                if (oldGatherers.get(i).contains(id)) {
+                    gatherers.get(i).add(id);
+                    return;
+                }
+            }
+        }
+
+        if(gatherers.size() == 0){
+            gatherers.add(new Workers(gc, p));
+        }
+
+        for (int i = 0; i < gatherers.size(); i++) {
+            if (gatherers.get(i).size() < 3) {
                 gatherers.get(i).add(id);
-            }else if(i == gatherers.size() - 1){
+                return;
+            } else if (i == gatherers.size() - 1) {
                 gatherers.add(new Workers(gc, p));
             }
         }
