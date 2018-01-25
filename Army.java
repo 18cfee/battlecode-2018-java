@@ -19,7 +19,7 @@ public class Army {
     private int armyRound = 0;
     private int fighterRound = 0;
     private int numGroupsCreated = 0;
-    private final static int NEED_TO_SAVE_FOR_ROCKETS_ROUND = 500;
+    private final static int NEED_TO_SAVE_FOR_ROCKETS_ROUND = 200;
     public Army(GameController gc, Path p){
         this.gc = gc;
         this.p = p;
@@ -164,7 +164,7 @@ public class Army {
 //        }
 //    }
     public void factoryProduce() throws Exception{
-        if(size > MAXUnits) return;
+        //if(size > MAXUnits) return;
         // this means no units were added so the add method was never called
         if(armyRound != p.round){
             armyRound = p.round;
@@ -175,7 +175,7 @@ public class Army {
         for (Integer factId: p.currentBuiltFactories) {
             //System.out.println("Num in garrison: " + gc.unit(factId).structureGarrison().size());
             if(p.sensableUnitNotInGarisonOrSpace(factId)){
-                if(gc.canProduceRobot(factId,production)){
+                if(gc.canProduceRobot(factId,production) && weDoNotNeedRockets()){
                     gc.produceRobot(factId,production);
                 }
                 if(gc.unit(factId).structureGarrison().size() > 0){
@@ -184,6 +184,10 @@ public class Army {
                 }
             }
         }
+    }
+
+    private boolean weDoNotNeedRockets(){
+        return(p.round < NEED_TO_SAVE_FOR_ROCKETS_ROUND || gc.karbonite() >= 95 || p.rockets.getTotalRockets() >= p.NUM_ROCKETS_WANTED);
     }
 
     private void tryToUnloadInAlDirections(int id) throws Exception{
