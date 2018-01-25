@@ -45,7 +45,7 @@ public class Group {
         if(noUnits())return;
         roamRandom();
     }
-    protected void roamRandom(){
+    protected void roamRandom() throws Exception{
         if(noUnits()) return;
         for (int i = 0; i < movableIndex; i++) {
             int id = moveAbles[i];

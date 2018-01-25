@@ -71,6 +71,7 @@ public class Rocket {
         return false;
     }
     public void rocketsShouldLauchIfPossible() throws Exception{
+        Debug.passable(launchPad);
         if(noRockets()) return;
         for(Integer id: builtRockets){
             if(p.sensableUnitNotInGarisonOrSpace(id)) {
@@ -145,7 +146,7 @@ public class Rocket {
         return true;
     }
     public boolean inLaunchPad(MapLocation loc){
-        return launchPad[loc.getX()].get(loc.getX());
+        return launchPad[loc.getX()].get(loc.getY());
     }
     public void clearRocketsIfNoUnits() throws Exception{
         if(p.round!=roundNumber){

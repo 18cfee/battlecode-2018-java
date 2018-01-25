@@ -106,11 +106,12 @@ public class Path {
         min3y = planetHeight/3;
         max3y = min3y*2;
     }
-    public boolean canMove(int id, Direction dir){
+    public boolean canMove(int id, Direction dir) throws Exception{
         return gc.canMove(id,dir) && notMovingToLaunchArea(id,dir);
     }
-    private boolean notMovingToLaunchArea(int id, Direction dir){
+    private boolean notMovingToLaunchArea(int id, Direction dir) throws Exception{
         if(!rockets.isLaunchTurn()) return true;
+        System.out.println("checking for rocket moves");
         MapLocation target = gc.unit(id).location().mapLocation().add(dir);
         return !rockets.inLaunchPad(target);
     }
@@ -203,7 +204,7 @@ public class Path {
         int newY = planetHeight - 1 - oldY;
         return new MapLocation(planet,newX,newY);
     }
-    public boolean moveInRandomAvailableDirection(int id){
+    public boolean moveInRandomAvailableDirection(int id) throws Exception{
         int startD = random.nextInt(8);
         for (int i = startD; i < startD + 8; i++) {
             Direction d = directions[i%8];
@@ -291,7 +292,7 @@ public class Path {
     public int movesToBase(MapLocation loc){
         return hillToBase[loc.getX()][loc.getY()];
     }
-    public void moveIfPossible(int id){
+    public void moveIfPossible(int id) throws Exception{
         int randomN = random.nextInt(8);
         for (int i = 0; i < 8; i++) {
             int d = (randomN + i)%8;
