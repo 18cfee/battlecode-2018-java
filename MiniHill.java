@@ -183,18 +183,17 @@ public class MiniHill {
     }
 }
 
-
 class MaxGCoordinates{
     public int x1, x2, y1, y2, width, height;
     public MapLoc[] locs;
     private final static int buffer = 5;
-    MaxGCoordinates(MapLoc destination, HashSet<Integer> ids, GameController gc,Path p){
+    MaxGCoordinates(MapLoc destination, HashSet<Integer> ids, GameController gc,Path p) throws Exception{
         locs = new MapLoc[ids.size()];
         int i = 0;
         x1 = x2 = destination.x;
         y1 = y2 = destination.y;
         for (Integer id: ids) {
-            MapLocation location = gc.unit(id).location().mapLocation();
+            MapLocation location = p.getMapLocationIfLegit(id);
             locs[i++] = new MapLoc(location);
             int x = location.getX();
             int y = location.getY();
