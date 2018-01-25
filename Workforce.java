@@ -88,7 +88,7 @@ public class Workforce {
                 System.out.println("The location is empty " + closestKarbDepot.toString());
             }
         }
-        if (closestKarbDepot == null || gc.karboniteAt(closestKarbDepot) == 0 || gc.hasUnitAtLocation(closestKarbDepot)) {
+        if (closestKarbDepot == null || gc.karboniteAt(closestKarbDepot) == 0) {
             System.out.println("Choosing a new location");
             boolean viable = false;
             while (!viable && !p.closestKarbLocs.isEmpty()) {
