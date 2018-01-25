@@ -60,25 +60,34 @@ public class Workers extends Group{
     }
 
     @Override
-    public void conductTurn() throws Exception{
+    public void conductTurn() throws Exception {
         // this basically makes sure things have been reset we need it at the beggining of all conduct turns for
         // groups
-        if(noUnits()) return;
+        if (noUnits()) return;
 
-        if(state == WorkerStates.Build) {
-            //System.out.println("I'm in the build state, and I'm building:");
-            for (Integer id: ids){
+        if (state == WorkerStates.CutOff) {
+            for (int id : ids) {
+                handleCutOff(id);
+                for(Direction d : p.directions){
+                    if(gc.canMove(id, d)){
+                        gc.moveRobot(id, d);
+                        break;
+                    }
+                }
+            }
+        } else {
+            if (state == WorkerStates.Build) {
+                //System.out.println("I'm in the build state, and I'm building:");
                 contBuilding();
+            } else if (state == WorkerStates.GatherKarbonite) {
+                if (harvestPoint != null) {
+                    gatherKarbonite();
+                }
+            } else if (state == WorkerStates.Standby) {
+                standby();
             }
-        }else if(state == WorkerStates.GatherKarbonite){
-            if(harvestPoint != null) {
-                gatherKarbonite();
-            }
-        }else if(state == WorkerStates.Standby){
-            standby();
+            moveToTarget(currentHill);
         }
-
-        moveToTarget(currentHill);
     }
 
     void setState(WorkerStates state){
@@ -125,6 +134,14 @@ public class Workers extends Group{
         this.harvestPoint = harvestPoint;
     }
 
+    private void handleCutOff(int id){
+        for(Direction d : p.directions){
+            if(gc.canHarvest(id, d)){
+                gc.harvest(id, d);
+                return;
+            }
+        }
+    }
     public WorkerStates getState(){
         return state;
     }

@@ -97,7 +97,6 @@ public class Player {
                 }
             } catch (Exception e){
                 // todo set indexes to 0 in here
-                workforce.resetIdleIndex();
                 System.out.println("Current round: " + p.round + " bugs: "+ count);
                 e.printStackTrace();
                 //System.exit(0);
