@@ -69,12 +69,24 @@ public class Path {
         totalKarbOnEarth = calculateTotalKarbOnEarth();
         rockets = new Rocket(this,gc);
     }
+
     public boolean sensableUnitNotInGarisonOrSpace(int id){
         if(!gc.canSenseUnit(id)){
             return false;
         } else {
             Location loc = gc.unit(id).location();
             return (!loc.isInGarrison() || !loc.isInSpace());
+        }
+    }
+    public  MapLocation getMapLocationIfLegit(int id) throws Exception{
+        if(!gc.canSenseUnit(id)){
+            return null;
+        } else {
+            Location loc = gc.unit(id).location();
+            if (loc.isInGarrison() || loc.isInSpace()){
+                return null;
+            }
+            return loc.mapLocation();
         }
     }
     private MapLocation findCenterLoc(){
@@ -93,6 +105,15 @@ public class Path {
         max3x = min3x*2;
         min3y = planetHeight/3;
         max3y = min3y*2;
+    }
+    public boolean canMove(int id, Direction dir) throws Exception{
+        return gc.canMove(id,dir) && notMovingToLaunchArea(id,dir);
+    }
+    private boolean notMovingToLaunchArea(int id, Direction dir) throws Exception{
+        if(!rockets.isLaunchTurn()) return true;
+        if(rockets.inLaunchPad(gc.unit(id).location().mapLocation())) return true;
+        MapLocation target = gc.unit(id).location().mapLocation().add(dir);
+        return !rockets.inLaunchPad(target);
     }
     private boolean middleThirdMap(int x, int y){
         return (min3x <= x && x <= max3x && min3y <= y && y <= max3y);
@@ -183,11 +204,11 @@ public class Path {
         int newY = planetHeight - 1 - oldY;
         return new MapLocation(planet,newX,newY);
     }
-    public boolean moveInRandomAvailableDirection(int id){
+    public boolean moveInRandomAvailableDirection(int id) throws Exception{
         int startD = random.nextInt(8);
         for (int i = startD; i < startD + 8; i++) {
             Direction d = directions[i%8];
-            if(gc.isMoveReady(id) && gc.canMove(id,d)){
+            if(gc.isMoveReady(id) && canMove(id,d)){
                 gc.moveRobot(id,d);
                 return true;
             }
@@ -271,12 +292,12 @@ public class Path {
     public int movesToBase(MapLocation loc){
         return hillToBase[loc.getX()][loc.getY()];
     }
-    public void moveIfPossible(int id){
+    public void moveIfPossible(int id) throws Exception{
         int randomN = random.nextInt(8);
         for (int i = 0; i < 8; i++) {
             int d = (randomN + i)%8;
             Direction dir = directions[d];
-            if (gc.canMove(id,dir) && gc.isMoveReady(id)){
+            if (canMove(id,dir) && gc.isMoveReady(id)){
                 gc.moveRobot(id,dir);
             }
         }

@@ -1,5 +1,6 @@
 import bc.GameController;
 import bc.Location;
+import bc.MapLocation;
 
 public class Defenders extends Fighter {
     private final static int MAXATTACKFROMBOUNDARY = 10;//6
@@ -54,9 +55,9 @@ public class Defenders extends Fighter {
     private void roamRandomlyInRangeOfBase() throws Exception{
         for (int i = 0; i < movableIndex; i++) {
             int id = moveAbles[i];
-            Location loc = gc.unit(id).location();
-            if(!loc.isInGarrison() && !loc.isInSpace()){
-                if(p.movesToBase(loc.mapLocation()) > boundarySize){
+            MapLocation loc = p.getMapLocationIfLegit(id);
+            if(loc != null){
+                if(p.movesToBase(loc) > boundarySize){
                     moveDownHill(id,p.hillToBase);
                 } else {
                     p.moveIfPossible(id);
