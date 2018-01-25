@@ -112,20 +112,10 @@ public class Workers extends Group{
         for(Integer id: ids){
             //System.out.println("Worker ID of gatherer: " + id);
             if(gc.canSenseUnit(id)) {
-                System.out.println("Worker loc: " + gc.unit(id).location().mapLocation().toString());
-                System.out.println("Harvest loc: " + harvestPoint.toString());
-                System.out.println("Adjacent?\t" + gc.unit(id).location().mapLocation().isAdjacentTo(harvestPoint));
-                System.out.println("Direction to harvest: " + gc.unit(id).location().mapLocation().directionTo(harvestPoint).toString());
-                System.out.println("Can harvest?\t" + gc.canHarvest(id, gc.unit(id).location().mapLocation().directionTo(harvestPoint)));
-                if(gc.hasUnitAtLocation(harvestPoint)){
-                    System.out.println("There is a " + gc.senseUnitAtLocation(harvestPoint).unitType() + " at the harvest location");
-                }
                 if (gc.canHarvest(id, gc.unit(id).location().mapLocation().directionTo(harvestPoint))) {
                     gc.harvest(id, gc.unit(id).location().mapLocation().directionTo(harvestPoint));
-                    System.out.println("Harvest successful");
-                } else {
+                 } else {
                     moveToTarget(currentHill);
-                    System.out.println("Could not harvest");
                 }
             }
         }

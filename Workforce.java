@@ -79,17 +79,8 @@ public class Workforce {
     }
 
     private void gatherKarbonite(Workers group) throws Exception {
-        System.out.println("\n\n\n\n\n");
         group.setState(WorkerStates.GatherKarbonite);
-        if(closestKarbDepot != null) {
-            if (gc.hasUnitAtLocation(closestKarbDepot)) {
-                System.out.println("There is a unit at the current location " + closestKarbDepot.toString());
-            } else {
-                System.out.println("The location is empty " + closestKarbDepot.toString());
-            }
-        }
-        if (closestKarbDepot == null || gc.karboniteAt(closestKarbDepot) == 0 || gc.hasUnitAtLocation(closestKarbDepot)) {
-            System.out.println("Choosing a new location");
+        if (closestKarbDepot == null || gc.karboniteAt(closestKarbDepot) == 0) {
             boolean viable = false;
             while (!viable && !p.closestKarbLocs.isEmpty()) {
                 if (p.closestKarbLocs.peek() != null && gc.canSenseLocation(p.closestKarbLocs.peek().toMapLocation())) {
