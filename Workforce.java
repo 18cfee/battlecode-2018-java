@@ -75,24 +75,19 @@ public class Workforce {
             }
         }
 
-        idleIndex = 0;
+        resetIdleIndex();
     }
 
     private void gatherKarbonite(Workers group) throws Exception {
         group.setState(WorkerStates.GatherKarbonite);
-        if (closestKarbDepot == null || gc.karboniteAt(closestKarbDepot) == 0) {
+        if (closestKarbDepot == null || (gc.canSenseLocation(closestKarbDepot) && gc.karboniteAt(closestKarbDepot) == 0)) {
             boolean viable = false;
             while (!viable && !p.closestKarbLocs.isEmpty()) {
                 if (p.closestKarbLocs.peek() != null && gc.canSenseLocation(p.closestKarbLocs.peek().toMapLocation())) {
-                    MapLocation newLoc = p.closestKarbLocs.pop().toMapLocation();
+                    closestKarbDepot = p.closestKarbLocs.pop().toMapLocation();
                     //System.out.println("PQ says there are " + p.closestKarbLocs.getSize() + " deposits left");
-                    if (gc.karboniteAt(newLoc) != 0) {
+                    if (gc.karboniteAt(closestKarbDepot) != 0) {
                         viable = true;
-                        if (!group.karbLocInSight) {
-                            short[][] hill = p.generateHill(newLoc);
-                            group.currentHill = hill;
-                            group.setHarvestPoint(newLoc);
-                        }
                         group.karbLocInSight = true;
                     }
                 } else {
@@ -108,11 +103,19 @@ public class Workforce {
             }
             if (!viable) {
                 group.setState(WorkerStates.Standby);
+                return;
             }
         } else {
+            group.karbLocInSight = false;
             if (p.closestKarbLocs.isEmpty()) {
                 group.setState(WorkerStates.Standby);
+                return;
             }
+        }
+        if(group.karbLocInSight) {
+            short[][] hill = p.generateHill(closestKarbDepot);
+            group.setHarvestPoint(closestKarbDepot);
+            group.currentHill = hill;
         }
     }
 

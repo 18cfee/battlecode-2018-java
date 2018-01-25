@@ -9,7 +9,7 @@ public class Workers extends Group{
     boolean printInProgress = false;
     short[][] currentHill = null;
     boolean groupIsAlive = false;
-    boolean karbLocInSight = false;
+    boolean karbLocInSight = true;
 
     public Workers(GameController gc, Path p){
         super(gc, p);
@@ -114,7 +114,7 @@ public class Workers extends Group{
             if(gc.canSenseUnit(id)) {
                 if (gc.canHarvest(id, gc.unit(id).location().mapLocation().directionTo(harvestPoint))) {
                     gc.harvest(id, gc.unit(id).location().mapLocation().directionTo(harvestPoint));
-                } else {
+                 } else {
                     moveToTarget(currentHill);
                 }
             }
