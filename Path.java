@@ -35,7 +35,7 @@ public class Path {
     HashSet<Integer> currentBuiltFactories;
     public Rocket rockets;
     public final static int NUM_ROCKETS_WANTED = 3;
-    int maxDistanceFromBase = 12;
+    int maxDistanceFromBase = 16;
     short[][] centerMapHill = null;
     public Path(GameController gc,Planet planet){
         currentBuiltFactories = new HashSet<>(10);

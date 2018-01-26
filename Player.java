@@ -23,11 +23,14 @@ public class Player {
                 p.round = (int)gc.round();
                 if(!gc.researchInfo().hasNextInQueue()){
                     gc.queueResearch(UnitType.Worker);
+                    gc.queueResearch(UnitType.Worker);
+                    gc.queueResearch(UnitType.Worker);
+                    gc.queueResearch(UnitType.Worker);
+                    gc.queueResearch(UnitType.Rocket);
+                    gc.queueResearch(UnitType.Rocket);
+                    gc.queueResearch(UnitType.Rocket);
                     gc.queueResearch(UnitType.Ranger);
                     gc.queueResearch(UnitType.Ranger);
-                    gc.queueResearch(UnitType.Rocket);
-                    gc.queueResearch(UnitType.Rocket);
-                    gc.queueResearch(UnitType.Rocket);
                     gc.queueResearch(UnitType.Healer);
                     gc.queueResearch(UnitType.Healer);
                     gc.queueResearch(UnitType.Healer);

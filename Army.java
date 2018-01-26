@@ -20,7 +20,7 @@ public class Army {
     private int armyRound = 0;
     private int fighterRound = 0;
     private int numGroupsCreated = 0;
-    private final static int NEED_TO_SAVE_FOR_ROCKETS_ROUND = 200;
+    private final static int NEED_TO_SAVE_FOR_ROCKETS_ROUND = 300;
     private ArrayList<Enemy> enemies;
     public Army(GameController gc, Path p){
         this.gc = gc;
@@ -97,7 +97,7 @@ public class Army {
 //        if(gc.round() > 500 && gc.round()%2 == 0){
 //            marsTroops.add(id);
 //        } else {
-        if(numDefenders > attackSize || haveIncreasedAttacketsThisRound) {
+        if((numDefenders > attackSize && p.round < 300) || haveIncreasedAttacketsThisRound) {
             if(!haveIncreasedAttacketsThisRound){
                 attackSize += 10;
                 haveIncreasedAttacketsThisRound = true;

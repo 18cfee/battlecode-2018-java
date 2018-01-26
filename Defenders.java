@@ -62,7 +62,7 @@ public class Defenders extends Fighter {
             int id = moveAbles[i];
             MapLocation loc = p.getMapLocationIfLegit(id);
             if(loc != null){
-                if(p.movesToBase(loc) > boundarySize){
+                if(p.movesToBase(loc) > boundarySize || (p.round > 650 && p.round%2 == 0)){
                     moveDownHill(id,p.hillToBase);
                 } else {
                     p.moveIfPossible(id);
