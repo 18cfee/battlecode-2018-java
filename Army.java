@@ -61,7 +61,7 @@ public class Army {
     private int shouldCreateRocketGroup = -1;
     private int oldNumRangerGroups = 0;
     RocketBoarders group = null;
-    private int attackSize = 10;
+    private int attackSize = 50;
     private HashSet<Integer> oldAttack;
     boolean haveIncreasedAttacketsThisRound = false;
     public void addUnit(int id) throws Exception{
