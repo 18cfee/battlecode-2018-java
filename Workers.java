@@ -75,6 +75,11 @@ public class Workers extends Group{
         // groups
         if(noUnits()) return;
 
+        if(state == WorkerStates.CutOff){
+            for(int id : ids){
+                handleCutOff(id);
+            }
+        }
         if(state == WorkerStates.Build) {
             //System.out.println("I'm in the build state, and I'm building:");
             for (Integer id: ids){
@@ -143,6 +148,20 @@ public class Workers extends Group{
 
     public WorkerStates getState(){
         return state;
+    }
+
+    private void handleCutOff(int id){
+        for(Direction d : p.directions){
+            if(gc.canHarvest(id, d)){
+                gc.harvest(id, d);
+            }
+        }
+        for(Direction d : p.directions){
+            if(gc.canMove(id, d)){
+                gc.moveRobot(id, d);
+                return;
+            }
+        }
     }
 
 }
