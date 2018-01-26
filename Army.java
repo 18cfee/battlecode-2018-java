@@ -206,7 +206,7 @@ public class Army {
     }
 
     private boolean weDoNotNeedRockets(){
-        return(p.round < NEED_TO_SAVE_FOR_ROCKETS_ROUND || gc.karbonite() >= 95 || p.rockets.getTotalRockets() >= p.NUM_ROCKETS_WANTED);
+        return(p.round < NEED_TO_SAVE_FOR_ROCKETS_ROUND || gc.karbonite() >= 190 || p.rockets.getTotalRockets() >= p.NUM_ROCKETS_WANTED);
     }
 
     private void tryToUnloadInAlDirections(int id) throws Exception{
