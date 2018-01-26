@@ -26,10 +26,10 @@ public class Workers extends Group{
         }
 
         changeToTargetMap(currentHill);
-        BitSet[] areasContainingStructures = null;
-        if(type == UnitType.Rocket){
-            areasContainingStructures = p.rockets.getStructArea();
-        }
+        BitSet[] areasContainingStructures = areasContainingStructures = p.rockets.getStructArea();
+//        if(type == UnitType.Rocket){
+//            areasContainingStructures = p.rockets.getStructArea();
+//        }
         for(Integer id: ids){
             if(!p.sensableUnitNotInGarisonOrSpace(id)){
               // DO NOTHING WITH THIS UNIT
@@ -47,10 +47,13 @@ public class Workers extends Group{
                             }
                         }
                     }else{
+
                     }
                 }
+                // if they did not place but are in the base area
+                p.moveIfPossible(id);
             }else{
-                moveToTarget(currentHill);
+                moveDownHill(id,currentHill);
             }
         }
         return null;

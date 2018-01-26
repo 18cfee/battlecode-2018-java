@@ -21,6 +21,7 @@ public class Army {
     private int fighterRound = 0;
     private int numGroupsCreated = 0;
     private final static int NEED_TO_SAVE_FOR_ROCKETS_ROUND = 300;
+    private final static int REALLY_NEED_TO_SAVE_FOR_ROCKETS_ROUND = 500;
     private ArrayList<Enemy> enemies;
     public Army(GameController gc, Path p){
         this.gc = gc;
@@ -97,7 +98,7 @@ public class Army {
 //        if(gc.round() > 500 && gc.round()%2 == 0){
 //            marsTroops.add(id);
 //        } else {
-        if((numDefenders > attackSize && p.round < 300) || haveIncreasedAttacketsThisRound) {
+        if((numDefenders > attackSize && p.round < NEED_TO_SAVE_FOR_ROCKETS_ROUND) || haveIncreasedAttacketsThisRound) {
             if(!haveIncreasedAttacketsThisRound){
                 attackSize += 10;
                 haveIncreasedAttacketsThisRound = true;
@@ -206,7 +207,10 @@ public class Army {
     }
 
     private boolean weDoNotNeedRockets(){
-        return(p.round < NEED_TO_SAVE_FOR_ROCKETS_ROUND || gc.karbonite() >= 190 || p.rockets.getTotalRockets() >= p.NUM_ROCKETS_WANTED);
+        if(p.rockets.getTotalRockets() < p.NUM_ROCKETS_WANTED && p.round > REALLY_NEED_TO_SAVE_FOR_ROCKETS_ROUND){
+            return false;
+        }
+        return(p.round < NEED_TO_SAVE_FOR_ROCKETS_ROUND || gc.karbonite() >= 190 || p.rockets.getTotalRockets() >= p.NUM_ROCKETS_WANTED - 1);
     }
 
     private void tryToUnloadInAlDirections(int id) throws Exception{
