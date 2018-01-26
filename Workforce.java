@@ -17,6 +17,7 @@ public class Workforce {
     private Workers builders;
     private int numWorkers = 0;
     private HashSet<Integer> oldBuilders;
+    private Workers loners;
 
     public Workforce(GameController gc, Path p) {
         this.gc = gc;
@@ -25,6 +26,8 @@ public class Workforce {
         gatherers = new ArrayList<>();
         oldGatherers = new ArrayList<>();
         builders = new Workers(gc, p);
+        loners = new Workers(gc, p);
+        loners.setState(WorkerStates.CutOff);
     }
 
     public void conductTurn() throws Exception{
@@ -141,7 +144,11 @@ public class Workforce {
             }
             numWorkers = 0;
         }
-        numWorkers++;
+        if(p.movesToBase(gc.unit(id).location().mapLocation()) == 0){
+            loners.add(id);
+        }else {
+            numWorkers++;
+        }
         if(oldBuilders.contains(id)){
             builders.add(id);
             return;
