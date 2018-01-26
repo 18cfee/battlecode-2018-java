@@ -36,6 +36,18 @@ public class Rocket {
         launchTurn = new HashMap<>();
     }
 
+    public BitSet[] getStructArea(){
+        return BitSet[] dfsdfs;
+        // incorp rocs into are
+        // factories into are
+    }
+
+    public boolean notPlacingRocketbyOtherStruct(BitSet[] noGo){
+        if(noGo == null) return true;
+
+        // check that is not placing into that are
+    }
+
     public void addRocket(Unit unit){
         if(p.round != roundNumber){
             resetRockets();
