@@ -17,6 +17,11 @@ public class MapLoc {
         this.y = loc.getY();
     }
 
+    public MapLoc(Planet planet, int x, int y){
+        this.planet = planet;
+        this.x = x;
+        this.y = y;
+    }
     public MapLoc(Planet planet, MapLocation loc, long distanceToBase){
         this.x = loc.getX();
         this.y = loc.getY();

@@ -8,7 +8,7 @@ public class Rocket {
     private int roundNumber = 0;
     private Path p;
     private GameController gc;
-    private Stack<MapLocation> destinationStack;
+    private ArrayList<MapLoc> destinationList;
     private Stack<Integer> unClaimedIds;
     private HashMap<Integer,Integer> idToRoundLastModified;
     private BitSet[] launchPad;
@@ -16,6 +16,7 @@ public class Rocket {
     private final static int TURNS_BEFORE_LAUNCH = 10;
     private int marsWidth;
     private int marsHeight;
+    private int destinationIndex = 0;
     public Rocket(Path p, GameController gc) {
         unbuiltIds = new HashSet<>();
         builtRockets = new HashSet<>();
@@ -23,7 +24,7 @@ public class Rocket {
         this.gc = gc;
         unClaimedIds = new Stack<>();
         idToRoundLastModified = new HashMap<>();
-        destinationStack = new Stack<>();
+        destinationList = new ArrayList<>();
         generateLaunchQ();
         launchPad = new BitSet[p.planetWidth];
         for (int i = 0; i < p.planetWidth; i++) {
@@ -136,15 +137,17 @@ public class Rocket {
                 }
                 int garisonMax = (int) unit.structureMaxCapacity();
                 int curLoad = (int) unit.structureGarrison().size();
-                if (((curLoad == garisonMax || tooManyRoundsSinceLastInsert(id) || roundNumber > 740 - TURNS_BEFORE_LAUNCH) && !destinationStack.empty())) {
-                    MapLocation dest = destinationStack.pop();
+                if (((curLoad == garisonMax || tooManyRoundsSinceLastInsert(id) || roundNumber > 740 - TURNS_BEFORE_LAUNCH) && (destinationList.size() > destinationIndex))) {
                     if (!launchTurn.containsKey(id)) {
                         launchTurn.put(id,roundNumber + TURNS_BEFORE_LAUNCH);
                         willLaunchSoon = 0;
                     }
-                    if (gc.canLaunchRocket(id, dest) && (roundNumber > 745 - TURNS_BEFORE_LAUNCH || (launchTurn.get(id) <= roundNumber))) {
-                        gc.launchRocket(id, dest);
-                        launchTurn.remove(id);
+                    if ((roundNumber > 745 - TURNS_BEFORE_LAUNCH || (launchTurn.get(id) <= roundNumber))) {
+                        MapLocation dest = destinationList.get(destinationIndex++).toMapLocation();
+                        if(gc.canLaunchRocket(id, dest)){
+                            gc.launchRocket(id, dest);
+                            launchTurn.remove(id);
+                        }
                     }
                 }
             }
@@ -199,7 +202,7 @@ public class Rocket {
         for (int i = marsWidth - 1; i >= 0; i--) {
             for (int j = marsHeight - 1; j >= 0; j--) {
                 if(passable[i].get(j) && neighborsPassable(i,j,passable)){
-                    destinationStack.push(new MapLocation(Planet.Mars,i,j));
+                    destinationList.add(new MapLoc(Planet.Mars,i,j));
                     // debug
                     //debug[i].set(j);
                     // mark neighbors unpassable
