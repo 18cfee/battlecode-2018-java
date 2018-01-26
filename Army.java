@@ -210,7 +210,7 @@ public class Army {
         if(p.rockets.getTotalRockets() < p.NUM_ROCKETS_WANTED && p.round > REALLY_NEED_TO_SAVE_FOR_ROCKETS_ROUND){
             return false;
         }
-        return(p.round < NEED_TO_SAVE_FOR_ROCKETS_ROUND || gc.karbonite() >= 190 || p.rockets.getTotalRockets() >= p.NUM_ROCKETS_WANTED - 1);
+        return(p.round < NEED_TO_SAVE_FOR_ROCKETS_ROUND || gc.karbonite() >= 190 || p.rockets.getTotalRockets() != 0);
     }
 
     private void tryToUnloadInAlDirections(int id) throws Exception{

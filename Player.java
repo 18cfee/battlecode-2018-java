@@ -14,10 +14,10 @@ public class Player {
         workers.setState(WorkerStates.Standby);
         Army sprint = new Army(gc,p);
         Workforce workforce = new Workforce(gc, p);
-        AggresiveRangers mars = new AggresiveRangers(gc,p);
-        ArrayList<Group> newlist = new ArrayList<>();
-        newlist.add(mars);
+        //AggresiveRangers mars = new AggresiveRangers(gc,p);
+        Team myTeam = gc.team();
         int count = 0;
+        MarsControl marsGame = new MarsControl(gc,p,myTeam);
         while (true) {
             try {
                 p.round = (int)gc.round();
@@ -37,40 +37,15 @@ public class Player {
                 }
                 if (gc.planet() != Planet.Earth) {
                     VecUnit units = gc.units();
-                    Team myTeam = gc.team();
                     for (int i = 0; i < units.size(); i++) {
-                        Unit unit = units.get(i);
-                        Location loc = unit.location();
-                        int id = unit.id();
-                        if(loc.isInGarrison() || loc.isInSpace()){ // do nothing with unit
-                        } else if(unit.team() != myTeam){
-                            mars.addEnemy(new Enemy(unit));
-                        } else if (unit.unitType() == UnitType.Worker) {
-                            //workforce.addWorker(id);
-                        } else if (unit.unitType() == UnitType.Factory) {
-//                            if(unit.structureIsBuilt() == 1){
-//                                sprint.addFact(unit);
-//                                p.addFactory(id);
-//                            }
-                        } else if (unit.unitType() == UnitType.Rocket) {
-                            for (int t = 0; t < 8; t++) {
-                                Direction dir = p.directions[t];
-                                if(gc.canUnload(id,dir)){
-                                    gc.unload(id,dir);
-                                }
-                            }
-                        }else{
-                            mars.add(id);
-                        }
+                        marsGame.addUnit(units.get(i));
                     }
-                    mars.conductTurn();
+                    marsGame.conductTurn();
                 } else {
                     //System.out.println("Current karb count: " + gc.karbonite());
                     //System.out.println(workers.state);
                     //Place Units into their groups
                     VecUnit units = gc.units();
-                    Team myTeam = gc.team();
-
                     if(!workforce.isCanBuildRocket() && gc.researchInfo().getLevel(UnitType.Rocket) >= 1){
                         workforce.setCanBuildRocket(true);
                     }
