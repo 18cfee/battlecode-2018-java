@@ -1,9 +1,6 @@
 import bc.*;
 
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Stack;
+import java.util.*;
 
 public class Rocket {
     private HashSet<Integer> unbuiltIds;
@@ -34,9 +31,10 @@ public class Rocket {
             launchPad[i] = set;
         }
         launchTurn = new HashMap<>();
+        factories = new ArrayList<>();
     }
 
-    public BitSet[] getStructArea(){
+    public BitSet[] getStructArea() throws Exception{
         BitSet[] area = new BitSet[p.planetWidth];
         for (int i = 0; i < p.planetWidth; i++) {
             BitSet set = new BitSet(p.planetHeight);
@@ -48,10 +46,16 @@ public class Rocket {
         for(Integer id: unbuiltIds){
             addToArea(area,id);
         }
+        if(factRound == p.round){
+            for(Integer id: factories){
+                addToArea(area,id);
+            }
+        }
         return area;
     }
-    private void addToArea(BitSet[] set, int id){
-        MapLocation loc = gc.unit(id).location().mapLocation();
+    private void addToArea(BitSet[] set, int id) throws Exception{
+        MapLocation loc = p.getMapLocationIfLegit(id);
+        if(loc == null) return;
         int i = loc.getX();
         int j = loc.getY();
         for(int[] numDir: p.numsDirections){
@@ -67,6 +71,15 @@ public class Rocket {
         // check that is not placing into that area
         MapLocation newLoc = gc.unit(id).location().mapLocation().add(direction);
         return !noGo[newLoc.getX()].get(newLoc.getY());
+    }
+    private int factRound = 0 -1;
+    private ArrayList<Integer> factories;
+    public void addFactory(int id){
+        if(p.round != factRound){
+            factories.clear();
+            factRound = p.round;
+        }
+        factories.add(id);
     }
 
     public void addRocket(Unit unit){

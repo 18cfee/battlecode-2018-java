@@ -87,6 +87,7 @@ public class Player {
                         } else if (unit.unitType() == UnitType.Worker) {
                             workforce.addWorker(id);
                         } else if (unit.unitType() == UnitType.Factory) {
+                            p.rockets.addFactory(unit.id());
                             if(unit.structureIsBuilt() == 1){
                                 sprint.addFact(unit);
                             }
