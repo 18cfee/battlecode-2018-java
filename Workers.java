@@ -34,7 +34,7 @@ public class Workers extends Group{
             MapLocation unitLoc = p.getMapLocationIfLegit(id);
             if(unitLoc == null){
               // DO NOTHING WITH THIS UNIT
-            } else if(unitLoc.distanceSquaredTo(p.baseLoc) < 12) {
+            } else if(gc.unit(id).location().mapLocation().distanceSquaredTo(p.baseLoc) < p.maxDistanceFromBase) {
                 for (Direction d: p.directions) {
                     if (gc.canBlueprint(id, type, d) && p.rockets.notPlacingRocketbyOtherStruct(areasContainingStructures, id, d)) {
                         state = WorkerStates.Build;
@@ -47,8 +47,6 @@ public class Workers extends Group{
                                 return units.get(j).location().mapLocation();
                             }
                         }
-                    }else{
-
                     }
                 }
                 // if they did not place but are in the base area
@@ -82,9 +80,7 @@ public class Workers extends Group{
         }
         if(state == WorkerStates.Build) {
             //System.out.println("I'm in the build state, and I'm building:");
-            for (Integer id: ids){
-                contBuilding();
-            }
+            contBuilding();
         }else if(state == WorkerStates.GatherKarbonite){
             if(harvestPoint != null) {
                 gatherKarbonite();
@@ -124,18 +120,13 @@ public class Workers extends Group{
         moveToTarget(p.hillToBase);
     }
     void gatherKarbonite() throws Exception{
-//        System.out.println("Harvest point: " + harvestPoint.toString());
         for(Integer id: ids){
             //System.out.println("Worker ID of gatherer: " + id);
             MapLocation harv = p.getMapLocationIfLegit(id);
             if(harv != null) {
-//                System.out.println("Worker loc: " + gc.unit(id).location().mapLocation().toString());
-//                System.out.println("Adjacent?\t" + gc.unit(id).location().mapLocation().isAdjacentTo(harvestPoint));
                 if (gc.canHarvest(id, harv.directionTo(harvestPoint))) {
-//                    System.out.println("Harvested");
                     gc.harvest(id, harv.directionTo(harvestPoint));
                  } else {
-//                    System.out.println("Did not harvest");
                     moveToTarget(currentHill);
                 }
             }
