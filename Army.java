@@ -140,9 +140,7 @@ public class Army {
             return;
         }
         Collections.sort(enemies,new EnemySorter());
-        System.out.println("printEn");
         for(Enemy enemy: enemies){
-            System.out.println(enemy.type + ": " + enemy.hp);
             carlsRangers.addEnemy(enemy);
             baseProtection.addEnemy(enemy);
             killEm.addEnemy(enemy);
