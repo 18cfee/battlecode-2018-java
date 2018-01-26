@@ -35,7 +35,7 @@ public class Workers extends Group{
               // DO NOTHING WITH THIS UNIT
             } else if(gc.unit(id).location().mapLocation().distanceSquaredTo(p.baseLoc) < 12) {
                 for (Direction d: p.directions) {
-                    if (gc.canBlueprint(id, type, d) && p.rockets.notPlacingRocketbyOtherStruct(areasContainingStructures)) {
+                    if (gc.canBlueprint(id, type, d) && p.rockets.notPlacingRocketbyOtherStruct(areasContainingStructures, id, d)) {
                         state = WorkerStates.Build;
                         printInProgress = true;
                         gc.blueprint(id, type, d);

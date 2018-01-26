@@ -37,15 +37,36 @@ public class Rocket {
     }
 
     public BitSet[] getStructArea(){
-        return BitSet[] dfsdfs;
-        // incorp rocs into are
-        // factories into are
+        BitSet[] area = new BitSet[p.planetWidth];
+        for (int i = 0; i < p.planetWidth; i++) {
+            BitSet set = new BitSet(p.planetHeight);
+            area[i] = set;
+        }
+        for(Integer id: builtRockets){
+            addToArea(area,id);
+        }
+        for(Integer id: unbuiltIds){
+            addToArea(area,id);
+        }
+        return area;
     }
-
-    public boolean notPlacingRocketbyOtherStruct(BitSet[] noGo){
+    private void addToArea(BitSet[] set, int id){
+        MapLocation loc = gc.unit(id).location().mapLocation();
+        int i = loc.getX();
+        int j = loc.getY();
+        for(int[] numDir: p.numsDirections){
+            int x = i + numDir[0];
+            int y = j + numDir[1];
+            if(p.onMap(x,y)){
+                set[x].set(y);
+            }
+        }
+    }
+    public boolean notPlacingRocketbyOtherStruct(BitSet[] noGo, int id, Direction direction) {
         if(noGo == null) return true;
-
-        // check that is not placing into that are
+        // check that is not placing into that area
+        MapLocation newLoc = gc.unit(id).location().mapLocation().add(direction);
+        return !noGo[newLoc.getX()].get(newLoc.getY());
     }
 
     public void addRocket(Unit unit){
