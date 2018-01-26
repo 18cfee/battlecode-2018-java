@@ -322,10 +322,4 @@ public class Path {
             }
         }
     }
-
-    public void addNoBuild(MapLocation m){
-        if(!noBuildZone.contains(m)){
-            noBuildZone.add(m);
-        }
-    }
 }
