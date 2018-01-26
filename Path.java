@@ -17,17 +17,10 @@ public class Path {
     short[][] hillToBase;
     public int[][] numsDirections = {{0,1},{1,1},{1,0},{1,-1},{0,-1},{-1,-1},{-1,0},{-1,1}};
     BitSet[] passable;
-    //MapLocation startLoc;
-    int unbuiltFactIndex = 0;
     public int round = 0;
-    //public final static int MAX_NUM_FACTS = 20;
-    //public int builtFactIndex = 0;
-    //public int [] builtFactary = new int [MAX_NUM_FACTS];
     public final static int NUM_FACTORIES_WANTED = 3;
     int rocketIndex = 0;
     public MapLocation baseLoc = null;
-    public short[][] firstRocketLocHill = null;
-    //public MapLocation placeToLandOnMars;
     public long totalKarbOnEarth;
     public ArrayList<MapLoc> karbLocs;
     public MPQ closestKarbLocs;
@@ -37,6 +30,7 @@ public class Path {
     public final static int NUM_ROCKETS_WANTED = 3;
     int maxDistanceFromBase = 12;
     short[][] centerMapHill = null;
+    HashSet<MapLocation> noBuildZone;
     public Path(GameController gc,Planet planet){
         currentBuiltFactories = new HashSet<>(10);
         this.planet = planet;
@@ -68,6 +62,7 @@ public class Path {
         }
         totalKarbOnEarth = calculateTotalKarbOnEarth();
         rockets = new Rocket(this,gc);
+        noBuildZone = new HashSet<>();
     }
 
     public boolean sensableUnitNotInGarisonOrSpace(int id){
@@ -89,6 +84,29 @@ public class Path {
             return loc.mapLocation();
         }
     }
+
+    public MapLocation locAtDirection(MapLocation m, Direction d){
+        int x = m.getX();
+        int y = m.getY();
+        if(d == Direction.North){
+            return new MapLocation(planet, x, y+1);
+        }else if(d == Direction.East){
+            return new MapLocation(planet, x+1, y);
+        }else if(d == Direction.South){
+            return new MapLocation(planet, x, y - 1);
+        }else if(d == Direction.West){
+            return new MapLocation(planet, x-1, y);
+        }else if(d == Direction.Northeast){
+            return new MapLocation(planet, x+1, y+1);
+        }else if(d == Direction.Southeast){
+            return new MapLocation(planet, x+1, y-1);
+        }else if(d == Direction.Southwest){
+            return new MapLocation(planet, x-1, y-1);
+        }else{
+            return new MapLocation(planet, x-1, y+1);
+        }
+    }
+
     private MapLocation findCenterLoc(){
         for (int i = 0; i < planetWidth; i++) {
             for (int j = 0; j < planetHeight; j++) {
@@ -302,6 +320,12 @@ public class Path {
             if (canMove(id,dir) && gc.isMoveReady(id)){
                 gc.moveRobot(id,dir);
             }
+        }
+    }
+
+    public void addNoBuild(MapLocation m){
+        if(!noBuildZone.contains(m)){
+            noBuildZone.add(m);
         }
     }
 }

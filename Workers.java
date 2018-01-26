@@ -27,20 +27,31 @@ public class Workers extends Group{
         for(Integer id: ids){
             if(!p.sensableUnitNotInGarisonOrSpace(id)){
               // DO NOTHING WITH THIS UNIT
-            } else if(gc.unit(id).location().mapLocation().distanceSquaredTo(p.baseLoc) < 12) {
+            } else if(gc.unit(id).location().mapLocation().distanceSquaredTo(p.baseLoc) < p.maxDistanceFromBase) {
                 for (Direction d: p.directions) {
-                    if (gc.canBlueprint(id, type, d)) {
+                    System.out.println("\n\n\n");
+                    if(p.noBuildZone.contains(p.locAtDirection(gc.unit(id).location().mapLocation(), d))){
+                        System.out.println("This is in the no build zone");
+                    }else{
+                        System.out.println("This is a viable location");
+                    }
+                    if (gc.canBlueprint(id, type, d) && !p.noBuildZone.contains(p.locAtDirection(gc.unit(id).location().mapLocation(), d))) {
                         state = WorkerStates.Build;
                         printInProgress = true;
                         gc.blueprint(id, type, d);
                         VecUnit units = gc.senseNearbyUnitsByType(gc.unit(id).location().mapLocation(), 2, type);
                         for (int j = 0; j < units.size(); j++) {
                             if (units.get(j).structureIsBuilt() == 0 && (type == UnitType.Factory || type == UnitType.Rocket) && units.get(j).team() == gc.team()) {
+                                System.out.println("Where " + units.get(j).unitType() + "  was placed: " + p.locAtDirection(gc.unit(id).location().mapLocation(), d));
+                                System.out.println("No build zones:");
+                                for(MapLocation m : p.noBuildZone){
+                                    System.out.println("\t" + m.toString());
+                                }
+                                addNoBuildZone(p.locAtDirection(gc.unit(id).location().mapLocation(), d));
                                 blueID = units.get(j).id();
                                 return units.get(j).location().mapLocation();
                             }
                         }
-                    }else{
                     }
                 }
             }else{
@@ -72,9 +83,7 @@ public class Workers extends Group{
         }
         if(state == WorkerStates.Build) {
             //System.out.println("I'm in the build state, and I'm building:");
-            for (Integer id: ids){
-                contBuilding();
-            }
+            contBuilding();
         }else if(state == WorkerStates.GatherKarbonite){
             if(harvestPoint != null) {
                 gatherKarbonite();
@@ -123,6 +132,13 @@ public class Workers extends Group{
                     moveToTarget(currentHill);
                 }
             }
+        }
+    }
+
+    public void addNoBuildZone(MapLocation m){
+        p.addNoBuild(m);
+        for (Direction d : p.directions){
+            p.addNoBuild(p.locAtDirection(m,d));
         }
     }
 
