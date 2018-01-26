@@ -1,6 +1,7 @@
 import bc.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 
 public class Army {
@@ -20,6 +21,7 @@ public class Army {
     private int fighterRound = 0;
     private int numGroupsCreated = 0;
     private final static int NEED_TO_SAVE_FOR_ROCKETS_ROUND = 200;
+    private ArrayList<Enemy> enemies;
     public Army(GameController gc, Path p){
         this.gc = gc;
         this.p = p;
@@ -30,9 +32,11 @@ public class Army {
         rangers = new ArrayList<>();
         troops = new ArrayList<>();
         killEm = new AggresiveRangers(gc,p);
+        enemies = new ArrayList<>();
     }
     public void conductTurn() throws Exception{
         long time = System.currentTimeMillis();
+        distributeEnemies();
         carlsRangers.conductTurn();
         baseProtection.conductTurn();
         killEm.conductTurn();
@@ -121,13 +125,30 @@ public class Army {
     private boolean shouldBeDefending(){
         return false;
     }
+    private int enemyRound = -1;
     public void addEnemyUnit(Unit unit){
+        if(enemyRound != p.round){
+            enemyRound = p.round;
+            enemies.clear();
+        }
         Enemy enemy = new Enemy(unit);
-        carlsRangers.addEnemy(enemy);
-        baseProtection.addEnemy(enemy);
-        killEm.addEnemy(enemy);
-        for(RocketBoarders group: rangers){
-            group.addEnemy(enemy);
+        enemies.add(enemy);
+    }
+    private void distributeEnemies(){
+        if(enemyRound != p.round){
+            enemies.clear();
+            return;
+        }
+        Collections.sort(enemies,new EnemySorter());
+        System.out.println("printEn");
+        for(Enemy enemy: enemies){
+            System.out.println(enemy.type + ": " + enemy.hp);
+            carlsRangers.addEnemy(enemy);
+            baseProtection.addEnemy(enemy);
+            killEm.addEnemy(enemy);
+            for(RocketBoarders group: rangers){
+                group.addEnemy(enemy);
+            }
         }
     }
 //    public void distributeFactories(){
