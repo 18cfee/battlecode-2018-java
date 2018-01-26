@@ -267,6 +267,7 @@ public class Path {
                     MapLoc karbLoc;
                     if(baseLoc != null) {
                         karbLoc = new MapLoc(planet, loc, hillToBase[x][y]);
+                        //karbLoc = new MapLoc(planet, loc, loc.distanceSquaredTo(baseLoc));
                     }else{
                         karbLoc = new MapLoc(loc);
                     }
