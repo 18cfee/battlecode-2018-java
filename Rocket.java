@@ -182,8 +182,10 @@ public class Rocket {
         marsWidth = (int)mars.getWidth();
         marsHeight = (int)mars.getHeight();
         BitSet[] passable = new BitSet[marsWidth];
+        //BitSet[] debug = new BitSet[marsWidth];
         for (int i = 0; i < marsWidth; i++) {
             BitSet cur = new BitSet(marsHeight);
+            //debug[i] = new BitSet(marsHeight);
             for (int j = 0; j < marsHeight; j++) {
                 if (mars.isPassableTerrainAt(new MapLocation(Planet.Mars,i,j)) == 1){
                     cur.set(j);
@@ -193,10 +195,13 @@ public class Rocket {
         }
         //Debug.passable(passable);
         //System.out.println("second");
+
         for (int i = marsWidth - 1; i >= 0; i--) {
             for (int j = marsHeight - 1; j >= 0; j--) {
-                if(passable[i].get(j)){
+                if(passable[i].get(j) && neighborsPassable(i,j,passable)){
                     destinationStack.push(new MapLocation(Planet.Mars,i,j));
+                    // debug
+                    //debug[i].set(j);
                     // mark neighbors unpassable
                     for(int[] numDir: p.numsDirections){
                         int x = i + numDir[0];
@@ -208,7 +213,18 @@ public class Rocket {
                 }
             }
         }
-        ///Debug.passable(passable);
+        //Debug.passable(passable);
+        //Debug.passable(debug);
+    }
+    public boolean neighborsPassable(int x, int y, BitSet[] passable){
+        MapLoc loc = new MapLoc(x,y);
+        for (int i = 0; i < 8; i++) {
+            int[] d = p.numsDirections[i];
+            MapLoc newLoc = loc.add(d);
+            if((!p.onMap(newLoc) || !passable[newLoc.x].get(newLoc.y))) return false;
+        }
+        System.out.println("returning true");
+        return true;
     }
     public boolean inLaunchPad(MapLocation loc){
         return launchPad[loc.getX()].get(loc.getY());
