@@ -94,7 +94,7 @@ public class Workforce {
         group.setState(WorkerStates.GatherKarbonite);
         if (closestKarbDepot == null || (gc.canSenseLocation(closestKarbDepot) && gc.karboniteAt(closestKarbDepot) == 0)) {
             if(closestKarbDepot != null) {
-                System.out.println("Need a new location");
+                //System.out.println("Need a new location");
             }
             boolean viable = false;
             while (!viable && !p.closestKarbLocs.isEmpty()) {
