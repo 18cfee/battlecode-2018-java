@@ -196,7 +196,7 @@ public class Workforce {
             //System.out.println(oldBuilders.size() + " workers in oldBuilders");
             for(int check : oldBuilders) {
                 //System.out.println("Worker " + check + " is in oldBuilders");
-                if(gc.unit(check).abilityHeat() > 0){
+                if(p.sensableUnitNotInGarisonOrSpace(check) && gc.unit(check).abilityHeat() > 0){
                     nonReplicatable.add(check);
                 }
             }
