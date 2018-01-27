@@ -18,6 +18,7 @@ public class Rocket {
     private int marsHeight;
     private int destinationIndex = 0;
     protected short[][] disjointAreas;
+    protected ArrayList<Integer> numPerSection;
     public Rocket(Path p, GameController gc) throws Exception{
         unbuiltIds = new HashSet<>();
         builtRockets = new HashSet<>();
@@ -26,7 +27,6 @@ public class Rocket {
         unClaimedIds = new Stack<>();
         idToRoundLastModified = new HashMap<>();
         destinationList = new ArrayList<>();
-        disjointAreas = new short[marsWidth][marsHeight];
         generateLaunchQ();
         launchPad = new BitSet[p.planetWidth];
         for (int i = 0; i < p.planetWidth; i++) {
@@ -207,6 +207,8 @@ public class Rocket {
         }
         marsWidth = (int)mars.getWidth();
         marsHeight = (int)mars.getHeight();
+        disjointAreas = new short[marsWidth][marsHeight];
+        numPerSection = new ArrayList<>();
         BitSet[] passable = new BitSet[marsWidth];
         //BitSet[] debug = new BitSet[marsWidth];
         for (int i = 0; i < marsWidth; i++) {
@@ -221,14 +223,14 @@ public class Rocket {
         }
         //Debug.passable(passable);
         //System.out.println("second");
-//        for (int i = marsWidth - 1; i >= 0; i--) {
-//            for (int j = marsHeight - 1; j >= 0; j--) {
-//                if(passable[i].get(j) &&
-//                        disjointAreas[i][j] == 0){
-//                    generateContiniousArea(disjointAreas,new MapLoc(i,j),passable);
-//                }
-//            }
-//        }
+        for (int i = marsWidth - 1; i >= 0; i--) {
+            BitSet set = passable[i];
+            for (int j = 0; j < set.length(); j++) {
+                if(disjointAreas[i][j] == 0 && passable[i].get(j)){
+                    generateContiniousArea(disjointAreas,new MapLoc(i,j),passable);
+                }
+            }
+        }
         for (int i = marsWidth - 1; i >= 0; i--) {
             for (int j = marsHeight - 1; j >= 0; j--) {
                 if(passable[i].get(j) && neighborsPassable(i,j,passable)){
@@ -246,7 +248,6 @@ public class Rocket {
                 }
             }
         }
-        Debug.printHill(disjointAreas);
         //Debug.passable(passable);
         //Debug.passable(debug);
     }
@@ -260,13 +261,15 @@ public class Rocket {
             for (int i = 0; i < p.numsDirections.length; i++) {
                 int[] d = p.numsDirections[i];
                 MapLoc newLoc = cur.add(d);
-                if(hill[newLoc.x][newLoc.y] == 0){
-                    if(!passable[newLoc.x].get(newLoc.y)){
-                        //mark as unreachable
-                        hill[newLoc.x][newLoc.y] = p.greatestPathNum;
-                    } else {
-                        toCheck.addLast(newLoc);
-                        hill[newLoc.x][newLoc.y] = curNumDisjoints;
+                if(onMars(newLoc)){
+                    if(hill[newLoc.x][newLoc.y] == 0){
+                        if(!passable[newLoc.x].get(newLoc.y)){
+                            //mark as unreachable
+                            hill[newLoc.x][newLoc.y] = p.greatestPathNum;
+                        } else {
+                            toCheck.addLast(newLoc);
+                            hill[newLoc.x][newLoc.y] = curNumDisjoints;
+                        }
                     }
                 }
             }
