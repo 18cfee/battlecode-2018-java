@@ -82,7 +82,13 @@ public class Rocket {
         }
         factories.add(id);
     }
-
+    public int getTotalNumFactories(){
+        if(p.round != factRound){
+            factories.clear();
+            factRound = p.round;
+        }
+        return factories.size();
+    }
     public void addRocket(Unit unit){
         if(p.round != roundNumber){
             resetRockets();

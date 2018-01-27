@@ -23,7 +23,8 @@ public class Path {
     //public final static int MAX_NUM_FACTS = 20;
     //public int builtFactIndex = 0;
     //public int [] builtFactary = new int [MAX_NUM_FACTS];
-    public final static int NUM_FACTORIES_WANTED = 3;
+    public final static int NUM_FACTORIES_WANTED = 4; // this should probably not be made in any larger
+    // if we want to add more facts something else should change
     int rocketIndex = 0;
     public MapLocation baseLoc = null;
     public short[][] firstRocketLocHill = null;

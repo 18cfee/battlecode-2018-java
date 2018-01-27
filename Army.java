@@ -22,6 +22,7 @@ public class Army {
     private int numGroupsCreated = 0;
     private final static int NEED_TO_SAVE_FOR_ROCKETS_ROUND = 300;
     private final static int REALLY_NEED_TO_SAVE_FOR_ROCKETS_ROUND = 500;
+    private final static int SHOULD_SAVE_FOR_FACTORY = 250;
     private ArrayList<Enemy> enemies;
     public Army(GameController gc, Path p){
         this.gc = gc;
@@ -195,7 +196,7 @@ public class Army {
         for (Integer factId: p.currentBuiltFactories) {
             //System.out.println("Num in garrison: " + gc.unit(factId).structureGarrison().size());
             if(p.sensableUnitNotInGarisonOrSpace(factId)){
-                if(gc.canProduceRobot(factId,production) && weDoNotNeedRockets()){
+                if(gc.canProduceRobot(factId,production) && weDoNotNeedRockets() && !weSpoolingForFactory()){
                     gc.produceRobot(factId,production);
                 }
                 if(gc.unit(factId).structureGarrison().size() > 0){
@@ -204,6 +205,10 @@ public class Army {
                 }
             }
         }
+    }
+    private boolean weSpoolingForFactory(){
+        int fact = p.rockets.getTotalNumFactories();
+        return (fact < p.NUM_FACTORIES_WANTED && gc.karbonite() > 79 && p.round < SHOULD_SAVE_FOR_FACTORY);
     }
 
     private boolean weDoNotNeedRockets(){
