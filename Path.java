@@ -201,10 +201,10 @@ public class Path {
             MapLoc cur = toCheck.removeFirst();
             long dis = cur.distanceToBase + 1;
             if(dis < 5){
-                for (int i = 0; i < numsDirections.length; i++) {
-                    int[] d = numsDirections[i];
+                for (int t = 0; t < numsDirections.length; t++) {
+                    int[] d = numsDirections[t];
                     MapLoc newLoc = cur.add(d,dis);
-                    if(onMap(cur) && !checked[newLoc.x].get(newLoc.y)){
+                    if(onMap(newLoc) && !checked[newLoc.x].get(newLoc.y)){
                         if(!passable(newLoc)){
                             //mark as checked
                             checked[newLoc.x].set(newLoc.y);
