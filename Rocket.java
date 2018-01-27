@@ -134,7 +134,7 @@ public class Rocket {
         return false;
     }
     private int workersTaken = 0;
-    private final static int WANTEDWORKERS = 5;
+    private final static int WANTEDWORKERS = 0;
     public void rocketsShouldLauchIfPossible() throws Exception{
         willLaunchSoon++;
         if(noRockets()) return;
