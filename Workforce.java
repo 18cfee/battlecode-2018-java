@@ -19,7 +19,7 @@ public class Workforce {
     private HashSet<Integer> oldBuilders;
     private Workers loners;
     private ArrayList<Integer> nonReplicatable;
-    int numWantedBbuilders = 4;
+    int numWantedBuilders = 4;
 
     public Workforce(GameController gc, Path p) {
         this.gc = gc;
@@ -192,9 +192,9 @@ public class Workforce {
             oldBuilders = (HashSet<Integer>) builders.ids.clone();
             builders.ids.clear();
             if(numWorkers <= 4){
-                numWantedBbuilders = 2;
+                numWantedBuilders = 2;
             }else{
-                numWantedBbuilders = 4;
+                numWantedBuilders = 4;
             }
 
             //System.out.println(oldBuilders.size() + " workers in oldBuilders");
@@ -235,10 +235,11 @@ public class Workforce {
                 numWorkers--;
                 addWorker(chopped);
             }
+            return;
         }
 
         //System.out.println("Checking for old builders");
-        if(oldBuilders.contains(id) && builders.size() < numWantedBbuilders){
+        if(oldBuilders.contains(id) && builders.size() < numWantedBuilders){
             //System.out.println("\tWorker " + id + " added to builders from OldBuilders");
             builders.add(id);
             return;
@@ -246,7 +247,7 @@ public class Workforce {
 
 
         //System.out.println("Checking for old gatherers");
-        if(oldGatherers.size() > 0  && oldBuilders.size() >= numWantedBbuilders) {
+        if(oldGatherers.size() > 0  && oldBuilders.size() >= numWantedBuilders) {
             for (int i = 0; i < oldGatherers.size(); i++) {
                 if (oldGatherers.get(i).contains(id)) {
                     gatherers.get(i).add(id);
