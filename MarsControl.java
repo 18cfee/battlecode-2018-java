@@ -1,42 +1,61 @@
 import bc.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 public class MarsControl {
     GameController gc;
     Path p;
-    AggresiveRangers mars;
     Team myTeam;
+    ArrayList<MarsSector> armies;
+    ArrayList<Enemy> enemies;
+    private int controlRound = 0;
     MarsControl(GameController gc, Path p, Team myTeam){
         this.gc = gc;
         this.p = p;
         this.myTeam = myTeam;
-        mars = new AggresiveRangers(gc,p);
+        armies = new ArrayList<>();
+        enemies = new ArrayList<>();
+        for (int i = 0; i < p.rockets.numPerSection.size(); i++) {
+            armies.add(new MarsSector(gc,p,myTeam));
+        }
     }
     public void conductTurn() throws Exception{
-        mars.conductTurn();
-
+        distributeEnemies();
+        for (MarsSector sector: armies){
+            sector.conductTurn();
+        }
     }
     public void addUnit(Unit unit) throws Exception{
         Location loc = unit.location();
-        int id = unit.id();
-        if(loc.isInGarrison() || loc.isInSpace()){ // do nothing with unit
+        if(loc.isInGarrison() || loc.isInSpace()){
+            // do nothing with unit
+            return;
         } else if(unit.team() != myTeam){
-            mars.addEnemy(new Enemy(unit));
-        } else if (unit.unitType() == UnitType.Worker) {
-            //workforce.addWorker(id);
-        } else if (unit.unitType() == UnitType.Factory) {
-//                            if(unit.structureIsBuilt() == 1){
-//                                sprint.addFact(unit);
-//                                p.addFactory(id);
-//                            }
-        } else if (unit.unitType() == UnitType.Rocket) {
-            for (int t = 0; t < 8; t++) {
-                Direction dir = p.directions[t];
-                if(gc.canUnload(id,dir)){
-                    gc.unload(id,dir);
-                }
-            }
-        }else{
-            mars.add(id);
+            addToEnemies(new Enemy(unit));
+        } else {
+            MapLocation unitLoc = loc.mapLocation();
+            int groupId = p.rockets.disjointAreas[unitLoc.getX()][unitLoc.getY()] - 1;
+            armies.get(groupId).addUnit(unit);
         }
+    }
+    private void addToEnemies(Enemy enemy){
+        if(controlRound != p.round){
+            enemies.clear();
+            controlRound = p.round;
+        }
+        enemies.add(enemy);
+    }
+    private void distributeEnemies(){
+       if(controlRound != p.round){
+           controlRound = p.round;
+           return;
+       }
+       Collections.sort(enemies,new EnemySorter());
+       for(Enemy enemy: enemies){
+           for(MarsSector sector: armies){
+               sector.mars.addEnemy(enemy);
+           }
+       }
     }
 }

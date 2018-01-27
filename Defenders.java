@@ -29,11 +29,12 @@ public class Defenders extends Fighter {
                 MapLoc a = enemy.getMapLoc();
                 target = a;
                 if(!miniHill.generateMiniRing(target,ids,p.baseLoc)){
+                    groupTargetCooldown += 3;
                     target = null;
                 } else {
+                    groupTargetCooldown+= 25;
+                    seesEnemy = true;
                 }
-                groupTargetCooldown+= 25;
-                seesEnemy = true;
             }
         } else if (seesEnemy == true && enemies.size() == 0){
             seesEnemy = false;

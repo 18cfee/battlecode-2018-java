@@ -18,7 +18,7 @@ public class Rocket {
     private int marsHeight;
     private int destinationIndex = 0;
     protected short[][] disjointAreas;
-    protected ArrayList<Integer> numPerSection;
+    public ArrayList<Integer> numPerSection;
     public Rocket(Path p, GameController gc) throws Exception{
         unbuiltIds = new HashSet<>();
         builtRockets = new HashSet<>();
@@ -256,6 +256,7 @@ public class Rocket {
         hill[destination.x][destination.y] = curNumDisjoints;
         ArrayDeque<MapLoc> toCheck = new ArrayDeque<>();
         toCheck.addLast(destination);
+        int total = 1;
         while(!toCheck.isEmpty()){
             MapLoc cur = toCheck.removeFirst();
             for (int i = 0; i < p.numsDirections.length; i++) {
@@ -269,12 +270,14 @@ public class Rocket {
                         } else {
                             toCheck.addLast(newLoc);
                             hill[newLoc.x][newLoc.y] = curNumDisjoints;
+                            total++;
                         }
                     }
                 }
             }
         }
         curNumDisjoints++;
+        numPerSection.add(total);
     }
     public boolean neighborsPassable(int x, int y, BitSet[] passable) throws Exception{
         MapLoc loc = new MapLoc(x,y);
