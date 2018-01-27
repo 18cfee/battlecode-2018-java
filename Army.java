@@ -207,8 +207,14 @@ public class Army {
         }
     }
     private boolean weSpoolingForFactory(){
+        if(p.shouldNotTryToMakeMoreFactories) return false;
+        int karb = (int)gc.karbonite();
+        if(karb > 270){
+            p.shouldNotTryToMakeMoreFactories = true;
+            return false;
+        }
         int fact = p.rockets.getTotalNumFactories();
-        return (fact < p.NUM_FACTORIES_WANTED && gc.karbonite() > 79 && p.round < SHOULD_SAVE_FOR_FACTORY);
+        return (fact < p.NUM_FACTORIES_WANTED && karb > 79 && p.round < SHOULD_SAVE_FOR_FACTORY);
     }
 
     private boolean weDoNotNeedRockets(){
