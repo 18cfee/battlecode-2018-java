@@ -22,7 +22,7 @@ public class Army {
     private int numGroupsCreated = 0;
     private final static int NEED_TO_SAVE_FOR_A_ROCKET = 220;
     private final static int REALLY_NEED_TO_SAVE_FOR_ROCKETS_ROUND = 500;
-    private final static int SHOULD_SAVE_FOR_FACTORY = 175;
+    private final static int SHOULD_SAVE_FOR_FACTORY = 750;
     private ArrayList<Enemy> enemies;
     public Army(GameController gc, Path p){
         this.gc = gc;
@@ -192,6 +192,14 @@ public class Army {
             tempOldFactories.clear();
             p.currentBuiltFactories.clear();
         }
+        if(crowded()){
+            suckArmyIn();
+        } else {
+            normalProduction();
+        }
+
+    }
+    private void normalProduction() throws Exception{
         UnitType production = UnitType.Ranger;
         for (Integer factId: p.currentBuiltFactories) {
             //System.out.println("Num in garrison: " + gc.unit(factId).structureGarrison().size());
@@ -199,12 +207,33 @@ public class Army {
                 if(gc.canProduceRobot(factId,production) && weDoNotNeedRockets() && !weSpoolingForFactory()){
                     gc.produceRobot(factId,production);
                 }
-                if(gc.unit(factId).structureGarrison().size() > 0){
-                    // this should not produce in a launch pad
-                    tryToUnloadInAlDirections(factId);
+                tryToUnloadInAlDirections(factId);
+            }
+        }
+    }
+    private void suckArmyIn(){
+        for(Integer factId: p.currentBuiltFactories){
+            MapLocation loc = gc.unit(factId).location().mapLocation();
+            VecUnit units = gc.senseNearbyUnits(loc,2);
+            for (int i = 0; i < units.size(); i++) {
+                int id = units.get(i).id();
+                if (gc.canLoad(factId,id) && units.get(i).unitType() != UnitType.Worker){
+                    gc.load(factId,id);
                 }
             }
         }
+    }
+    private boolean crowded(){
+        if(weDoNotNeedRockets()) {
+            return false;
+        }
+        for (Integer factId: p.currentBuiltFactories) {
+            int gar = (int)gc.unit(factId).structureGarrison().size();
+            if(gar > 1){
+                return true;
+            }
+        }
+        return false;
     }
     private boolean weSpoolingForFactory(){
         if(p.shouldNotTryToMakeMoreFactories) return false;
@@ -218,10 +247,12 @@ public class Army {
     }
 
     private boolean weDoNotNeedRockets(){
+        if(numDefenders < 20) return true;
+        if(gc.karbonite() >= 190) return true;
         if(p.rockets.getTotalRockets() < p.NUM_ROCKETS_WANTED && p.round > REALLY_NEED_TO_SAVE_FOR_ROCKETS_ROUND){
             return false;
         }
-        return(p.round < NEED_TO_SAVE_FOR_A_ROCKET || gc.karbonite() >= 190 || p.rockets.getTotalRockets() != 0);
+        return(p.round < NEED_TO_SAVE_FOR_A_ROCKET || p.rockets.getTotalRockets() != 0);
     }
 
     private void tryToUnloadInAlDirections(int id) throws Exception{

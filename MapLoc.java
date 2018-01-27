@@ -22,6 +22,11 @@ public class MapLoc {
         this.x = x;
         this.y = y;
     }
+    public MapLoc(int x, int y, long distanceToBase){
+        this.x = x;
+        this.y = y;
+        this.distanceToBase = distanceToBase;
+    }
     public MapLoc(Planet planet, MapLocation loc, long distanceToBase){
         this.x = loc.getX();
         this.y = loc.getY();
@@ -33,6 +38,9 @@ public class MapLoc {
     }
     public MapLoc add(int[] dir){
         return new MapLoc(this.x + dir[0],this.y + dir[1]);
+    }
+    public MapLoc add(int[] dir, long distanceToBase){
+        return new MapLoc(this.x + dir[0],this.y + dir[1], distanceToBase);
     }
 
     public MapLocation toMapLocation(){

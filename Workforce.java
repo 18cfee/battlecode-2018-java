@@ -35,8 +35,8 @@ public class Workforce {
 
     public void conductTurn() throws Exception{
 
-        System.out.println("There are " + numWorkers + " workers");
-        System.out.println("There are " + builders.size() + " builders");
+        //System.out.println("There are " + numWorkers + " workers");
+        //System.out.println("There are " + builders.size() + " builders");
         int groupNum = 0;
         for(Workers group : gatherers){
             groupNum++;
@@ -115,8 +115,6 @@ public class Workforce {
             }else{
                 System.out.println("Location is out of sight");
             }
-        }else{
-            System.out.println("The last location is null");
         }
         */
         if (group.harvestPoint == null || (gc.canSenseLocation(group.harvestPoint) && gc.karboniteAt(group.harvestPoint) == 0)) {
@@ -200,7 +198,7 @@ public class Workforce {
             //System.out.println(oldBuilders.size() + " workers in oldBuilders");
             for(int check : oldBuilders) {
                 //System.out.println("Worker " + check + " is in oldBuilders");
-                if(gc.canSenseUnit(check) && gc.unit(check).abilityHeat() > 0){
+                if(p.sensableUnitNotInGarisonOrSpace(check) && gc.unit(check).abilityHeat() > 0){
                     nonReplicatable.add(check);
                 }
             }
@@ -208,10 +206,10 @@ public class Workforce {
             for (int i = 0; i < numWorkerGroups; i++) {
                 oldGatherers.add((HashSet<Integer>)gatherers.get(i).ids.clone());
                 gatherers.get(i).ids.clear();
-
+                /*
                 for(int ids : oldGatherers.get(i)){
-                    //System.out.println("Worker " + ids + " is in oldGatherers group " + i);
-                }
+                    System.out.println("Worker " + ids + " is in oldGatherers group " + i);
+                }*/
             }
             /*
             gatherers.clear();

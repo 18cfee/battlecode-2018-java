@@ -48,8 +48,6 @@ public class Workers extends Group{
                                 return units.get(j).location().mapLocation();
                             }
                         }
-                    }else{
-
                     }
                 }
                 // if they did not place but are in the base area
@@ -123,7 +121,6 @@ public class Workers extends Group{
         moveToTarget(p.hillToBase);
     }
     void gatherKarbonite() throws Exception{
-        //System.out.println("Current harvest loc: " + harvestPoint.toString());
         for(Integer id: ids){
             //System.out.println("Worker ID of gatherer: " + id);
             if(gc.canSenseUnit(id)) {
