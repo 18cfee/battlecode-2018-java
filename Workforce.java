@@ -44,8 +44,10 @@ public class Workforce {
 
         }
         builders.groupIsAlive = true;
-        for (Workers group : gatherers) {
-            group.groupIsAlive = true;
+        for(int i = 0; i < gatherers.size(); i++){
+            if(gatherers.get(i).size() == 0){
+                gatherers.remove(i);
+            }
         }
 
         if (!builders.noUnits() && numWorkers < 10) {
@@ -154,11 +156,16 @@ public class Workforce {
     private int numWorkerGroups = 0;
     public void addWorker(int id) throws Exception{
         if(workerRound != p.round) {
+            System.out.println("\n\n\nRefreshing");
             workerRound = p.round;
             oldGatherers.clear();
             numWorkerGroups = gatherers.size();
             oldBuilders = (HashSet<Integer>) builders.ids.clone();
 
+            System.out.println(oldBuilders.size() + " workers in oldBuilders");
+            for(int check : oldBuilders) {
+                System.out.println("Worker " + check + " is in oldBuilders");
+            }
             for (int i = 0; i < numWorkerGroups; i++) {
                 oldGatherers.add((HashSet<Integer>)gatherers.get(i).ids.clone());
             }
@@ -175,23 +182,26 @@ public class Workforce {
         }else {
             numWorkers++;
         }
+        System.out.println("Checking for old builders");
         if(oldBuilders.contains(id) && builders.size() < 4){
-            System.out.println("Worker " + id + " added to builders");
+            System.out.println("Worker " + id + " added to builders from OldBuilders");
             builders.add(id);
             return;
         }
 
+        System.out.println("Checking to see if we need builders");
         if(builders.size() < 4){
             System.out.println("Worker " + id + " added to builders");
             builders.add(id);
             return;
         }
 
+        System.out.println("Checking for old gatherers");
         if(oldGatherers.size() > 0) {
             for (int i = 0; i < oldGatherers.size(); i++) {
                 if (oldGatherers.get(i).contains(id)) {
                     gatherers.get(i).add(id);
-                    System.out.println("Worker " + id + " added to gatherering group " + i + " from OldGatherers");
+                    System.out.println("Worker " + id + " added to gathering group " + i + " from OldGatherers");
                     return;
                 }
             }
@@ -201,7 +211,8 @@ public class Workforce {
             gatherers.add(new Workers(gc, p));
         }
 
-        for (int i = 0; i < numWorkerGroups; i++) {
+        System.out.println("Sorting remaining into gathering groups");
+        for (int i = 0; i < gatherers.size(); i++) {
             if (gatherers.get(i).size() < 3) {
                 gatherers.get(i).add(id);
                 System.out.println("Worker " + id + " added to gathering group " + i);
