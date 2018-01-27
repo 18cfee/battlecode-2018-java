@@ -4,7 +4,7 @@ import java.util.BitSet;
 
 public class Workers extends Group{
     private int blueID = -1;
-    private MapLocation harvestPoint = null;
+    MapLocation harvestPoint = null;
     GameController gc;
     private Path p;
     public WorkerStates state = WorkerStates.Standby;
