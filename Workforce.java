@@ -32,6 +32,17 @@ public class Workforce {
 
     public void conductTurn() throws Exception{
 
+        System.out.println("There are " + numWorkers + " workers");
+        System.out.println("There are " + builders.size() + " builders");
+        int groupNum = 0;
+        for(Workers group : gatherers){
+            groupNum++;
+            System.out.println("There are " + group.size() + " workers in gathering group " + groupNum);
+            for(int id : group.ids){
+                System.out.println("Worker " + id + " is in gathering group " + groupNum);
+            }
+
+        }
         builders.groupIsAlive = true;
         for (Workers group : gatherers) {
             group.groupIsAlive = true;
@@ -78,12 +89,21 @@ public class Workforce {
 
     private void gatherKarbonite(Workers group) throws Exception {
         group.setState(WorkerStates.GatherKarbonite);
+        if(closestKarbDepot != null){
+            if(gc.canSenseLocation(closestKarbDepot)) {
+                System.out.println("Karbonite at last location: " + gc.karboniteAt(closestKarbDepot));
+            }else{
+                System.out.println("Location is out of sight");
+            }
+        }
         if (closestKarbDepot == null || (gc.canSenseLocation(closestKarbDepot) && gc.karboniteAt(closestKarbDepot) == 0)) {
             boolean viable = false;
+
             while (!viable && !p.closestKarbLocs.isEmpty()) {
                 if (p.closestKarbLocs.peek() != null && gc.canSenseLocation(p.closestKarbLocs.peek().toMapLocation())) {
                     closestKarbDepot = p.closestKarbLocs.pop().toMapLocation();
-                    //System.out.println("PQ says there are " + p.closestKarbLocs.getSize() + " deposits left");
+                    System.out.println("New harvest loc picked out: " + closestKarbDepot.toString());
+                    System.out.println("PQ says there are " + p.closestKarbLocs.getSize() + " deposits left");
                     if (gc.karboniteAt(closestKarbDepot) != 0) {
                         viable = true;
                         group.karbLocInSight = true;
@@ -142,19 +162,27 @@ public class Workforce {
             for (int i = 0; i < numWorkerGroups; i++) {
                 oldGatherers.add((HashSet<Integer>)gatherers.get(i).ids.clone());
             }
+            gatherers.clear();
+            for(int i = 0; i < numWorkerGroups; i++){
+                gatherers.add(new Workers(gc, p));
+            }
             numWorkers = 0;
         }
-        if(p.movesToBase(gc.unit(id).location().mapLocation()) == 0){
+        if(p.movesToBase(gc.unit(id).location().mapLocation()) == 0 && gc.unit(id).location().mapLocation() != p.baseLoc){
             loners.add(id);
+            System.out.println("Worker " + id + " added to loners");
+            return;
         }else {
             numWorkers++;
         }
-        if(oldBuilders.contains(id)){
+        if(oldBuilders.contains(id) && builders.size() < 4){
+            System.out.println("Worker " + id + " added to builders");
             builders.add(id);
             return;
         }
 
         if(builders.size() < 4){
+            System.out.println("Worker " + id + " added to builders");
             builders.add(id);
             return;
         }
@@ -163,6 +191,7 @@ public class Workforce {
             for (int i = 0; i < oldGatherers.size(); i++) {
                 if (oldGatherers.get(i).contains(id)) {
                     gatherers.get(i).add(id);
+                    System.out.println("Worker " + id + " added to gatherering group " + i + " from OldGatherers");
                     return;
                 }
             }
@@ -172,9 +201,10 @@ public class Workforce {
             gatherers.add(new Workers(gc, p));
         }
 
-        for (int i = 0; i < gatherers.size(); i++) {
+        for (int i = 0; i < numWorkerGroups; i++) {
             if (gatherers.get(i).size() < 3) {
                 gatherers.get(i).add(id);
+                System.out.println("Worker " + id + " added to gathering group " + i);
                 return;
             } else if (i == gatherers.size() - 1) {
                 gatherers.add(new Workers(gc, p));
