@@ -5,10 +5,10 @@ import java.util.*;
 public class Rocket {
     private HashSet<Integer> unbuiltIds;
     private HashSet<Integer> builtRockets;
-    private int roundNumber = 0;
-    private Path p;
-    private GameController gc;
-    private ArrayList<MapLoc> destinationList;
+    protected int roundNumber = 0;
+    protected Path p;
+    protected GameController gc;
+    protected ArrayList<MapLoc> destinationList;
     private Stack<Integer> unClaimedIds;
     private HashMap<Integer,Integer> idToRoundLastModified;
     private BitSet[] launchPad;
@@ -17,6 +17,7 @@ public class Rocket {
     private int marsWidth;
     private int marsHeight;
     private int destinationIndex = 0;
+    protected short[][] disjointAreas;
     public Rocket(Path p, GameController gc) throws Exception{
         unbuiltIds = new HashSet<>();
         builtRockets = new HashSet<>();
@@ -25,6 +26,7 @@ public class Rocket {
         unClaimedIds = new Stack<>();
         idToRoundLastModified = new HashMap<>();
         destinationList = new ArrayList<>();
+        disjointAreas = new short[marsWidth][marsHeight];
         generateLaunchQ();
         launchPad = new BitSet[p.planetWidth];
         for (int i = 0; i < p.planetWidth; i++) {
@@ -131,6 +133,8 @@ public class Rocket {
         }
         return false;
     }
+    private int workersTaken = 0;
+    private final static int WANTEDWORKERS = 5;
     public void rocketsShouldLauchIfPossible() throws Exception{
         willLaunchSoon++;
         if(noRockets()) return;
@@ -140,6 +144,17 @@ public class Rocket {
                 VecUnit units = gc.senseNearbyUnitsByType(gc.unit(id).location().mapLocation(), 2, UnitType.Ranger);
                 for (int i = 0; i < units.size(); i++) {
                     tryAddToRocket(id, units.get(i).id());
+                }
+                if(workersTaken < WANTEDWORKERS){
+                    VecUnit workers = gc.senseNearbyUnitsByType(gc.unit(id).location().mapLocation(), 2, UnitType.Worker);
+                    for (int i = 0; i < workers.size(); i++) {
+                        if(tryAddToRocket(id, workers.get(i).id())){
+                            workersTaken++;
+                        }
+                        if(workersTaken == WANTEDWORKERS){
+                            break;
+                        }
+                    }
                 }
                 int garisonMax = (int) unit.structureMaxCapacity();
                 int curLoad = (int) unit.structureGarrison().size();
@@ -159,11 +174,13 @@ public class Rocket {
             }
         }
     }
-    public void tryAddToRocket(int rocketId, int unitId){
+    public boolean tryAddToRocket(int rocketId, int unitId){
         if(gc.canLoad(rocketId,unitId)){
             gc.load(rocketId,unitId);
             idToRoundLastModified.put(rocketId,p.round);
+            return true;
         }
+        return false;
     }
     private int willLaunchSoon = 0;
     public boolean isLaunchTurn(){
@@ -204,7 +221,14 @@ public class Rocket {
         }
         //Debug.passable(passable);
         //System.out.println("second");
-
+//        for (int i = marsWidth - 1; i >= 0; i--) {
+//            for (int j = marsHeight - 1; j >= 0; j--) {
+//                if(passable[i].get(j) &&
+//                        disjointAreas[i][j] == 0){
+//                    generateContiniousArea(disjointAreas,new MapLoc(i,j),passable);
+//                }
+//            }
+//        }
         for (int i = marsWidth - 1; i >= 0; i--) {
             for (int j = marsHeight - 1; j >= 0; j--) {
                 if(passable[i].get(j) && neighborsPassable(i,j,passable)){
@@ -222,8 +246,32 @@ public class Rocket {
                 }
             }
         }
+        Debug.printHill(disjointAreas);
         //Debug.passable(passable);
         //Debug.passable(debug);
+    }
+    private short curNumDisjoints = 1;
+    private void generateContiniousArea(short[][] hill, MapLoc destination,BitSet[] passable){
+        hill[destination.x][destination.y] = curNumDisjoints;
+        ArrayDeque<MapLoc> toCheck = new ArrayDeque<>();
+        toCheck.addLast(destination);
+        while(!toCheck.isEmpty()){
+            MapLoc cur = toCheck.removeFirst();
+            for (int i = 0; i < p.numsDirections.length; i++) {
+                int[] d = p.numsDirections[i];
+                MapLoc newLoc = cur.add(d);
+                if(hill[newLoc.x][newLoc.y] == 0){
+                    if(!passable[newLoc.x].get(newLoc.y)){
+                        //mark as unreachable
+                        hill[newLoc.x][newLoc.y] = p.greatestPathNum;
+                    } else {
+                        toCheck.addLast(newLoc);
+                        hill[newLoc.x][newLoc.y] = curNumDisjoints;
+                    }
+                }
+            }
+        }
+        curNumDisjoints++;
     }
     public boolean neighborsPassable(int x, int y, BitSet[] passable) throws Exception{
         MapLoc loc = new MapLoc(x,y);

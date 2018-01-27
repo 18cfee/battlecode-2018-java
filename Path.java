@@ -67,9 +67,12 @@ public class Path {
             if(temp2 != null){
                 centerMapHill = generateHill(findCenterLoc());
             }
+            rockets = new Rocket(this,gc);
+        } else {
+            rockets = new MarsGlobal(gc,this);
         }
         totalKarbOnEarth = calculateTotalKarbOnEarth();
-        rockets = new Rocket(this,gc);
+
     }
 
     public boolean sensableUnitNotInGarisonOrSpace(int id){
