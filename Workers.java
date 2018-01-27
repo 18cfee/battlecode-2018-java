@@ -31,9 +31,10 @@ public class Workers extends Group{
 //            areasContainingStructures = p.rockets.getStructArea();
 //        }
         for(Integer id: ids){
-            if(!p.sensableUnitNotInGarisonOrSpace(id)){
+            MapLocation unitLoc = p.getMapLocationIfLegit(id);
+            if(unitLoc == null){
               // DO NOTHING WITH THIS UNIT
-            } else if(gc.unit(id).location().mapLocation().distanceSquaredTo(p.baseLoc) < 12) {
+            } else if(unitLoc.distanceSquaredTo(p.baseLoc) < 12) {
                 for (Direction d: p.directions) {
                     if (gc.canBlueprint(id, type, d) && p.rockets.notPlacingRocketbyOtherStruct(areasContainingStructures, id, d)) {
                         state = WorkerStates.Build;
