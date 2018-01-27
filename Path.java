@@ -17,17 +17,10 @@ public class Path {
     short[][] hillToBase;
     public int[][] numsDirections = {{0,1},{1,1},{1,0},{1,-1},{0,-1},{-1,-1},{-1,0},{-1,1}};
     BitSet[] passable;
-    //MapLocation startLoc;
-    int unbuiltFactIndex = 0;
     public int round = 0;
-    //public final static int MAX_NUM_FACTS = 20;
-    //public int builtFactIndex = 0;
-    //public int [] builtFactary = new int [MAX_NUM_FACTS];
     public final static int NUM_FACTORIES_WANTED = 3;
     int rocketIndex = 0;
     public MapLocation baseLoc = null;
-    public short[][] firstRocketLocHill = null;
-    //public MapLocation placeToLandOnMars;
     public long totalKarbOnEarth;
     public ArrayList<MapLoc> karbLocs;
     public MPQ closestKarbLocs;

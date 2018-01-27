@@ -4,7 +4,7 @@ import java.util.BitSet;
 
 public class Workers extends Group{
     private int blueID = -1;
-    private MapLocation harvestPoint = null;
+    MapLocation harvestPoint = null;
     GameController gc;
     private Path p;
     public WorkerStates state = WorkerStates.Standby;
@@ -12,6 +12,7 @@ public class Workers extends Group{
     short[][] currentHill = null;
     boolean groupIsAlive = false;
     boolean karbLocInSight = true;
+    boolean onWayToOutofSight = false;
 
     public Workers(GameController gc, Path p){
         super(gc, p);
@@ -33,8 +34,9 @@ public class Workers extends Group{
         for(Integer id: ids){
             if(!p.sensableUnitNotInGarisonOrSpace(id)){
               // DO NOTHING WITH THIS UNIT
-            } else if(gc.unit(id).location().mapLocation().distanceSquaredTo(p.baseLoc) < 12) {
+            } else if(gc.unit(id).location().mapLocation().distanceSquaredTo(p.baseLoc) < p.maxDistanceFromBase) {
                 for (Direction d: p.directions) {
+
                     if (gc.canBlueprint(id, type, d) && p.rockets.notPlacingRocketbyOtherStruct(areasContainingStructures, id, d)) {
                         state = WorkerStates.Build;
                         printInProgress = true;
@@ -74,11 +76,14 @@ public class Workers extends Group{
         // groups
         if(noUnits()) return;
 
+        if(state == WorkerStates.CutOff){
+            for(int id : ids){
+                handleCutOff(id);
+            }
+        }
         if(state == WorkerStates.Build) {
             //System.out.println("I'm in the build state, and I'm building:");
-            for (Integer id: ids){
-                contBuilding();
-            }
+            contBuilding();
         }else if(state == WorkerStates.GatherKarbonite){
             if(harvestPoint != null) {
                 gatherKarbonite();
@@ -118,18 +123,18 @@ public class Workers extends Group{
         moveToTarget(p.hillToBase);
     }
     void gatherKarbonite() throws Exception{
-//        System.out.println("Harvest point: " + harvestPoint.toString());
+        System.out.println("Current harvest loc: " + harvestPoint.toString());
         for(Integer id: ids){
             //System.out.println("Worker ID of gatherer: " + id);
             if(gc.canSenseUnit(id)) {
-//                System.out.println("Worker loc: " + gc.unit(id).location().mapLocation().toString());
-//                System.out.println("Adjacent?\t" + gc.unit(id).location().mapLocation().isAdjacentTo(harvestPoint));
+                System.out.println("Worker loc: " + gc.unit(id).location().mapLocation().toString());
+                System.out.println("Adjacent? " + gc.unit(id).location().mapLocation().isAdjacentTo(harvestPoint));
                 if (gc.canHarvest(id, gc.unit(id).location().mapLocation().directionTo(harvestPoint))) {
-//                    System.out.println("Harvested");
                     gc.harvest(id, gc.unit(id).location().mapLocation().directionTo(harvestPoint));
+                    System.out.println("Harvest successful");
                  } else {
-//                    System.out.println("Did not harvest");
                     moveToTarget(currentHill);
+                    System.out.println("Could not harvest");
                 }
             }
         }
@@ -141,6 +146,20 @@ public class Workers extends Group{
 
     public WorkerStates getState(){
         return state;
+    }
+
+    private void handleCutOff(int id){
+        for(Direction d : p.directions){
+            if(gc.canHarvest(id, d)){
+                gc.harvest(id, d);
+            }
+        }
+        for(Direction d : p.directions){
+            if(gc.canMove(id, d)){
+                gc.moveRobot(id, d);
+                return;
+            }
+        }
     }
 
 }
