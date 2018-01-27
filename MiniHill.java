@@ -24,7 +24,7 @@ public class MiniHill {
     }
     public boolean generateMini(MapLoc centerLoc, HashSet<Integer> ids) throws Exception{
         destination = centerLoc;
-        bounds = new MaxGCoordinates(destination,ids,gc,p);
+        bounds = new MaxGCoordinates(destination,ids,gc,p, null);
         long start = System.currentTimeMillis();
         hill = new short[bounds.width][bounds.height];
         setHillValue(destination,(short)1);
@@ -55,9 +55,9 @@ public class MiniHill {
         }
         return true;
     }
-    public boolean generateMiniRing(MapLoc centerLoc, HashSet<Integer> ids) throws Exception{
+    public boolean generateMiniRing(MapLoc centerLoc, HashSet<Integer> ids, MapLocation extra) throws Exception{
         destination = centerLoc;
-        bounds = new MaxGCoordinates(destination,ids,gc,p);
+        bounds = new MaxGCoordinates(destination,ids,gc,p,extra);
         long start = System.currentTimeMillis();
         hill = new short[bounds.width][bounds.height];
         setHillValue(destination,(short)1);
@@ -106,6 +106,7 @@ public class MiniHill {
     }
     public void moveUnit(int id) throws Exception{
         MapLocation loc = p.getMapLocationIfLegit(id);
+        if(loc == null) return;
         MapLoc cur = new MapLoc(loc);
         short curVal = getHillValue(cur);
         short min = p.greatestPathNum;
@@ -187,8 +188,8 @@ class MaxGCoordinates{
     public MapLoc[] locs;
     public int locSize;
     private final static int buffer = 5;
-    MaxGCoordinates(MapLoc destination, HashSet<Integer> ids, GameController gc,Path p) throws Exception{
-        locs = new MapLoc[ids.size()];
+    MaxGCoordinates(MapLoc destination, HashSet<Integer> ids, GameController gc,Path p, MapLocation extra) throws Exception{
+        locs = new MapLoc[ids.size() + 1]; // 1 for extra
         int index = 0;
         x1 = x2 = destination.x;
         y1 = y2 = destination.y;
@@ -204,6 +205,15 @@ class MaxGCoordinates{
                 y2 = Math.max(y2,y);
             }
         }
+        if(extra != null){
+            locs[index++] = new MapLoc(extra);
+            int x = extra.getX();
+            int y = extra.getY();
+            x1 = Math.min(x1,x);
+            x2 = Math.max(x2,x);
+            y1 = Math.min(y1,y);
+            y2 = Math.max(y2,y);
+        }
         x1 = Math.max(0,x1 - buffer);
         x2 = Math.min(x2 + buffer,p.planetWidth - 1);
         y1 = Math.max(y1 - buffer,0);
@@ -211,4 +221,5 @@ class MaxGCoordinates{
         width = x2 - x1 + 1;
         height = y2 - y1 + 1;
     }
+
 }

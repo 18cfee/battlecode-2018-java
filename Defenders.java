@@ -28,7 +28,7 @@ public class Defenders extends Fighter {
             if(enemy.hp > 0 && p.movesToBase(enemy.loc) < MAXATTACKFROMBOUNDARY + boundarySize){
                 MapLoc a = enemy.getMapLoc();
                 target = a;
-                if(!miniHill.generateMiniRing(target,ids)){
+                if(!miniHill.generateMiniRing(target,ids,p.baseLoc)){
                     target = null;
                 } else {
                 }
