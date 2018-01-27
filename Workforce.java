@@ -271,7 +271,7 @@ public class Workforce {
 
         //System.out.println("Sorting remaining into gathering groups");
         for (int i = 0; i < gatherers.size(); i++) {
-            if (gatherers.get(i).size() < 2) {
+            if (gatherers.get(i).size() < 1) {
                 gatherers.get(i).add(id);
                 //System.out.println("\tWorker " + id + " added to gathering group " + i);
                 return;
