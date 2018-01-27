@@ -37,7 +37,7 @@ public class Path {
     public final static int NUM_ROCKETS_WANTED = 3;
     int maxDistanceFromBase = 16;
     short[][] centerMapHill = null;
-    public Path(GameController gc,Planet planet){
+    public Path(GameController gc,Planet planet) throws Exception{
         currentBuiltFactories = new HashSet<>(10);
         this.planet = planet;
         this.gc = gc;

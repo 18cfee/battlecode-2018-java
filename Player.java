@@ -6,10 +6,16 @@ import java.util.Stack;
 
 public class Player {
     static final boolean CarlTests = true;
-    public static void main(String args[]){
+    public static void main(String args[]) {
         GameController gc = new GameController();
         // Direction is a normal java enum.
-        Path p = new Path(gc,gc.planet());
+        Path p = null;
+        try {
+            p = new Path(gc, gc.planet());
+        } catch (Exception e){
+            System.out.println("init fail");
+            e.printStackTrace();
+        }
         Workers workers = new Workers(gc,p);
         workers.setState(WorkerStates.Standby);
         Army sprint = new Army(gc,p);

@@ -105,9 +105,8 @@ public class MiniHill {
         return (Math.max(dif1,dif2) <= p.RANGERRANGE);
     }
     public void moveUnit(int id) throws Exception{
-        Location loc = gc.unit(id).location();
-        if(loc.isInGarrison() || loc.isInSpace()) return;
-        MapLoc cur = new MapLoc(loc.mapLocation());
+        MapLocation loc = p.getMapLocationIfLegit(id);
+        MapLoc cur = new MapLoc(loc);
         short curVal = getHillValue(cur);
         short min = p.greatestPathNum;
         Direction topChoice = null;

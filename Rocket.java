@@ -17,7 +17,7 @@ public class Rocket {
     private int marsWidth;
     private int marsHeight;
     private int destinationIndex = 0;
-    public Rocket(Path p, GameController gc) {
+    public Rocket(Path p, GameController gc) throws Exception{
         unbuiltIds = new HashSet<>();
         builtRockets = new HashSet<>();
         this.p = p;
@@ -175,7 +175,7 @@ public class Rocket {
 //    public boolean availableRocket(){
 //        return unClaimedIds.size() > 0;
 //    }
-    private void generateLaunchQ(){
+    private void generateLaunchQ() throws Exception{
         PlanetMap mars;
         if(p.planet == Planet.Earth){
             mars = gc.startingMap(Planet.Mars);
@@ -209,7 +209,7 @@ public class Rocket {
                     for(int[] numDir: p.numsDirections){
                         int x = i + numDir[0];
                         int y = j + numDir[1];
-                        if(p.onMap(x,y)){
+                        if(onMars(x,y)){
                             passable[x].clear(y);
                         }
                     }
@@ -219,15 +219,20 @@ public class Rocket {
         //Debug.passable(passable);
         //Debug.passable(debug);
     }
-    public boolean neighborsPassable(int x, int y, BitSet[] passable){
+    public boolean neighborsPassable(int x, int y, BitSet[] passable) throws Exception{
         MapLoc loc = new MapLoc(x,y);
         for (int i = 0; i < 8; i++) {
             int[] d = p.numsDirections[i];
             MapLoc newLoc = loc.add(d);
-            if((!p.onMap(newLoc) || !passable[newLoc.x].get(newLoc.y))) return false;
+            if((!onMars(newLoc) || !passable[newLoc.x].get(newLoc.y))) return false;
         }
-        System.out.println("returning true");
         return true;
+    }
+    public boolean onMars(MapLoc loc){
+        return (0 <= loc.x && loc.x < marsWidth && 0 <= loc.y && loc.y < marsHeight);
+    }
+    public boolean onMars(int x, int y){
+        return (0 <= x && x < marsWidth && 0 <= y && y < marsHeight);
     }
     public boolean inLaunchPad(MapLocation loc){
         return launchPad[loc.getX()].get(loc.getY());
