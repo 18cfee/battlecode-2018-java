@@ -167,7 +167,7 @@ public class Path {
                     for (int k = 0; k < numsDirections.length; k++) {
                         int[] d = numsDirections[k];
                         MapLoc newLoc = cur.add(d,dis);
-                        if(onMap(cur) && !checked[newLoc.x].get(newLoc.y)){
+                        if(onMap(newLoc) && !checked[newLoc.x].get(newLoc.y)){
                             if(!passable(newLoc)){
                                 //mark as checked
                                 checked[newLoc.x].set(newLoc.y);
