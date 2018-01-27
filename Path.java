@@ -140,34 +140,41 @@ public class Path {
         return (min3x <= x && x <= max3x && min3y <= y && y <= max3y);
     }
     private MapLocation chooseBaseLocation(){
-        int maxGreenPercent = 0;
+        int mostGreenCov = 0;
         VecUnit units = gc.myUnits();
-        MapLocation bestLoc = null;
+        MapLoc bestLoc = null;
         for (int i = 0; i < units.size(); i++) {
-            int greens = 0;
-            int totlocs = 0;
             MapLocation loc = units.get(i).location().mapLocation();
+            //int totlocs = 0;
             for (int j = loc.getX() - 5; j <= loc.getX() + 5; j++) {
                 for (int k = loc.getY() - 5; k <= loc.getY() + 5; k++) {
-                    MapLoc countedLoc = new MapLoc(j,k);
-                    if (onMap(countedLoc)){
-                        totlocs++;
-                        if(passable(countedLoc)){
-                            greens++;
+                    int greens = 0;
+                    MapLoc curLoc = new MapLoc(j,k);
+                    if(onMap(curLoc) && passable(curLoc)){
+                        for (int x = curLoc.x - 5; x <= curLoc.x + 5; x++) {
+                            for (int y = curLoc.y - 5; y <= curLoc.y + 5; y++) {
+                                MapLoc countedLoc = new MapLoc(x, y);
+                                if (onMap(countedLoc)) {
+                                    //totlocs++;
+                                    if (passable(countedLoc)) {
+                                        greens++;
+                                    }
+                                }
+                            }
+                        }
+                        int greenCov = greens; //100*greens/totlocs;
+                        if (greenCov > mostGreenCov) {
+                            mostGreenCov = greenCov;
+                            bestLoc = curLoc;
                         }
                     }
                 }
             }
-            int greenCov = 100*greens/totlocs;
-            if(greenCov > maxGreenPercent){
-                maxGreenPercent = greenCov;
-                bestLoc = loc;
-            }
         }
         if(bestLoc == null){
-            bestLoc = units.get(0).location().mapLocation();
+            return units.get(0).location().mapLocation();
         }
-        return bestLoc;
+        return new MapLocation(Planet.Earth,bestLoc.x,bestLoc.y);
     }
     private void generatePassable(){
         passable = new BitSet[planetWidth];
