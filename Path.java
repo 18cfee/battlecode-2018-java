@@ -146,6 +146,7 @@ public class Path {
         for (int i = 0; i < units.size(); i++) {
             MapLocation loc = units.get(i).location().mapLocation();
             MapLoc destination = new MapLoc(loc);
+            destination.distanceToBase = 0;
             ArrayDeque<MapLoc> toCheck = new ArrayDeque<>();
             toCheck.addLast(destination);
             BitSet[] checked = new BitSet[planetWidth];
@@ -156,10 +157,7 @@ public class Path {
             checked[destination.x].set(destination.y);
             while(!toCheck.isEmpty()){
                 MapLoc cur = toCheck.removeFirst();
-                cur.distanceToBase = 0;
-                System.out.println(cur.x + " " + cur.y);
-                int thisSpot = calcNumReachableWithin5(cur);
-                System.out.println("this spot " + thisSpot);
+                int thisSpot = calcNumReachableWithin5(new MapLoc(cur.x,cur.y,0));
                 if(thisSpot > mostGreenCov){
                     mostGreenCov = thisSpot;
                     bestLoc = cur;
@@ -169,12 +167,12 @@ public class Path {
                     for (int k = 0; k < numsDirections.length; k++) {
                         int[] d = numsDirections[k];
                         MapLoc newLoc = cur.add(d,dis);
-                        if(onMap(cur) && !checked[cur.x].get(cur.y)){
+                        if(onMap(cur) && !checked[newLoc.x].get(newLoc.y)){
                             if(!passable(newLoc)){
                                 //mark as checked
-                                checked[cur.x].set(cur.y);
+                                checked[newLoc.x].set(newLoc.y);
                             } else {
-                                checked[cur.x].set(cur.y);
+                                checked[newLoc.x].set(newLoc.y);
                                 toCheck.addLast(newLoc);
                             }
                         }
@@ -185,6 +183,7 @@ public class Path {
         if(bestLoc == null){
             return units.get(0).location().mapLocation();
         }
+        System.out.println("chose " + bestLoc.x + " " + bestLoc.y);
         return new MapLocation(Planet.Earth,bestLoc.x,bestLoc.y);
     }
     private int calcNumReachableWithin5(MapLoc destination){
@@ -205,12 +204,12 @@ public class Path {
                 for (int i = 0; i < numsDirections.length; i++) {
                     int[] d = numsDirections[i];
                     MapLoc newLoc = cur.add(d,dis);
-                    if(onMap(cur) && !checked[cur.x].get(cur.y)){
+                    if(onMap(cur) && !checked[newLoc.x].get(newLoc.y)){
                         if(!passable(newLoc)){
                             //mark as checked
-                            checked[cur.x].set(cur.y);
+                            checked[newLoc.x].set(newLoc.y);
                         } else {
-                            checked[cur.x].set(cur.y);
+                            checked[newLoc.x].set(newLoc.y);
                             toCheck.addLast(newLoc);
                         }
                     }
