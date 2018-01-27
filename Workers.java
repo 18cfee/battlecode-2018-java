@@ -2,7 +2,7 @@ import bc.*;
 
 public class Workers extends Group{
     private int blueID = -1;
-    private MapLocation harvestPoint = null;
+    MapLocation harvestPoint = null;
     GameController gc;
     private Path p;
     public WorkerStates state = WorkerStates.Standby;
@@ -123,7 +123,7 @@ public class Workers extends Group{
                     System.out.println("Harvest successful");
                  } else {
                     moveToTarget(currentHill);
-                    System.out.println("Did not harvest");
+                    System.out.println("Could not harvest");
                 }
             }
         }
