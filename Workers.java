@@ -14,13 +14,14 @@ public class Workers extends Group{
     boolean karbLocInSight = true;
     boolean onWayToOutofSight = false;
     int karbsHarvested = 0;
-    private MPQ personalPQ = new MPQ(50);
+    MPQ personalPQ;
 
 
     public Workers(GameController gc, Path p){
         super(gc, p);
         this.gc = gc;
         this.p = p;
+        personalPQ  = new MPQ(p.closestKarbLocs.getSize(), p);
     }
 
     public MapLocation setBlueprint(UnitType type)throws Exception{
@@ -160,7 +161,7 @@ public class Workers extends Group{
                     //System.out.println("Could not harvest");
                 }
                 if(p.round % 10 == 0){
-                    VecMapLocation locs = gc.allLocationsWithin(gc.unit(id).location().mapLocation(), gc.unit(id).visionRange());
+                    VecMapLocation locs = gc.allLocationsWithin(gc.unit(id).location().mapLocation(), (long)Math.sqrt(gc.unit(id).visionRange()));
                     for(int i = 0; i < locs.size(); i++){
                         if(gc.karboniteAt(locs.get(i)) > 0){
                             personalPQ.insert(new MapLoc(p.planet, locs.get(i), locs.get(i).distanceSquaredTo(gc.unit(id).location().mapLocation())));

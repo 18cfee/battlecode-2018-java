@@ -1,3 +1,4 @@
+import java.util.BitSet;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -5,14 +6,22 @@ public class MPQ {
 
     MapLoc[] pq;
     int n = 0;
+    BitSet[] map;
 
-    public MPQ(int size){
+    public MPQ(int size, Path p){
         pq = new MapLoc[size];
+        map = new BitSet[p.planetWidth];
+        for (int i = 0; i < map.length; i++) {
+            map[i] = new BitSet(p.planetHeight);
+        }
     }
 
     public void insert(MapLoc x){
-        pq[++n] = x;
-        swim(n);
+        if(!map[x.x].get(x.y)) {
+            pq[++n] = x;
+            swim(n);
+            map[x.x].set(x.y);
+        }
     }
 
     public MapLoc pop(){
@@ -21,6 +30,7 @@ public class MPQ {
         exchange(1, n--);
         sink(1);
         pq[n+1] = null;
+        map[min.x].clear(min.y);
         return min;
     }
 

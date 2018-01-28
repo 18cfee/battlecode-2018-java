@@ -321,7 +321,7 @@ public class Path {
                 }
             }
         }
-        closestKarbLocs = new MPQ(numKarbLocs+1);
+        closestKarbLocs = new MPQ(numKarbLocs+1, this);
         for(MapLoc loc : karbLocs){
             closestKarbLocs.insert(loc);
             //System.out.println("New loc added to pq!");

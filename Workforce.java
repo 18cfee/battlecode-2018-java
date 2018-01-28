@@ -131,6 +131,31 @@ public class Workforce {
         }
     }
 
+    private boolean findASpot(Workers group, MPQ pq){
+        if (gc.canSenseLocation(pq.peek().toMapLocation())) {
+            group.harvestPoint = pq.pop().toMapLocation();
+            //System.out.println("New harvest loc picked out: " + group.harvestPoint.toString());
+            //System.out.println("PQ says there are " + p.closestKarbLocs.getSize() + " deposits left");
+            if (gc.karboniteAt(group.harvestPoint) != 0) {
+                if (group.karbLocInSight) {
+                    group.currentHill = p.generateHill(group.harvestPoint);
+                }
+                group.karbLocInSight = true;
+                return true;
+            }
+        } else {
+            //System.out.println("Can't see the next location: " + p.closestKarbLocs.peek().toMapLocation().toString());
+            if (group.onWayToOutofSight) {
+                short[][] hill = p.generateHill(p.closestKarbLocs.peek().toMapLocation());
+                group.karbLocInSight = false;
+                group.currentHill = hill;
+            }
+            group.onWayToOutofSight = true;
+            group.karbLocInSight = false;
+            return true;
+        }
+        return false;
+    }
     private void gatherKarbonite(Workers group){
         group.setState(WorkerStates.GatherKarbonite);
         /*
@@ -148,33 +173,14 @@ public class Workforce {
             //System.out.println("Picking a new location");
             while (!viable && !p.closestKarbLocs.isEmpty()) {
                 //System.out.println("The pq isn't empty yet");
-                if (gc.canSenseLocation(p.closestKarbLocs.peek().toMapLocation())) {
-                    group.harvestPoint = p.closestKarbLocs.pop().toMapLocation();
-                    //System.out.println("New harvest loc picked out: " + group.harvestPoint.toString());
-                    //System.out.println("PQ says there are " + p.closestKarbLocs.getSize() + " deposits left");
-                    if (gc.karboniteAt(group.harvestPoint) != 0) {
-                        viable = true;
-                        if(group.karbLocInSight){
-                            group.currentHill = p.generateHill(group.harvestPoint);
-                        }
-                        group.karbLocInSight = true;
+                for(int id : group.ids){
+                    if (!group.personalPQ.isEmpty() &&
+                    gc.unit(id).location().mapLocation().distanceSquaredTo(group.personalPQ.peek().toMapLocation()) < gc.unit(id).location().mapLocation().distanceSquaredTo(p.closestKarbLocs.peek().toMapLocation())) {
+                        viable = findASpot(group, group.personalPQ);
+                    }else{
+                        viable = findASpot(group, p.closestKarbLocs);
                     }
-                } else {
-                    //System.out.println("Can't see the next location: " + p.closestKarbLocs.peek().toMapLocation().toString());
-                    viable = true;
-                    if (group.onWayToOutofSight) {
-                        short[][] hill = p.generateHill(p.closestKarbLocs.peek().toMapLocation());
-                        group.karbLocInSight = false;
-                        group.currentHill = hill;
-                    }
-                    group.onWayToOutofSight = true;
-                    group.karbLocInSight = false;
                 }
-            }
-            if (!viable) {
-                group.setState(WorkerStates.Standby);
-                //System.out.println("All outta locs");
-                return;
             }
         } else {
             group.karbLocInSight = false;
