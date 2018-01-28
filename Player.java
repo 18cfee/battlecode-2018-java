@@ -75,7 +75,7 @@ public class Player {
                         } else if (unit.unitType() == UnitType.Rocket) {
                             p.rockets.addRocket(unit);
                         }else{
-                            sprint.addUnit(id);
+                            sprint.addUnit(unit);
                         }
                     }
                     p.rockets.clearRocketsIfNoUnits();
