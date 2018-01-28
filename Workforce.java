@@ -189,6 +189,7 @@ public class Workforce {
     }
     private boolean findASpot(Workers group, MPQ pq){
         if (gc.canSenseLocation(pq.peek().toMapLocation())) {
+            group.onWayToOutofSight = false;
             group.harvestPoint = pq.pop().toMapLocation();
             //System.out.println("New harvest loc picked out: " + group.harvestPoint.toString());
             //System.out.println("PQ says there are " + p.closestKarbLocs.getSize() + " deposits left");
@@ -202,18 +203,17 @@ public class Workforce {
             }
         } else {
             //System.out.println("Can't see the next location: " + closestKarbLocs.peek().toMapLocation().toString());
-            if (group.onWayToOutofSight) {
-                short[][] hill = p.generateHill(closestKarbLocs.peek().toMapLocation());
-                group.karbLocInSight = false;
-                group.currentHill = hill;
-            }
-            group.onWayToOutofSight = true;
+            group.harvestPoint = pq.peek().toMapLocation();
+            //System.out.println("On my way to the out of sight loc");
+            group.currentHill = p.generateHill(closestKarbLocs.peek().toMapLocation());
             group.karbLocInSight = false;
+            group.onWayToOutofSight = true;
             return true;
         }
         return false;
     }
     private void gatherKarbonite(Workers group){
+        //System.out.println("\n\n\n\nRound " + p.round + " and gathering method called");
         group.setState(WorkerStates.GatherKarbonite);
         if (group.harvestPoint == null || (gc.canSenseLocation(group.harvestPoint) && gc.karboniteAt(group.harvestPoint) == 0)) {
             //System.out.println("Picking a new location");
@@ -222,10 +222,12 @@ public class Workforce {
                 for(int id : group.ids){
                     if (!group.personalPQ.isEmpty() &&
                     gc.unit(id).location().mapLocation().distanceSquaredTo(group.personalPQ.peek().toMapLocation()) < gc.unit(id).location().mapLocation().distanceSquaredTo(p.closestKarbLocs.peek().toMapLocation())) {
+                        //System.out.println("Picking from personalPQ");
                         if(findASpot(group, group.personalPQ)){
                             break;
                         }
-                    }else{
+                    }else if(!p.closestKarbLocs.isEmpty()){
+                        //System.out.println("Picking from main pq");
                         if(findASpot(group, closestKarbLocs)){
                             break;
                         }
@@ -233,7 +235,10 @@ public class Workforce {
                 }
             }
         } else {
-            group.karbLocInSight = false;
+            //System.out.println("continuing after same location");
+            if(!gc.canSenseLocation(group.harvestPoint)) {
+                group.karbLocInSight = false;
+            }
             if (closestKarbLocs.isEmpty()) {
                 //System.out.println("The pq is empty");
                 group.setState(WorkerStates.Standby);
@@ -336,6 +341,7 @@ public class Workforce {
 
         //System.out.println("Checking for old gatherers");
         if(oldGatherers.size() > 0  && (oldBuilders.size() >= numWantedBuilders || builders.size() >= numWantedBuilders)) {
+            System.out.println("Round " + p.round + " and worker added to gatherer");
             for (int i = 0; i < oldGatherers.size(); i++) {
                 if (oldGatherers.get(i).contains(id)) {
                     gatherers.get(i).add(id);
@@ -359,6 +365,7 @@ public class Workforce {
 
         //System.out.println("Sorting remaining into gathering groups");
         for (int i = 0; i < gatherers.size(); i++) {
+            System.out.println("Round " + p.round + " and worker added to gatherers");
             //System.out.println("gathering sort loop");
             if (gatherers.get(i).size() < 1) {
                 gatherers.get(i).add(id);

@@ -11,8 +11,8 @@ public class Workers extends Group{
     boolean printInProgress = false;
     short[][] currentHill = null;
     boolean groupIsAlive = false;
-    boolean karbLocInSight = true;
-    boolean onWayToOutofSight = false;
+    boolean karbLocInSight = false;
+    boolean onWayToOutofSight = true;
     int karbsHarvested = 0;
     MPQ personalPQ;
     short[][] hillToBase;
@@ -92,14 +92,16 @@ public class Workers extends Group{
             //System.out.println("I'm in the build state, and I'm building:");
             contBuilding();
         }else if(state == WorkerStates.GatherKarbonite){
+            //System.out.println("Checking to see if can harvest");
             if(harvestPoint != null) {
+                //System.out.println("Starting the harvest for the gods");
                 karbsHarvested = gatherKarbonite();
             }
         }else if(state == WorkerStates.Standby){
             standby();
         }
 
-        //moveToTarget(currentHill);
+        moveToTarget(currentHill);
     }
 
     void setState(WorkerStates state){
@@ -175,6 +177,7 @@ public class Workers extends Group{
                         }
                     }
                 }
+                moveToTarget(currentHill);
             }
         }
 
