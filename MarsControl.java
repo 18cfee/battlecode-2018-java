@@ -10,6 +10,7 @@ public class MarsControl {
     ArrayList<MarsSector> armies;
     ArrayList<Enemy> enemies;
     private int controlRound = 0;
+    private AsteroidPattern pattern;
     MarsControl(GameController gc, Path p, Team myTeam){
         this.gc = gc;
         this.p = p;
@@ -21,8 +22,31 @@ public class MarsControl {
         for (int i = 1; i < p.rockets.numPerSection.size(); i++) {
             armies.add(new MarsSector(gc,p,myTeam,i));
         }
+        pattern = gc.asteroidPattern();
+        for (int i = 0; i < p.planetWidth; i++) {
+            for (int j = 0; j < p.planetHeight; j++) {
+                MapLocation location = new MapLocation(p.planet,i,j);
+                if(p.map.initialKarboniteAt(location) > 0 && p.passable(location)){
+                    int sector = p.rockets.disjointAreas[i][j];
+                    armies.get(sector).addDeposit(location);
+                }
+
+            }
+        }
+    }
+    private void distributeKarbToSectors(){
+        if(pattern.hasAsteroid(p.round)){
+            AsteroidStrike strike = pattern.asteroid(p.round);
+            MapLocation loc = strike.getLocation();
+            int sector = p.rockets.disjointAreas[loc.getX()][loc.getY()];
+            //System.out.println(sector);
+            if(p.passable(loc)){
+                armies.get(sector).addDeposit(loc);
+            }
+        }
     }
     public void conductTurn() throws Exception{
+        distributeKarbToSectors();
         distributeEnemies();
         // starts at one cause 0 is the empty army
         for (int i = 1; i < armies.size(); i++) {
