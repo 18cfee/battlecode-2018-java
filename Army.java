@@ -24,7 +24,7 @@ public class Army {
     private int numGroupsCreated = 0;
     private final static int NEED_TO_SAVE_FOR_A_ROCKET = 220;
     private final static int REALLY_NEED_TO_SAVE_FOR_ROCKETS_ROUND = 500;
-    private final static int SHOULD_SAVE_FOR_FACTORY = 750;
+    private final static int SHOULD_SAVE_FOR_FACTORY = 220;
     private ArrayList<Enemy> enemies;
     private UnitType ranger = UnitType.Ranger;
     private UnitType knight = UnitType.Knight;
@@ -280,7 +280,14 @@ public class Army {
             return false;
         }
         int fact = p.rockets.getTotalNumFactories();
-        return (fact < p.NUM_FACTORIES_WANTED && karb > 79 && p.round < SHOULD_SAVE_FOR_FACTORY && karb < 250);
+        if (karb > p.FACTORYSPOOL && (p.round < SHOULD_SAVE_FOR_FACTORY || p.rockets.getTotalNumFactories() < p.NUM_FACTORIES_WANTED) && karb < 250){
+            if(p.rockets.getTotalNumFactories() == p.NUM_FACTORIES_WANTED){
+                p.NUM_FACTORIES_WANTED++;
+                System.out.println("factories was incremented" + p.NUM_FACTORIES_WANTED);
+            }
+            return true;
+        }
+        return false;
     }
 
     private boolean weDoNotNeedRockets(){
