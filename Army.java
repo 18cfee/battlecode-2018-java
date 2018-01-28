@@ -49,6 +49,7 @@ public class Army {
         baseProtection.conductTurn();
         killEm.conductTurn();
         knights.conductTurn();
+        fastKnights.conductTurn();
 //        marsTroops.conductTurn();
         ArrayList<Integer> beastsToRemove = new ArrayList<>(4);
         for (int i = 0; i < rangers.size(); i++) {
@@ -98,7 +99,7 @@ public class Army {
             //System.out.println("thinks there are this many on d: " + numDefenders);
         }
         if(unit.unitType() == UnitType.Knight){
-            if(knightBase > 10){
+            if(oldAttackingKnights.contains(id) || knightBase > 10){
                 fastKnights.add(id);
             } else{
                 knights.add(id);
@@ -169,6 +170,7 @@ public class Army {
             baseProtection.addEnemy(enemy);
             killEm.addEnemy(enemy);
             knights.addEnemy(enemy);
+            fastKnights.addEnemy(enemy);
             for(RocketBoarders group: rangers){
                 group.addEnemy(enemy);
             }

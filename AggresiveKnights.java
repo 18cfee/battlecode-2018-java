@@ -46,7 +46,9 @@ public class AggresiveKnights extends Fighter {
             moveToMiniHill(miniHill);
         }
         else{
-            roamRandomlyInRangeOfBase();
+            for(Integer id: ids){
+                p.moveIfPossible(id);
+            }
         }
         shootOptimally();
         if(groupTargetCooldown > 0) groupTargetCooldown--;
