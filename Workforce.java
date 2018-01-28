@@ -6,11 +6,7 @@ import java.util.HashSet;
 public class Workforce {
     private GameController gc;
     private Path p;
-    private int[] idle = new int[100];
-    private Workers[] workerGroups = new Workers[10];
-    private int groupIndex = 0;
     private boolean canBuildRocket = false;
-    private MapLocation closestKarbDepot = null;
     private ArrayList<Workers> gatherers;
     private ArrayList<HashSet<Integer>> oldGatherers;
     private int workerRound = 0;
@@ -18,35 +14,45 @@ public class Workforce {
     private int numWorkers = 0;
     private HashSet<Integer> oldBuilders;
     private Workers loners;
-    private ArrayList<Integer> nonReplicatable;
-    int numWantedBuilders = 4;
+    private ArrayList<Integer> nonReplicateable;
+    private int numWantedBuilders = 4;
+    private int numWantedGatherers = 6;
+    private int karboniteGathered = 0;
+    private int replicationCosts = 0;
 
     public Workforce(GameController gc, Path p) {
         this.gc = gc;
         this.p = p;
-        createGroup();
         gatherers = new ArrayList<>();
         oldGatherers = new ArrayList<>();
         builders = new Workers(gc, p);
         loners = new Workers(gc, p);
         loners.setState(WorkerStates.CutOff);
-        nonReplicatable = new ArrayList<>();
+        nonReplicateable = new ArrayList<>();
+        System.out.println("Total karbs on earth: " + p.totalKarbOnEarth);
+        if(p.totalKarbOnEarth < 300){
+            numWantedGatherers = 4;
+        }else if(p.totalKarbOnEarth > 1000){
+            numWantedGatherers = 10;
+        }
     }
 
     public void conductTurn() throws Exception{
 
         //System.out.println("There are " + numWorkers + " workers");
         //System.out.println("There are " + builders.size() + " builders");
+        /*
         int groupNum = 0;
         for(Workers group : gatherers){
             groupNum++;
-            /*
+
             System.out.println("There are " + group.size() + " workers in gathering group " + groupNum);
             for(int id : group.ids){
                 System.out.println("Worker " + id + " is in gathering group " + groupNum);
-            }*/
+            }
 
-        }
+        }*/
+
         builders.groupIsAlive = true;
         for(int i = 0; i < gatherers.size(); i++){
             if(gatherers.get(i).size() == 0){
@@ -58,21 +64,19 @@ public class Workforce {
 
         if (!builders.noUnits() && numWorkers < 10 && p.getNumFactories() != 0) {
             //System.out.println("Trying to replicate");
-            for (int id : builders.ids) {
-                builders.replicate(id);
-            }
+            determineReplication(builders);
         }
 
         if (builders.noUnits()) {
             builders.groupIsAlive = false;
         } else if (builders.getState() == WorkerStates.Build) {
 
-        } else if (!builders.printInProgress && p.getNumFactories() < p.NUM_FACTORIES_WANTED) {
+        } else if (!builders.printInProgress && p.getNumFactories() < Path.NUM_FACTORIES_WANTED) {
             MapLocation blueLoc = builders.setBlueprint(UnitType.Factory);
             if (blueLoc != null) {
                 builders.currentHill = p.generateHill(blueLoc);
             }
-        } else if (canBuildRocket && p.rockets.getNumUnBuiltRockets() == 0 && p.rockets.getNumberOfBuiltRockets() < p.NUM_ROCKETS_WANTED) {
+        } else if (canBuildRocket && p.rockets.getNumUnBuiltRockets() == 0 && p.rockets.getNumberOfBuiltRockets() < Path.NUM_ROCKETS_WANTED) {
             MapLocation blueLoc = builders.setBlueprint(UnitType.Rocket);
             if (blueLoc != null) {
                 builders.currentHill = p.generateHill(blueLoc);
@@ -98,9 +102,31 @@ public class Workforce {
                 //System.out.println("/**********************************************/");
                 //System.out.println("Starting \"conductTurn\"");
                 group.conductTurn();
+                karboniteGathered += group.karbsHarvested;
                 //System.out.println("/**********************************************/");
             }else{
                 //System.out.println("group is uber-dead");
+            }
+        }
+    }
+
+    private void determineReplication(Workers group){
+
+        if(gc.karbonite() > 200) {
+            if (numWorkers < numWantedBuilders + numWantedGatherers) {
+                if (p.round < 50) {
+                    for (int id : group.ids) {
+                        group.replicate(id);
+                    }
+                } else {
+                    for (int id : group.ids) {
+                        if (replicationCosts < karboniteGathered * .75) {
+                            if (group.replicate(id)) {
+                                replicationCosts += 60;
+                            }
+                        } else return;
+                    }
+                }
             }
         }
     }
@@ -129,8 +155,7 @@ public class Workforce {
                     if (gc.karboniteAt(group.harvestPoint) != 0) {
                         viable = true;
                         if(group.karbLocInSight){
-                            short[][] hill = p.generateHill(group.harvestPoint);
-                            group.currentHill = hill;
+                            group.currentHill = p.generateHill(group.harvestPoint);
                         }
                         group.karbLocInSight = true;
                     }
@@ -160,14 +185,8 @@ public class Workforce {
             }
         }
         if(group.karbLocInSight) {
-            short[][] hill = p.generateHill(group.harvestPoint);
-            group.currentHill = hill;
+            group.currentHill = p.generateHill(group.harvestPoint);
         }
-    }
-
-    private void createGroup() {
-        workerGroups[groupIndex] = new Workers(gc, p);
-        groupIndex++;
     }
 
     public void setCanBuildRocket(boolean set) {
@@ -179,14 +198,13 @@ public class Workforce {
     }
 
 
-    private int numWorkerGroups = 0;
     public void addWorker(int id) throws Exception{
         if(workerRound != p.round) {
             //System.out.println("\n\n\nRefreshing");
             workerRound = p.round;
             oldGatherers.clear();
-            nonReplicatable.clear();
-            numWorkerGroups = gatherers.size();
+            nonReplicateable.clear();
+            int numWorkerGroups = gatherers.size();
             oldBuilders = (HashSet<Integer>) builders.ids.clone();
             builders.ids.clear();
             if(numWorkers <= 4){
@@ -199,7 +217,7 @@ public class Workforce {
             for(int check : oldBuilders) {
                 //System.out.println("Worker " + check + " is in oldBuilders");
                 if(p.sensableUnitNotInGarisonOrSpace(check) && gc.unit(check).abilityHeat() > 0){
-                    nonReplicatable.add(check);
+                    nonReplicateable.add(check);
                 }
             }
 
@@ -225,8 +243,8 @@ public class Workforce {
         }else {
             numWorkers++;
         }
-        if(gc.unit(id).abilityHeat() == 0 && nonReplicatable.size() != 0){
-            int chopped = nonReplicatable.get(0);
+        if(gc.unit(id).abilityHeat() == 0 && nonReplicateable.size() != 0 && p.round > 50){
+            int chopped = nonReplicateable.get(0);
             oldBuilders.remove(chopped);
             if(builders.ids.contains(chopped)){
                 builders.ids.remove(chopped);

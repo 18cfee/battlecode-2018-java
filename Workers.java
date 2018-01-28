@@ -13,6 +13,9 @@ public class Workers extends Group{
     boolean groupIsAlive = false;
     boolean karbLocInSight = true;
     boolean onWayToOutofSight = false;
+    int karbsHarvested = 0;
+    private MPQ personalPQ = new MPQ(50);
+
 
     public Workers(GameController gc, Path p){
         super(gc, p);
@@ -59,19 +62,21 @@ public class Workers extends Group{
         return null;
     }
 
-    public void replicate(int id){
+    public boolean replicate(int id){
         for(Direction d: p.directions){
             if(gc.canReplicate(id,d)){
                 gc.replicate(id,d);
-                break;
+                return true;
             }
         }
+        return false;
     }
 
     @Override
     public void conductTurn() throws Exception{
         // this basically makes sure things have been reset we need it at the beggining of all conduct turns for
         // groups
+        karbsHarvested = 0;
         if(noUnits()) return;
 
         if(state == WorkerStates.CutOff){
@@ -84,20 +89,20 @@ public class Workers extends Group{
             contBuilding();
         }else if(state == WorkerStates.GatherKarbonite){
             if(harvestPoint != null) {
-                gatherKarbonite();
+                karbsHarvested = gatherKarbonite();
             }
         }else if(state == WorkerStates.Standby){
             standby();
         }
 
-        moveToTarget(currentHill);
+        //moveToTarget(currentHill);
     }
 
     void setState(WorkerStates state){
         this.state = state;
     }
 
-    void contBuilding() throws Exception{
+    private void contBuilding() throws Exception{
         if(gc.canSenseUnit(blueID)) {
             if (gc.unit(blueID).structureIsBuilt() != 1) {
                 for (Integer id : ids) {
@@ -118,9 +123,24 @@ public class Workers extends Group{
 
     void standby() throws Exception{
         //System.out.println("Trying to go to standby mode");
+        for(Direction d: p.directions){
+            for(int id : ids){
+                if(gc.canHarvest(id, d)){
+                    gc.harvest(id, d);
+                }
+            }
+        }
         moveToTarget(p.hillToBase);
     }
-    void gatherKarbonite() throws Exception{
+
+    int gatherKarbonite() throws Exception{
+        int karbsAtLoc;
+        if(gc.canSenseLocation(harvestPoint)){
+            karbsAtLoc = (int)gc.karboniteAt(harvestPoint);
+        }else{
+            karbsAtLoc = 0;
+        }
+        int totalKarbsHarvested = 0;
         for(Integer id: ids){
             //System.out.println("Worker ID of gatherer: " + id);
             if(gc.canSenseUnit(id)) {
@@ -129,17 +149,30 @@ public class Workers extends Group{
                 if (gc.canHarvest(id, gc.unit(id).location().mapLocation().directionTo(harvestPoint))) {
                     gc.harvest(id, gc.unit(id).location().mapLocation().directionTo(harvestPoint));
                     //System.out.println("Harvest successful");
+                    totalKarbsHarvested = Math.abs(karbsAtLoc - (int)gc.karboniteAt(harvestPoint));
                  } else {
                     moveToTarget(currentHill);
+                    for(Direction d : p.directions){
+                        if(gc.canHarvest(id, d)){
+                            gc.harvest(id, d);
+                        }
+                    }
                     //System.out.println("Could not harvest");
+                }
+                if(p.round % 10 == 0){
+                    VecMapLocation locs = gc.allLocationsWithin(gc.unit(id).location().mapLocation(), gc.unit(id).visionRange());
+                    for(int i = 0; i < locs.size(); i++){
+                        if(gc.karboniteAt(locs.get(i)) > 0){
+                            personalPQ.insert(new MapLoc(p.planet, locs.get(i), locs.get(i).distanceSquaredTo(gc.unit(id).location().mapLocation())));
+                        }
+                    }
                 }
             }
         }
+
+        return totalKarbsHarvested;
     }
 
-    public void setHarvestPoint(MapLocation harvestPoint) {
-        this.harvestPoint = harvestPoint;
-    }
 
     public WorkerStates getState(){
         return state;
