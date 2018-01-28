@@ -270,8 +270,6 @@ public class Path {
         MapLoc destination = new MapLoc(target);
         functionCalled++;
         long start = System.currentTimeMillis();
-        System.out.println("Height: " + planetHeight);
-        System.out.println("Width: " + planetWidth);
         short hill[][] = new short[planetWidth][planetHeight];
         hill[destination.x][destination.y] = 1;
         ArrayDeque<MapLoc> toCheck = new ArrayDeque<>();

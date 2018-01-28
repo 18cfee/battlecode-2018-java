@@ -35,7 +35,6 @@ public class Workforce {
         loners.setState(WorkerStates.CutOff);
         nonReplicateable = new ArrayList<>();
         freeAgents = new ArrayList<>();
-        System.out.println("Total karbs on earth: " + p.totalKarbOnEarth);
         if(p.totalKarbOnEarth < 300){
             numWantedGatherers = 4;
         }else if(p.totalKarbOnEarth > 1000){
