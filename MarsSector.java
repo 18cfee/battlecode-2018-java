@@ -1,6 +1,7 @@
 import bc.*;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 
 public class MarsSector {
     GameController gc;
@@ -12,6 +13,7 @@ public class MarsSector {
     public MapLocation baseLoc;
     public short[][] hillToBase;
     public MPQ priorityHarvesting;
+    BitSet[] karbMap;
     MarsSector(GameController gc,Path p, Team myTeam, int sector){
         this.gc = gc;
         this.p = p;
@@ -23,6 +25,10 @@ public class MarsSector {
                 baseLoc = new MapLocation(p.planet,loc.x,loc.y);
                 hillToBase = p.generateHill(baseLoc);
             }
+        }
+        karbMap = new BitSet[p.planetWidth];
+        for (int i = 0; i < karbMap.length; i++) {
+            karbMap[i] = new BitSet(p.planetHeight);
         }
         priorityHarvesting = new MPQ(p.planetWidth*p.planetHeight+1000,p);
         workforce = new Workforce(gc,p,this);
@@ -53,6 +59,7 @@ public class MarsSector {
         short disToBase = hillToBase[loc.getX()][loc.getY()];
         //System.out.println(disToBase + " distance to base");
         MapLoc mapLoc = new MapLoc(Planet.Mars,loc,disToBase);
+        karbMap[mapLoc.x].set(mapLoc.y);
         priorityHarvesting.insert(mapLoc);
     }
     public void conductTurn() throws Exception{

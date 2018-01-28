@@ -34,6 +34,7 @@ public class Path {
     int maxDistanceFromBase = 16;
     short[][] centerMapHill = null;
     public boolean shouldNotTryToMakeMoreFactories = false;
+    public BitSet[] karbMap;
     public Path(GameController gc,Planet planet) throws Exception{
         currentBuiltFactories = new HashSet<>(10);
         this.planet = planet;
@@ -47,6 +48,11 @@ public class Path {
         Direction[] temp = Direction.values();
         directions = new Direction[8];
         generatePassable();
+        karbMap = new BitSet[planetWidth];
+        for (int i = 0; i < karbMap.length; i++) {
+            karbMap[i] = new BitSet(planetHeight);
+
+        }
         for (int i = 0; i < directions.length; i++) {
             directions[i] = temp[i];
         }
@@ -320,6 +326,7 @@ public class Path {
                     if(baseLoc != null && hillToBase[x][y] != 0) {
                         karbLoc = new MapLoc(planet, loc, hillToBase[x][y]);
                         karbLocs.add(karbLoc);
+                        karbMap[karbLoc.x].set(karbLoc.y);
                         numKarbLocs++;
                     }
                 }
