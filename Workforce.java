@@ -76,6 +76,9 @@ public class Workforce {
         for(int id : freeAgents){
             addWorker(id);
         }
+        if(p.planet == Planet.Mars){
+            System.out.println("conducting turn on mars");
+        }
         //System.out.println("There are " + numWorkers + " workers");
         //System.out.println("There are " + builders.size() + " builders");
         /*
@@ -214,6 +217,9 @@ public class Workforce {
         return false;
     }
     private void gatherKarbonite(Workers group){
+        if(p.planet == Planet.Mars){
+            System.out.println("the planet is mars and they are gathering");
+        }
         group.setState(WorkerStates.GatherKarbonite);
         if (group.harvestPoint == null || (gc.canSenseLocation(group.harvestPoint) && gc.karboniteAt(group.harvestPoint) == 0)) {
             //System.out.println("Picking a new location");
@@ -231,6 +237,9 @@ public class Workforce {
                         }
                     }
                 }
+            }
+            if(p.planet == Planet.Mars) {
+                System.out.println("the priority q is empty");
             }
         } else {
             group.karbLocInSight = false;
@@ -301,9 +310,9 @@ public class Workforce {
             if (p.movesToBase(gc.unit(id).location().mapLocation()) == 0 && gc.unit(id).location().mapLocation() != baseLoc && p.planet != Planet.Mars) {
                 loners.add(id);
                 //System.out.println("Worker " + id + " added to loners");
-                return;
-            } else {
-                numWorkers++;
+
+            } else {return;
+
             }
         }else{
             numWorkers++;

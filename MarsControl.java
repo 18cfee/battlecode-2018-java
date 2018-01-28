@@ -39,7 +39,7 @@ public class MarsControl {
             AsteroidStrike strike = pattern.asteroid(p.round);
             MapLocation loc = strike.getLocation();
             int sector = p.rockets.disjointAreas[loc.getX()][loc.getY()];
-            //System.out.println(sector);
+            System.out.println(sector + "this sector is getting karb added to it");
             if(p.passable(loc)){
                 armies.get(sector).addDeposit(loc);
             }
@@ -63,6 +63,7 @@ public class MarsControl {
         } else {
             MapLocation unitLoc = loc.mapLocation();
             int groupId = p.rockets.disjointAreas[unitLoc.getX()][unitLoc.getY()];
+            System.out.println(groupId + " this group is having a unit added to it");
             armies.get(groupId).addUnit(unit);
         }
     }
