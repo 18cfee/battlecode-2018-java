@@ -190,13 +190,15 @@ public class Workforce {
                 return false;
             }
         }
-        if(replicationCosts >= karboniteGathered*.75) return false;
+        if(replicationCosts >= karboniteGathered*.5) return false;
         if(numWorkers < numWantedGatherers + numWantedBuilders) return true;
         return false;
     }
     private boolean findASpot(Workers group, MPQ pq){
-        group.harvestPoint = pq.pop().toMapLocation(){
-            
+        group.harvestPoint = pq.pop().toMapLocation();
+        if(karbMap[group.harvestPoint.getX()].get(group.harvestPoint.getY())){
+            group.currentHill = p.generateHill(group.harvestPoint);
+            return true;
         }
         return false;
     }
