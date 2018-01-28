@@ -165,7 +165,7 @@ public class Workers extends Group{
                 } else {
                     totalKarbsHarvested = 0;
                 }
-                if(p.round % 2 == 0){
+                if(p.round % 3 == 0){
                     VecMapLocation locs = gc.allLocationsWithin(gc.unit(id).location().mapLocation(), (long)Math.sqrt(gc.unit(id).visionRange()));
                     for(int i = 0; i < locs.size(); i++){
                         if(gc.karboniteAt(locs.get(i)) > 0){

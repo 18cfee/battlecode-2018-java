@@ -74,7 +74,7 @@ public class Workforce {
             }
         }
             //System.out.println("Trying to replicate");
-        System.out.println(builders.ids.size() + " the size of the builders group");
+        //System.out.println(builders.ids.size() + " the size of the builders group");
         determineReplication(builders);
         if (builders.noUnits()) {
             builders.groupIsAlive = false;
@@ -121,29 +121,29 @@ public class Workforce {
 
     private void determineReplication(Workers group){
         for(Integer id: group.ids){
-            System.out.println("worker id: " + id);
+            //System.out.println("worker id: " + id);
             if(shouldReplicate()){
-                System.out.println("trying to replicate: " + id);
+                //System.out.println("trying to replicate: " + id);
                 group.replicate(id);
             }
         }
 
     }
     private boolean shouldReplicate(){
-        System.out.println("number of wanted gatherers " + numWantedGatherers);
+        //System.out.println("number of wanted gatherers " + numWantedGatherers);
         if(numWorkers < 4)return true;
-        System.out.println("identifiable as a homosexual");
+        //System.out.println("identifiable as a homosexual");
         if(p.spoolingForFactory) return false;
-        System.out.println("slighty better on the male dudes");
+        //System.out.println("slighty better on the male dudes");
         if(p.rockets.getTotalNumFactories() < 2){
-            System.out.println("fact less than two");
-            System.out.println("num wanted builders/dfsdd " + (numWantedBuilders + (numWantedGatherers/2)));
+            //System.out.println("fact less than two");
+            //System.out.println("num wanted builders/dfsdd " + (numWantedBuilders + (numWantedGatherers/2)));
             if(numWorkers < (numWantedBuilders + (numWantedGatherers/2))){
-                System.out.println(" num workers " + numWorkers);
+                //System.out.println(" num workers " + numWorkers);
                 return true;
             }
             else {
-                System.out.println("did not replicate");
+                //System.out.println("did not replicate");
                 return false;
             }
         }
@@ -154,9 +154,10 @@ public class Workforce {
     private boolean findASpot(Workers group, MPQ pq){
         if (gc.canSenseLocation(pq.peek().toMapLocation())) {
             group.harvestPoint = pq.pop().toMapLocation();
-            //System.out.println("New harvest loc picked out: " + group.harvestPoint.toString());
+            System.out.println("New harvest loc picked out: " + group.harvestPoint.toString());
             //System.out.println("PQ says there are " + p.closestKarbLocs.getSize() + " deposits left");
             if (gc.karboniteAt(group.harvestPoint) != 0) {
+                System.out.println("loc in sight");
                 if (group.karbLocInSight) {
                     group.currentHill = p.generateHill(group.harvestPoint);
                 }
@@ -164,7 +165,7 @@ public class Workforce {
                 return true;
             }
         } else {
-            //System.out.println("Can't see the next location: " + p.closestKarbLocs.peek().toMapLocation().toString());
+            System.out.println("Can't see the next location: " + p.closestKarbLocs.peek().toMapLocation().toString());
             if (group.onWayToOutofSight) {
                 short[][] hill = p.generateHill(p.closestKarbLocs.peek().toMapLocation());
                 group.karbLocInSight = false;
@@ -178,27 +179,20 @@ public class Workforce {
     }
     private void gatherKarbonite(Workers group){
         group.setState(WorkerStates.GatherKarbonite);
-        /*
-        if(group.harvestPoint != null){
-            if(gc.canSenseLocation(group.harvestPoint)) {
-                System.out.println("Karbonite at last location: " + gc.karboniteAt(group.harvestPoint));
-                System.out.println("Location is " + group.harvestPoint.toString());
-            }else{
-                System.out.println("Location is out of sight");
-            }
-        }
-        */
         if (group.harvestPoint == null || (gc.canSenseLocation(group.harvestPoint) && gc.karboniteAt(group.harvestPoint) == 0)) {
-            boolean viable = false;
-            //System.out.println("Picking a new location");
-            while (!viable && !p.closestKarbLocs.isEmpty()) {
-                //System.out.println("The pq isn't empty yet");
+            System.out.println("Picking a new location");
+            if(!p.closestKarbLocs.isEmpty()) {
+                System.out.println("The pq isn't empty yet");
                 for(int id : group.ids){
                     if (!group.personalPQ.isEmpty() &&
                     gc.unit(id).location().mapLocation().distanceSquaredTo(group.personalPQ.peek().toMapLocation()) < gc.unit(id).location().mapLocation().distanceSquaredTo(p.closestKarbLocs.peek().toMapLocation())) {
-                        viable = findASpot(group, group.personalPQ);
+                        if(findASpot(group, group.personalPQ)){
+                            break;
+                        }
                     }else{
-                        viable = findASpot(group, p.closestKarbLocs);
+                        if(findASpot(group, p.closestKarbLocs)){
+                            break;
+                        }
                     }
                 }
             }
@@ -321,6 +315,7 @@ public class Workforce {
 
         //System.out.println("Sorting remaining into gathering groups");
         for (int i = 0; i < gatherers.size(); i++) {
+            System.out.println("gathering sort loop");
             if (gatherers.get(i).size() < 1) {
                 gatherers.get(i).add(id);
                 //System.out.println("\tWorker " + id + " added to gathering group " + i);

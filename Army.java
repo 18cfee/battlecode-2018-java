@@ -218,7 +218,7 @@ public class Army {
             tempOldFactories.clear();
             p.currentBuiltFactories.clear();
         }
-        System.out.println("making it into the factory produce method at the moment");
+        //System.out.println("making it into the factory produce method at the moment");
         if(crowded()){
             suckArmyIn();
         } else if (!weSpoolingForFactory()){
@@ -277,23 +277,23 @@ public class Army {
 //        if(p.shouldNotTryToMakeMoreFactories) return false;
         int karb = (int)gc.karbonite();
         int fact = p.rockets.getTotalNumFactories();
-        System.out.println("entering the method that has the factory spool control like a boss");
+        //System.out.println("entering the method that has the factory spool control like a boss");
         if(fact == p.NUM_FACTORIES_WANTED && karb > p.FACTORYSPOOL && p.round < SHOULD_SAVE_FOR_FACTORY && p.spoolingForFactory == false){
             p.spoolingForFactory = true;
             p.NUM_FACTORIES_WANTED++;
-            System.out.println("the factory spool was just set to do some serious damage");
+            //System.out.println("the factory spool was just set to do some serious damage");
         } else if(p.spoolingForFactory == true && p.NUM_FACTORIES_WANTED == fact){
             p.spoolingForFactory = false;
         }
         if(p.spoolingForFactory){
             return true;
         }
-        System.out.println("number of factories wanted is a big big big big " + p.NUM_FACTORIES_WANTED);
+        //System.out.println("number of factories wanted is a big big big big " + p.NUM_FACTORIES_WANTED);
         return false;
     }
 
     private boolean weDoNotNeedRockets(){
-        System.out.println("making it into the we do not need rocket method");
+        //System.out.println("making it into the we do not need rocket method");
         if(numDefenders < 20) return true;
         if(gc.karbonite() >= 190) return true;
         if(p.rockets.getTotalRockets() < p.NUM_ROCKETS_WANTED && p.round > REALLY_NEED_TO_SAVE_FOR_ROCKETS_ROUND){
