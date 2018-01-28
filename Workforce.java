@@ -164,7 +164,7 @@ public class Workforce {
     }
     private boolean shouldReplicate(){
         if(p.planet == Planet.Mars){
-            if(p.round > 750){
+            if(p.round > 750 || p.round%10 == 0){
                 return true;
             }
             return false;
