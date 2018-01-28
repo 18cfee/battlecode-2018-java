@@ -1,5 +1,6 @@
 import bc.GameController;
 import bc.MapLocation;
+import bc.Planet;
 
 import java.util.ArrayDeque;
 
@@ -24,12 +25,14 @@ public class AggresiveRangers extends Fighter{
             Enemy enemy = enemies.get(0);
             if(enemy.hp > 0){
                 MapLocation a = gc.unit(enemy.id).location().mapLocation();
-                target = a;
-                attackRingHill = generateAttackRing(target);
-                groupTargetCooldown= 25;
-                seesEnemy = true;
+                if(onContinuousArea(a)){
+                    target = a;
+                    attackRingHill = generateAttackRing(target);
+                    groupTargetCooldown= 25;
+                    seesEnemy = true;
+                }
             }
-        } else if ((seesEnemy == true && enemies.size() == 0) || groupTargetCooldown < -35){
+        } else if ((seesEnemy == true && enemies.size() == 0) || groupTargetCooldown < -15){
             seesEnemy = false;
         }
         if(attackRingHill!= null){
@@ -41,6 +44,9 @@ public class AggresiveRangers extends Fighter{
         }
         shootOptimally();
         groupTargetCooldown--;
+    }
+    protected boolean onContinuousArea(MapLocation a){
+        return (p.hillToBase[a.getX()][a.getY()] != 0);
     }
     private short[][] generateAttackRing(MapLocation loc){
         MapLoc destination = new MapLoc(loc);

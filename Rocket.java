@@ -209,6 +209,8 @@ public class Rocket {
         marsHeight = (int)mars.getHeight();
         disjointAreas = new short[marsWidth][marsHeight];
         numPerSection = new ArrayList<>();
+        // fill in the 0 sector
+        numPerSection.add(0);
         BitSet[] passable = new BitSet[marsWidth];
         //BitSet[] debug = new BitSet[marsWidth];
         for (int i = 0; i < marsWidth; i++) {

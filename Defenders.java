@@ -10,6 +10,7 @@ public class Defenders extends Fighter {
     private MapLoc target = null;
     private boolean seesEnemy;
     private int groupTargetCooldown;
+    private int enemyID = -1;
     Defenders(GameController gc, Path p){
         super(gc,p);
         seesEnemy = false;
@@ -23,7 +24,9 @@ public class Defenders extends Fighter {
             boundarySize++;
             increaseThresh += 15;
         }
-        if(!noEnemies() && seesEnemy == false && groupTargetCooldown == 0){
+        if(p.round > 700){
+            target = null;
+        } else if(!noEnemies() && seesEnemy == false && groupTargetCooldown == 0){
             Enemy enemy = enemies.get(0);
             if(enemy.hp > 0 && p.movesToBase(enemy.loc) < MAXATTACKFROMBOUNDARY + boundarySize){
                 MapLoc a = enemy.getMapLoc();
@@ -36,7 +39,7 @@ public class Defenders extends Fighter {
                     seesEnemy = true;
                 }
             }
-        } else if (seesEnemy == true && enemies.size() == 0){
+        } else if (seesEnemy == true && (enemies.size() == 0)){
             seesEnemy = false;
             target = null;
         }
