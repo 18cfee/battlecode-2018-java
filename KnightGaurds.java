@@ -40,7 +40,7 @@ public class KnightGaurds extends Fighter {
             }
         } else if (seesEnemy == true && (enemies.size() == 0 || !p.sensableUnitNotInGarisonOrSpace(targetId))){
             seesEnemy = false;
-            target = null;
+            //target = null;
         }
         if(target!= null){
             moveToMiniHill(miniHill);

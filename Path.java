@@ -5,6 +5,7 @@ import java.util.*;
 public class Path {
     public final static int RANGERRANGE = 5; // everything within a square that big
     public final static int RANGERDANGER = 3; // any smaller and might no be able to shoot
+    public final static int FACTORYSPOOL = 80;
     public PlanetMap map;
     GameController gc;
     int planetHeight;
@@ -18,7 +19,7 @@ public class Path {
     public int[][] numsDirections = {{0,1},{1,1},{1,0},{1,-1},{0,-1},{-1,-1},{-1,0},{-1,1}};
     BitSet[] passable;
     public int round = 0;
-    public final static int NUM_FACTORIES_WANTED = 4;
+    public int NUM_FACTORIES_WANTED = 2;
     int rocketIndex = 0;
     public MapLocation baseLoc = null;
     public long totalKarbOnEarth;
@@ -312,13 +313,11 @@ public class Path {
                 if(karbATLoc > 0){
                     totalCarbs += karbATLoc;
                     MapLoc karbLoc;
-                    if(baseLoc != null) {
+                    if(baseLoc != null && hillToBase[x][y] != 0) {
                         karbLoc = new MapLoc(planet, loc, hillToBase[x][y]);
-                    }else{
-                        karbLoc = new MapLoc(loc);
+                        karbLocs.add(karbLoc);
+                        numKarbLocs++;
                     }
-                    karbLocs.add(karbLoc);
-                    numKarbLocs++;
                 }
             }
         }
