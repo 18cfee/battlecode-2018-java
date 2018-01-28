@@ -3,7 +3,7 @@ import bc.Location;
 import bc.MapLocation;
 
 public class Defenders extends Fighter {
-    private final static int MAXATTACKFROMBOUNDARY = 10;//6
+    private final static int MAXATTACKFROMBOUNDARY = 6;//6
     private int boundarySize = 5;
     private int increaseThresh = 20;
     private MiniHill miniHill = null;
