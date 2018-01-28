@@ -218,9 +218,10 @@ public class Army {
             tempOldFactories.clear();
             p.currentBuiltFactories.clear();
         }
+        System.out.println("making it into the factory produce method at the moment");
         if(crowded()){
             suckArmyIn();
-        } else {
+        } else if (!weSpoolingForFactory()){
             normalProduction();
         }
     }
@@ -229,7 +230,7 @@ public class Army {
     private void normalProduction() throws Exception{
         for (Integer factId: p.currentBuiltFactories) {
             //System.out.println("Num in garrison: " + gc.unit(factId).structureGarrison().size());
-            if(p.sensableUnitNotInGarisonOrSpace(factId) && weDoNotNeedRockets() && !weSpoolingForFactory()){
+            if((p.sensableUnitNotInGarisonOrSpace(factId) && weDoNotNeedRockets()) || (gc.karbonite() > 240)){
                 if(numRangerQ*2 + 1 < numKnightsQueued || attackTurn < 900){
                     if(gc.canProduceRobot(factId,ranger) ){
                         gc.produceRobot(factId,ranger);
@@ -273,24 +274,26 @@ public class Army {
         return false;
     }
     private boolean weSpoolingForFactory(){
-        if(p.shouldNotTryToMakeMoreFactories) return false;
+//        if(p.shouldNotTryToMakeMoreFactories) return false;
         int karb = (int)gc.karbonite();
-        if(karb > 270){
-            p.shouldNotTryToMakeMoreFactories = true;
-            return false;
-        }
         int fact = p.rockets.getTotalNumFactories();
-        if (karb > p.FACTORYSPOOL && (p.round < SHOULD_SAVE_FOR_FACTORY || p.rockets.getTotalNumFactories() < p.NUM_FACTORIES_WANTED) && karb < 250){
-            if(p.rockets.getTotalNumFactories() == p.NUM_FACTORIES_WANTED){
-                p.NUM_FACTORIES_WANTED++;
-                System.out.println("factories was incremented" + p.NUM_FACTORIES_WANTED);
-            }
+        System.out.println("entering the method that has the factory spool control like a boss");
+        if(fact == p.NUM_FACTORIES_WANTED && karb > p.FACTORYSPOOL && p.round < SHOULD_SAVE_FOR_FACTORY && p.spoolingForFactory == false){
+            p.spoolingForFactory = true;
+            p.NUM_FACTORIES_WANTED++;
+            System.out.println("the factory spool was just set to do some serious damage");
+        } else if(p.spoolingForFactory == true && p.NUM_FACTORIES_WANTED == fact){
+            p.spoolingForFactory = false;
+        }
+        if(p.spoolingForFactory){
             return true;
         }
+        System.out.println("number of factories wanted is a big big big big " + p.NUM_FACTORIES_WANTED);
         return false;
     }
 
     private boolean weDoNotNeedRockets(){
+        System.out.println("making it into the we do not need rocket method");
         if(numDefenders < 20) return true;
         if(gc.karbonite() >= 190) return true;
         if(p.rockets.getTotalRockets() < p.NUM_ROCKETS_WANTED && p.round > REALLY_NEED_TO_SAVE_FOR_ROCKETS_ROUND){

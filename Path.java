@@ -21,7 +21,7 @@ public class Path {
     public int[][] numsDirections = {{0,1},{1,1},{1,0},{1,-1},{0,-1},{-1,-1},{-1,0},{-1,1}};
     BitSet[] passable;
     public int round = 0;
-    public int NUM_FACTORIES_WANTED = 2;
+    public int NUM_FACTORIES_WANTED = 0;
     int rocketIndex = 0;
     public MapLocation baseLoc = null;
     public long totalKarbOnEarth;
