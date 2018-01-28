@@ -17,7 +17,6 @@ public class Defenders extends Fighter {
         groupTargetCooldown = 0;
         miniHill = new MiniHill(gc,p);
     }
-    int delay = 0;
     @Override
     public void conductTurn() throws Exception{
         if(noUnits()) return;
@@ -25,7 +24,9 @@ public class Defenders extends Fighter {
             boundarySize++;
             increaseThresh += 15;
         }
-        if(!noEnemies() && seesEnemy == false && groupTargetCooldown == 0){
+        if(p.round > 700){
+            target = null;
+        } else if(!noEnemies() && seesEnemy == false && groupTargetCooldown == 0){
             Enemy enemy = enemies.get(0);
             if(enemy.hp > 0 && p.movesToBase(enemy.loc) < MAXATTACKFROMBOUNDARY + boundarySize){
                 MapLoc a = enemy.getMapLoc();
@@ -34,17 +35,13 @@ public class Defenders extends Fighter {
                     groupTargetCooldown += 3;
                     target = null;
                 } else {
-                    groupTargetCooldown+= 10;
+                    groupTargetCooldown+= 25;
                     seesEnemy = true;
                 }
             }
-        } else if (seesEnemy == true && (enemies.size() == 0 || !p.sensableUnitNotInGarisonOrSpace(enemyID))){
-            delay++;
-            if(delay > 2){
-                seesEnemy = false;
-                target = null;
-                delay = 0;
-            }
+        } else if (seesEnemy == true && (enemies.size() == 0)){
+            seesEnemy = false;
+            target = null;
         }
         if(target!= null){
             moveToMiniHill(miniHill);
