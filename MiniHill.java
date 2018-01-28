@@ -94,6 +94,39 @@ public class MiniHill {
         }
         return true;
     }
+    public boolean generateMini(MapLoc centerLoc, HashSet<Integer> ids, MapLocation extra) throws Exception{
+        destination = centerLoc;
+        bounds = new MaxGCoordinates(destination,ids,gc,p,extra);
+        long start = System.currentTimeMillis();
+        hill = new short[bounds.width][bounds.height];
+        setHillValue(destination,(short)1);
+        ArrayDeque<MapLoc> toCheck = new ArrayDeque<>();
+        toCheck.addLast(destination);
+        while(!toCheck.isEmpty()){
+            MapLoc cur = toCheck.removeFirst();
+            short dis = getHillValue(cur);
+            for (int i = 0; i < 8; i++) {
+                MapLoc newLoc = cur.add(p.numsDirections[i]);
+                if(previouslyUncheckedMapLoc(newLoc)){
+                    if(!p.passable(newLoc)){
+                        //mark as unreachable
+                        setHillValue(newLoc,p.greatestPathNum);
+                    } else {
+                        toCheck.addLast(newLoc);
+                        setHillValue(newLoc,(short)(dis+1));
+                    }
+                }
+            }
+        }
+        long end = System.currentTimeMillis();
+        //Debug.printHill(hill);
+        for (int i = 0; i < bounds.locSize; i++) {
+            short val = getHillValue(bounds.locs[i]);
+            // at least one of the units can not reach the target via the minimap
+            if(val == 0) return false;
+        }
+        return true;
+    }
     private boolean tooClose(MapLoc a, MapLoc b){
         int dif1 = Math.abs(a.x - b.x);
         int dif2 = Math.abs(a.y - b.y);
