@@ -19,7 +19,7 @@ public class Workforce {
     private int numWantedGatherers = 6;
     private int karboniteGathered = 0;
     private int replicationCosts = 0;
-
+    private ArrayList<Integer> freeAgents;
     public Workforce(GameController gc, Path p) {
         this.gc = gc;
         this.p = p;
@@ -29,16 +29,28 @@ public class Workforce {
         loners = new Workers(gc, p);
         loners.setState(WorkerStates.CutOff);
         nonReplicateable = new ArrayList<>();
+        freeAgents = new ArrayList<>();
         System.out.println("Total karbs on earth: " + p.totalKarbOnEarth);
         if(p.totalKarbOnEarth < 300){
             numWantedGatherers = 4;
         }else if(p.totalKarbOnEarth > 1000){
             numWantedGatherers = 10;
         }
+        numWantedGatherers = calcGathers();
     }
 
+    private int calcGathers(){
+        if(p.totalKarbOnEarth < 2000){
+            return (int)Math.ceil(p.totalKarbOnEarth/200);
+        } else if(p.totalKarbOnEarth >= 2000 && p.totalKarbOnEarth <= 4000){
+            return (int)Math.max(10,p.totalKarbOnEarth/250);
+        } else return 16;
+    }
     public void conductTurn() throws Exception{
 
+        for(int id : freeAgents){
+            addWorker(id);
+        }
         //System.out.println("There are " + numWorkers + " workers");
         //System.out.println("There are " + builders.size() + " builders");
         /*
@@ -61,17 +73,14 @@ public class Workforce {
                 gatherers.get(i).groupIsAlive = true;
             }
         }
-
-        if (!builders.noUnits() && numWorkers < 10 && p.getNumFactories() != 0) {
             //System.out.println("Trying to replicate");
-            determineReplication(builders);
-        }
-
+        System.out.println(builders.ids.size() + " the size of the builders group");
+        determineReplication(builders);
         if (builders.noUnits()) {
             builders.groupIsAlive = false;
         } else if (builders.getState() == WorkerStates.Build) {
 
-        } else if (!builders.printInProgress && p.getNumFactories() < Path.NUM_FACTORIES_WANTED) {
+        } else if (!builders.printInProgress && p.getNumFactories() < p.NUM_FACTORIES_WANTED) {
             MapLocation blueLoc = builders.setBlueprint(UnitType.Factory);
             if (blueLoc != null) {
                 builders.currentHill = p.generateHill(blueLoc);
@@ -111,26 +120,37 @@ public class Workforce {
     }
 
     private void determineReplication(Workers group){
-
-        if(gc.karbonite() > 200) {
-            if (numWorkers < numWantedBuilders + numWantedGatherers) {
-                if (p.round < 50) {
-                    for (int id : group.ids) {
-                        group.replicate(id);
-                    }
-                } else {
-                    for (int id : group.ids) {
-                        if (replicationCosts < karboniteGathered * .75) {
-                            if (group.replicate(id)) {
-                                replicationCosts += 60;
-                            }
-                        } else return;
-                    }
-                }
+        for(Integer id: group.ids){
+            System.out.println("worker id: " + id);
+            if(shouldReplicate()){
+                System.out.println("trying to replicate: " + id);
+                group.replicate(id);
             }
         }
-    }
 
+    }
+    private boolean shouldReplicate(){
+        System.out.println("number of wanted gatherers " + numWantedGatherers);
+        if(numWorkers < 4)return true;
+        System.out.println("identifiable as a homosexual");
+        if(p.spoolingForFactory) return false;
+        System.out.println("slighty better on the male dudes");
+        if(p.rockets.getTotalNumFactories() < 2){
+            System.out.println("fact less than two");
+            System.out.println("num wanted builders/dfsdd " + (numWantedBuilders + (numWantedGatherers/2)));
+            if(numWorkers < (numWantedBuilders + (numWantedGatherers/2))){
+                System.out.println(" num workers " + numWorkers);
+                return true;
+            }
+            else {
+                System.out.println("did not replicate");
+                return false;
+            }
+        }
+        if(replicationCosts >= karboniteGathered*.75) return false;
+        if(numWorkers < numWantedGatherers + numWantedBuilders) return true;
+        return false;
+    }
     private boolean findASpot(Workers group, MPQ pq){
         if (gc.canSenseLocation(pq.peek().toMapLocation())) {
             group.harvestPoint = pq.pop().toMapLocation();
@@ -213,6 +233,7 @@ public class Workforce {
             int numWorkerGroups = gatherers.size();
             oldBuilders = (HashSet<Integer>) builders.ids.clone();
             builders.ids.clear();
+            freeAgents.clear();
             if(numWorkers <= 4){
                 numWantedBuilders = 2;
             }else{
@@ -249,15 +270,23 @@ public class Workforce {
         }else {
             numWorkers++;
         }
-        if(gc.unit(id).abilityHeat() == 0 && nonReplicateable.size() != 0 && p.round > 50){
+
+        if(gc.unit(id).abilityHeat() == 0 && nonReplicateable.size() != 0){
             int chopped = nonReplicateable.get(0);
+            nonReplicateable.remove(0);
             oldBuilders.remove(chopped);
             if(builders.ids.contains(chopped)){
                 builders.ids.remove(chopped);
                 numWorkers--;
-                addWorker(chopped);
+                freeAgents.add(chopped);
             }
         }
+
+        /*
+        if(gc.unit(id).abilityHeat() == 0){
+            replicateable.add(id);
+        }
+        */
 
         //System.out.println("Checking for old builders");
         if(oldBuilders.contains(id) && builders.size() < numWantedBuilders){
@@ -268,7 +297,7 @@ public class Workforce {
 
 
         //System.out.println("Checking for old gatherers");
-        if(oldGatherers.size() > 0  && oldBuilders.size() >= numWantedBuilders) {
+        if(oldGatherers.size() > 0  && (oldBuilders.size() >= numWantedBuilders || builders.size() >= numWantedBuilders)) {
             for (int i = 0; i < oldGatherers.size(); i++) {
                 if (oldGatherers.get(i).contains(id)) {
                     gatherers.get(i).add(id);

@@ -66,6 +66,7 @@ public class Workers extends Group{
     public boolean replicate(int id){
         for(Direction d: p.directions){
             if(gc.canReplicate(id,d)){
+                System.out.println("did replicate");
                 gc.replicate(id,d);
                 return true;
             }
@@ -150,7 +151,6 @@ public class Workers extends Group{
                 if (gc.canHarvest(id, gc.unit(id).location().mapLocation().directionTo(harvestPoint))) {
                     gc.harvest(id, gc.unit(id).location().mapLocation().directionTo(harvestPoint));
                     //System.out.println("Harvest successful");
-                    totalKarbsHarvested = Math.abs(karbsAtLoc - (int)gc.karboniteAt(harvestPoint));
                  } else {
                     moveToTarget(currentHill);
                     for(Direction d : p.directions){
@@ -159,6 +159,11 @@ public class Workers extends Group{
                         }
                     }
                     //System.out.println("Could not harvest");
+                }
+                if (gc.canSenseLocation(harvestPoint)) {
+                    totalKarbsHarvested = Math.abs(karbsAtLoc - (int)gc.karboniteAt(harvestPoint));
+                } else {
+                    totalKarbsHarvested = 0;
                 }
                 if(p.round % 2 == 0){
                     VecMapLocation locs = gc.allLocationsWithin(gc.unit(id).location().mapLocation(), (long)Math.sqrt(gc.unit(id).visionRange()));

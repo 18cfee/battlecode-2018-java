@@ -6,6 +6,8 @@ public class Path {
     public final static int RANGERRANGE = 5; // everything within a square that big
     public final static int RANGERDANGER = 3; // any smaller and might no be able to shoot
     public final static int FACTORYSPOOL = 80;
+    public boolean spoolingForFactory = false;
+    public boolean spoolingForRocket = false;
     public PlanetMap map;
     GameController gc;
     int planetHeight;
