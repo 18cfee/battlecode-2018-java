@@ -311,13 +311,11 @@ public class Path {
                 if(karbATLoc > 0){
                     totalCarbs += karbATLoc;
                     MapLoc karbLoc;
-                    if(baseLoc != null) {
+                    if(baseLoc != null && hillToBase[x][y] != 0) {
                         karbLoc = new MapLoc(planet, loc, hillToBase[x][y]);
-                    }else{
-                        karbLoc = new MapLoc(loc);
+                        karbLocs.add(karbLoc);
+                        numKarbLocs++;
                     }
-                    karbLocs.add(karbLoc);
-                    numKarbLocs++;
                 }
             }
         }
