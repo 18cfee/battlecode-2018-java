@@ -10,7 +10,7 @@ public class AggresiveKnights extends Fighter {
     private MapLoc target = null;
     private boolean seesEnemy;
     private int groupTargetCooldown;
-    private int targetId;
+    private int targetId = -1;
     AggresiveKnights(GameController gc, Path p){
         super(gc,p);
         seesEnemy = false;
@@ -24,23 +24,29 @@ public class AggresiveKnights extends Fighter {
             boundarySize++;
             increaseThresh += 15;
         }
-        if(!noEnemies() && seesEnemy == false && groupTargetCooldown == 0){
-            Enemy enemy = enemies.get(0);
-            if(enemy.hp > 0){
-                MapLoc a = enemy.getMapLoc();
-                target = a;
+        if(!noEnemies() && !p.sensableUnitNotInGarisonOrSpace(targetId) && groupTargetCooldown == 0){
+            System.out.println("trying to find an enemy");
+            Enemy enemy;
+            if(target == null){
+                enemy = miniHill.findNextEnemy(enemies,p.baseLoc);
+            } else {
+                System.out.println("target " + target.y);
+                enemy = miniHill.findNextEnemy(enemies,new MapLocation(p.planet,target.x,target.y));
+            }
+            if(enemy != null) {
+                target = enemy.loc;
                 if(!miniHill.generateMini(target,ids,p.baseLoc)){
-                    groupTargetCooldown += 2;
+                    groupTargetCooldown += 3;
                     target = null;
                 } else {
                     groupTargetCooldown+= 7;
                     seesEnemy = true;
                     targetId = enemy.id;
                 }
+            } else {
+                target = null;
+                groupTargetCooldown += 3;
             }
-        } else if (seesEnemy == true && (enemies.size() == 0 || !p.sensableUnitNotInGarisonOrSpace(targetId))){
-            seesEnemy = false;
-            target = null;
         }
         if(target!= null){
             moveToMiniHill(miniHill);

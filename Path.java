@@ -263,7 +263,7 @@ public class Path {
     }
     long totalTimeInFunc = 0;
     int functionCalled = 0;
-    public short[][] generateHill(MapLocation target){
+    public short[][] generateHill(MapLocation target){ ;
         MapLoc destination = new MapLoc(target);
         functionCalled++;
         long start = System.currentTimeMillis();
@@ -289,7 +289,8 @@ public class Path {
             }
         }
         long end = System.currentTimeMillis();
-        totalTimeInFunc+=(end - start);
+        totalTimeInFunc=(end - start);
+        //System.out.println(totalTimeInFunc);
         // todo smaller versions need to know if a path was found
         return hill;
     }

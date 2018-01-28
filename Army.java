@@ -77,6 +77,7 @@ public class Army {
     private int numKnights = 0;
     private int knightBase = 0;
     private HashSet<Integer> oldAttackingKnights = new HashSet<>();
+    private int attackTurn = 1000;
     public void addUnit(Unit unit) throws Exception{
         //if(p.round%50 == 0){
         int id = unit.id();
@@ -99,7 +100,7 @@ public class Army {
             //System.out.println("thinks there are this many on d: " + numDefenders);
         }
         if(unit.unitType() == UnitType.Knight){
-            if(oldAttackingKnights.contains(id) || knightBase > 10){
+            if(attackTurn < p.round){
                 fastKnights.add(id);
             } else{
                 knights.add(id);
@@ -229,7 +230,7 @@ public class Army {
         for (Integer factId: p.currentBuiltFactories) {
             //System.out.println("Num in garrison: " + gc.unit(factId).structureGarrison().size());
             if(p.sensableUnitNotInGarisonOrSpace(factId) && weDoNotNeedRockets() && !weSpoolingForFactory()){
-                if(numRangerQ*2 + 1 < numKnightsQueued){
+                if(numRangerQ*2 + 1 < numKnightsQueued || attackTurn < 900){
                     if(gc.canProduceRobot(factId,ranger) ){
                         gc.produceRobot(factId,ranger);
                         numRangerQ++;
@@ -238,6 +239,9 @@ public class Army {
                     if(gc.canProduceRobot(factId,knight)){
                         gc.produceRobot(factId,knight);
                         numKnightsQueued++;
+                        if(numKnightsQueued > 7){
+                            attackTurn = p.round + 15;
+                        }
                     }
                 }
                 tryToUnloadInAlDirections(factId);
@@ -276,7 +280,7 @@ public class Army {
             return false;
         }
         int fact = p.rockets.getTotalNumFactories();
-        return (fact < p.NUM_FACTORIES_WANTED && karb > 79 && p.round < SHOULD_SAVE_FOR_FACTORY);
+        return (fact < p.NUM_FACTORIES_WANTED && karb > 79 && p.round < SHOULD_SAVE_FOR_FACTORY && karb < 250);
     }
 
     private boolean weDoNotNeedRockets(){

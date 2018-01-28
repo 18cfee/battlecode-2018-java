@@ -4,6 +4,8 @@ import bc.Location;
 import bc.MapLocation;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.HashSet;
 
 public class MiniHill {
@@ -159,6 +161,43 @@ public class MiniHill {
         if(topChoice != null){ //min <= dirVal
             gc.moveRobot(id,topChoice);
         }
+    }
+    public Enemy findNextEnemy(ArrayList<Enemy> enemies, MapLocation startPos){
+        System.out.println(startPos.getX());
+        System.out.println(startPos.getY());
+        MapLoc destination = new MapLoc(startPos);
+        Enemy[][] enemyPos = new Enemy[p.planetWidth][p.planetHeight];
+        for (Enemy enemy: enemies){
+            enemyPos[enemy.loc.x][enemy.loc.y] = enemy;
+        }
+        ArrayDeque<MapLoc> toCheck = new ArrayDeque<>();
+        toCheck.addLast(destination);
+        BitSet[] checked = new BitSet[p.planetWidth];
+        for (int i = 0; i < p.planetWidth; i++) {
+            BitSet set = new BitSet(p.planetHeight);
+            checked[i] = set;
+        }
+        checked[destination.x].set(destination.y);
+        while(!toCheck.isEmpty()){
+            MapLoc cur = toCheck.removeFirst();
+            if(enemyPos[cur.x][cur.y] != null){
+                return enemyPos[cur.x][cur.y];
+            }
+            for (int t = 0; t < p.numsDirections.length; t++) {
+                int[] d = p.numsDirections[t];
+                MapLoc newLoc = cur.add(d);
+                if(p.onMap(newLoc) && !checked[newLoc.x].get(newLoc.y)){
+                    if(!p.passable(newLoc)){
+                        //mark as checked
+                        checked[newLoc.x].set(newLoc.y);
+                    } else {
+                        checked[newLoc.x].set(newLoc.y);
+                        toCheck.addLast(newLoc);
+                    }
+                }
+            }
+        }
+        return null;
     }
     /*public boolean generateMiniHill(MapLocation centerLoc, HashSet<Integer> ids){
         bounds = new MaxGCoordinates(ids,gc,p);
