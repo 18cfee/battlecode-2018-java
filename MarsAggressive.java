@@ -9,7 +9,7 @@ public class MarsAggressive extends AggresiveRangers{
     }
     @Override
     protected boolean onContinuousArea(MapLocation a){
-        System.out.println(p.rockets.disjointAreas[a.getX()][a.getY()] == groupNum);
+        //System.out.println(p.rockets.disjointAreas[a.getX()][a.getY()] == groupNum);
         return (p.rockets.disjointAreas[a.getX()][a.getY()] == groupNum);
     }
 }

@@ -15,17 +15,19 @@ public class Workers extends Group{
     boolean onWayToOutofSight = false;
     int karbsHarvested = 0;
     MPQ personalPQ;
+    short[][] hillToBase;
 
 
-    public Workers(GameController gc, Path p){
+    public Workers(GameController gc, Path p, MPQ closestKarbLocs, short[][] baseHill){
         super(gc, p);
         this.gc = gc;
         this.p = p;
-        personalPQ  = new MPQ(p.closestKarbLocs.getSize(), p);
+        hillToBase = baseHill;
+        personalPQ  = new MPQ(closestKarbLocs.getSize(), p);
     }
 
     public MapLocation setBlueprint(UnitType type)throws Exception{
-        if(state != WorkerStates.SetBlueprint){
+        if(state != WorkerStates.SetBlueprint) {
             state = WorkerStates.SetBlueprint;
             currentHill = p.hillToBase;
         }
@@ -66,7 +68,7 @@ public class Workers extends Group{
     public boolean replicate(int id){
         for(Direction d: p.directions){
             if(gc.canReplicate(id,d)){
-                System.out.println("did replicate");
+                //System.out.println("did replicate");
                 gc.replicate(id,d);
                 return true;
             }
@@ -132,7 +134,7 @@ public class Workers extends Group{
                 }
             }
         }
-        moveToTarget(p.hillToBase);
+        moveToTarget(hillToBase);
     }
 
     int gatherKarbonite() throws Exception{

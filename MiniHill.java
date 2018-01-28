@@ -163,8 +163,8 @@ public class MiniHill {
         }
     }
     public Enemy findNextEnemy(ArrayList<Enemy> enemies, MapLocation startPos){
-        System.out.println(startPos.getX());
-        System.out.println(startPos.getY());
+        //System.out.println(startPos.getX());
+        //System.out.println(startPos.getY());
         MapLoc destination = new MapLoc(startPos);
         Enemy[][] enemyPos = new Enemy[p.planetWidth][p.planetHeight];
         for (Enemy enemy: enemies){

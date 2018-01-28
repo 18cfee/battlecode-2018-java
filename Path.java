@@ -162,7 +162,7 @@ public class Path {
         if(bestLoc == null){
             return units.get(0).location().mapLocation();
         }
-        System.out.println("chose " + bestLoc.x + " " + bestLoc.y);
+        //System.out.println("chose " + bestLoc.x + " " + bestLoc.y);
         return new MapLocation(Planet.Earth,bestLoc.x,bestLoc.y);
     }
     private int calcNumReachableWithin5(MapLoc destination){

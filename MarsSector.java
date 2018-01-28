@@ -9,8 +9,9 @@ public class MarsSector {
     public Workforce workforce;
     Team myTeam;
     private int sector;
-    private MapLocation baseLoc;
-    private short[][] hillToBase;
+    public MapLocation baseLoc;
+    public short[][] hillToBase;
+    MPQ priorityHarvesting;
     MarsSector(GameController gc,Path p, Team myTeam, int sector){
         this.gc = gc;
         this.p = p;
@@ -24,6 +25,7 @@ public class MarsSector {
                 hillToBase = p.generateHill(baseLoc);
             }
         }
+        priorityHarvesting = new MPQ(34,p);
     }
     public void addUnit(Unit unit) throws Exception {
         Location loc = unit.location();

@@ -13,11 +13,9 @@ public class Player {
         try {
             p = new Path(gc, gc.planet());
         } catch (Exception e){
-            System.out.println("init fail");
+            //System.out.println("init fail");
             e.printStackTrace();
         }
-        Workers workers = new Workers(gc,p);
-        workers.setState(WorkerStates.Standby);
         Army sprint = new Army(gc,p);
         Workforce workforce = new Workforce(gc, p);
         //AggresiveRangers mars = new AggresiveRangers(gc,p);
@@ -54,7 +52,7 @@ public class Player {
                         workforce.setCanBuildRocket(true);
                     }
                     if(gc.round() % 50 == 0){
-                        System.out.println(gc.researchInfo().nextInQueue());
+                        //System.out.println(gc.researchInfo().nextInQueue());
                     }
                     for (int i = 0; i < units.size(); i++) {
                         Unit unit = units.get(i);
@@ -84,7 +82,7 @@ public class Player {
                 }
             } catch (Exception e){
                 // todo set indexes to 0 in here
-                System.out.println("Current round: " + p.round + " bugs: "+ count);
+                //System.out.println("Current round: " + p.round + " bugs: "+ count);
                 e.printStackTrace();
                 //System.exit(0);
                 count++;

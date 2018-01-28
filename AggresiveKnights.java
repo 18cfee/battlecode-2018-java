@@ -25,12 +25,12 @@ public class AggresiveKnights extends Fighter {
             increaseThresh += 15;
         }
         if(!noEnemies() && !p.sensableUnitNotInGarisonOrSpace(targetId) && groupTargetCooldown == 0){
-            System.out.println("trying to find an enemy");
+            //System.out.println("trying to find an enemy");
             Enemy enemy;
             if(target == null){
                 enemy = miniHill.findNextEnemy(enemies,p.baseLoc);
             } else {
-                System.out.println("target " + target.y);
+                //System.out.println("target " + target.y);
                 enemy = miniHill.findNextEnemy(enemies,new MapLocation(p.planet,target.x,target.y));
             }
             if(enemy != null) {
