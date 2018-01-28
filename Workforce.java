@@ -20,6 +20,8 @@ public class Workforce {
     private int karboniteGathered = 0;
     private int replicationCosts = 0;
     private ArrayList<Integer> freeAgents;
+    MapLocation baseLoc;
+
     public Workforce(GameController gc, Path p) {
         this.gc = gc;
         this.p = p;
@@ -37,6 +39,11 @@ public class Workforce {
             numWantedGatherers = 10;
         }
         numWantedGatherers = calcGathers();
+        if(p.planet == Planet.Mars){
+            baseLoc = p.baseLoc;
+        }else{
+            baseLoc = p.baseLoc;
+        }
     }
 
     private int calcGathers(){
@@ -130,7 +137,12 @@ public class Workforce {
 
     }
     private boolean shouldReplicate(){
-        //System.out.println("number of wanted gatherers " + numWantedGatherers);
+        if(p.planet == Planet.Mars){
+            if(p.round > 750){
+                return true;
+            }
+            return false;
+        }
         if(numWorkers < 4)return true;
         //System.out.println("identifiable as a homosexual");
         if(p.spoolingForFactory) return false;
@@ -228,10 +240,14 @@ public class Workforce {
             oldBuilders = (HashSet<Integer>) builders.ids.clone();
             builders.ids.clear();
             freeAgents.clear();
-            if(numWorkers <= 4){
-                numWantedBuilders = 2;
-            }else{
-                numWantedBuilders = 4;
+            if(p.planet == Planet.Mars){
+                numWantedBuilders = 0;
+            }else {
+                if (numWorkers <= 4) {
+                    numWantedBuilders = 2;
+                } else {
+                    numWantedBuilders = 4;
+                }
             }
 
             //System.out.println(oldBuilders.size() + " workers in oldBuilders");
@@ -257,7 +273,7 @@ public class Workforce {
             }*/
             numWorkers = 0;
         }
-        if(p.movesToBase(gc.unit(id).location().mapLocation()) == 0 && gc.unit(id).location().mapLocation() != p.baseLoc){
+        if(p.movesToBase(gc.unit(id).location().mapLocation()) == 0 && gc.unit(id).location().mapLocation() != baseLoc){
             loners.add(id);
             //System.out.println("Worker " + id + " added to loners");
             return;

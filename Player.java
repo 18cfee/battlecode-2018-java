@@ -30,12 +30,8 @@ public class Player {
                 if(!gc.researchInfo().hasNextInQueue()){
                     gc.queueResearch(UnitType.Worker);
                     gc.queueResearch(UnitType.Knight);
-                    gc.queueResearch(UnitType.Knight);
-                    gc.queueResearch(UnitType.Worker);
-                    gc.queueResearch(UnitType.Rocket);
-                    gc.queueResearch(UnitType.Worker);
                     gc.queueResearch(UnitType.Ranger);
-                    gc.queueResearch(UnitType.Worker);
+                    gc.queueResearch(UnitType.Rocket);
                     gc.queueResearch(UnitType.Rocket);
                     gc.queueResearch(UnitType.Rocket);
                     gc.queueResearch(UnitType.Ranger);
