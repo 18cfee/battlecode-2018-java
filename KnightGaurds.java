@@ -2,15 +2,16 @@ import bc.GameController;
 import bc.Location;
 import bc.MapLocation;
 
-public class Defenders extends Fighter {
+public class KnightGaurds extends Fighter {
     private final static int MAXATTACKFROMBOUNDARY = 6;//6
-    private int boundarySize = 5;
+    private int boundarySize = 3;
     private int increaseThresh = 20;
     private MiniHill miniHill = null;
     private MapLoc target = null;
     private boolean seesEnemy;
     private int groupTargetCooldown;
-    Defenders(GameController gc, Path p){
+    private int targetId;
+    KnightGaurds(GameController gc, Path p){
         super(gc,p);
         seesEnemy = false;
         groupTargetCooldown = 0;
@@ -28,15 +29,16 @@ public class Defenders extends Fighter {
             if(enemy.hp > 0 && p.movesToBase(enemy.loc) < MAXATTACKFROMBOUNDARY + boundarySize){
                 MapLoc a = enemy.getMapLoc();
                 target = a;
-                if(!miniHill.generateMiniRing(target,ids,p.baseLoc)){
-                    groupTargetCooldown += 3;
+                if(!miniHill.generateMini(target,ids,p.baseLoc)){
+                    groupTargetCooldown += 2;
                     target = null;
                 } else {
-                    groupTargetCooldown+= 25;
+                    groupTargetCooldown+= 7;
                     seesEnemy = true;
+                    targetId = enemy.id;
                 }
             }
-        } else if (seesEnemy == true && enemies.size() == 0){
+        } else if (seesEnemy == true && (enemies.size() == 0 || !p.sensableUnitNotInGarisonOrSpace(targetId))){
             seesEnemy = false;
             target = null;
         }

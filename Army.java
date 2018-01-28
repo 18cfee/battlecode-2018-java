@@ -15,6 +15,8 @@ public class Army {
     ArrayList<HashSet<Integer>> troops;
     HashSet<Integer> tempOldFactories;
     AggresiveRangers killEm;
+    KnightGaurds knights;
+    AggresiveKnights fastKnights;
     int size = 0;
     private final static int MAXUnits = 200;
     private int armyRound = 0;
@@ -24,6 +26,8 @@ public class Army {
     private final static int REALLY_NEED_TO_SAVE_FOR_ROCKETS_ROUND = 500;
     private final static int SHOULD_SAVE_FOR_FACTORY = 750;
     private ArrayList<Enemy> enemies;
+    private UnitType ranger = UnitType.Ranger;
+    private UnitType knight = UnitType.Knight;
     public Army(GameController gc, Path p){
         this.gc = gc;
         this.p = p;
@@ -35,6 +39,8 @@ public class Army {
         troops = new ArrayList<>();
         killEm = new AggresiveRangers(gc,p);
         enemies = new ArrayList<>();
+        knights = new KnightGaurds(gc,p);
+        fastKnights = new AggresiveKnights(gc,p);
     }
     public void conductTurn() throws Exception{
         long time = System.currentTimeMillis();
@@ -42,6 +48,8 @@ public class Army {
         carlsRangers.conductTurn();
         baseProtection.conductTurn();
         killEm.conductTurn();
+        knights.conductTurn();
+        fastKnights.conductTurn();
 //        marsTroops.conductTurn();
         ArrayList<Integer> beastsToRemove = new ArrayList<>(4);
         for (int i = 0; i < rangers.size(); i++) {
@@ -66,8 +74,13 @@ public class Army {
     private int attackSize = 50;
     private HashSet<Integer> oldAttack;
     boolean haveIncreasedAttacketsThisRound = false;
-    public void addUnit(int id) throws Exception{
+    private int numKnights = 0;
+    private int knightBase = 0;
+    private HashSet<Integer> oldAttackingKnights = new HashSet<>();
+    private int attackTurn = 1000;
+    public void addUnit(Unit unit) throws Exception{
         //if(p.round%50 == 0){
+        int id = unit.id();
         size++;
         // get the group info from last round then clear
         if(fighterRound != p.round){
@@ -79,9 +92,20 @@ public class Army {
                 troops.add((HashSet<Integer>)rangers.get(i).ids.clone());
             }
             numDefenders = baseProtection.ids.size();
+            knightBase = knights.ids.size();
             oldAttack = (HashSet<Integer>)killEm.ids.clone();
             haveIncreasedAttacketsThisRound = false;
+            numKnights = knights.ids.size();
+            oldAttackingKnights = (HashSet<Integer>)fastKnights.ids.clone();
             //System.out.println("thinks there are this many on d: " + numDefenders);
+        }
+        if(unit.unitType() == UnitType.Knight){
+            if(attackTurn < p.round){
+                fastKnights.add(id);
+            } else{
+                knights.add(id);
+            }
+            return;
         }
         // assign all the rangers back to there groups
         for (int i = 0; i < oldNumRangerGroups; i++) {
@@ -146,6 +170,8 @@ public class Army {
             carlsRangers.addEnemy(enemy);
             baseProtection.addEnemy(enemy);
             killEm.addEnemy(enemy);
+            knights.addEnemy(enemy);
+            fastKnights.addEnemy(enemy);
             for(RocketBoarders group: rangers){
                 group.addEnemy(enemy);
             }
@@ -197,15 +223,26 @@ public class Army {
         } else {
             normalProduction();
         }
-
     }
+    private int numKnightsQueued = 0;
+    private int numRangerQ = 0;
     private void normalProduction() throws Exception{
-        UnitType production = UnitType.Ranger;
         for (Integer factId: p.currentBuiltFactories) {
             //System.out.println("Num in garrison: " + gc.unit(factId).structureGarrison().size());
-            if(p.sensableUnitNotInGarisonOrSpace(factId)){
-                if(gc.canProduceRobot(factId,production) && weDoNotNeedRockets() && !weSpoolingForFactory()){
-                    gc.produceRobot(factId,production);
+            if(p.sensableUnitNotInGarisonOrSpace(factId) && weDoNotNeedRockets() && !weSpoolingForFactory()){
+                if(numRangerQ*2 + 1 < numKnightsQueued || attackTurn < 900){
+                    if(gc.canProduceRobot(factId,ranger) ){
+                        gc.produceRobot(factId,ranger);
+                        numRangerQ++;
+                    }
+                } else {
+                    if(gc.canProduceRobot(factId,knight)){
+                        gc.produceRobot(factId,knight);
+                        numKnightsQueued++;
+                        if(numKnightsQueued > 7){
+                            attackTurn = p.round + 15;
+                        }
+                    }
                 }
                 tryToUnloadInAlDirections(factId);
             }
@@ -243,7 +280,7 @@ public class Army {
             return false;
         }
         int fact = p.rockets.getTotalNumFactories();
-        return (fact < p.NUM_FACTORIES_WANTED && karb > 79 && p.round < SHOULD_SAVE_FOR_FACTORY);
+        return (fact < p.NUM_FACTORIES_WANTED && karb > 79 && p.round < SHOULD_SAVE_FOR_FACTORY && karb < 250);
     }
 
     private boolean weDoNotNeedRockets(){

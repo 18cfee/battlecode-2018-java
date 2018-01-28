@@ -2,15 +2,16 @@ import bc.GameController;
 import bc.Location;
 import bc.MapLocation;
 
-public class Defenders extends Fighter {
-    private final static int MAXATTACKFROMBOUNDARY = 6;//6
+public class AggresiveKnights extends Fighter {
+    private final static int MAXATTACKFROMBOUNDARY = 10;//6
     private int boundarySize = 5;
     private int increaseThresh = 20;
     private MiniHill miniHill = null;
     private MapLoc target = null;
     private boolean seesEnemy;
     private int groupTargetCooldown;
-    Defenders(GameController gc, Path p){
+    private int targetId = -1;
+    AggresiveKnights(GameController gc, Path p){
         super(gc,p);
         seesEnemy = false;
         groupTargetCooldown = 0;
@@ -23,28 +24,37 @@ public class Defenders extends Fighter {
             boundarySize++;
             increaseThresh += 15;
         }
-        if(!noEnemies() && seesEnemy == false && groupTargetCooldown == 0){
-            Enemy enemy = enemies.get(0);
-            if(enemy.hp > 0 && p.movesToBase(enemy.loc) < MAXATTACKFROMBOUNDARY + boundarySize){
-                MapLoc a = enemy.getMapLoc();
-                target = a;
-                if(!miniHill.generateMiniRing(target,ids,p.baseLoc)){
+        if(!noEnemies() && !p.sensableUnitNotInGarisonOrSpace(targetId) && groupTargetCooldown == 0){
+            System.out.println("trying to find an enemy");
+            Enemy enemy;
+            if(target == null){
+                enemy = miniHill.findNextEnemy(enemies,p.baseLoc);
+            } else {
+                System.out.println("target " + target.y);
+                enemy = miniHill.findNextEnemy(enemies,new MapLocation(p.planet,target.x,target.y));
+            }
+            if(enemy != null) {
+                target = enemy.loc;
+                if(!miniHill.generateMini(target,ids,p.baseLoc)){
                     groupTargetCooldown += 3;
                     target = null;
                 } else {
-                    groupTargetCooldown+= 25;
+                    groupTargetCooldown+= 7;
                     seesEnemy = true;
+                    targetId = enemy.id;
                 }
+            } else {
+                target = null;
+                groupTargetCooldown += 3;
             }
-        } else if (seesEnemy == true && enemies.size() == 0){
-            seesEnemy = false;
-            target = null;
         }
         if(target!= null){
             moveToMiniHill(miniHill);
         }
         else{
-            roamRandomlyInRangeOfBase();
+            for(Integer id: ids){
+                p.moveIfPossible(id);
+            }
         }
         shootOptimally();
         if(groupTargetCooldown > 0) groupTargetCooldown--;

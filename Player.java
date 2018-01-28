@@ -29,10 +29,12 @@ public class Player {
                 p.round = (int)gc.round();
                 if(!gc.researchInfo().hasNextInQueue()){
                     gc.queueResearch(UnitType.Worker);
-                    gc.queueResearch(UnitType.Worker);
-                    gc.queueResearch(UnitType.Ranger);
+                    gc.queueResearch(UnitType.Knight);
+                    gc.queueResearch(UnitType.Knight);
                     gc.queueResearch(UnitType.Worker);
                     gc.queueResearch(UnitType.Rocket);
+                    gc.queueResearch(UnitType.Worker);
+                    gc.queueResearch(UnitType.Ranger);
                     gc.queueResearch(UnitType.Worker);
                     gc.queueResearch(UnitType.Rocket);
                     gc.queueResearch(UnitType.Rocket);
@@ -75,7 +77,7 @@ public class Player {
                         } else if (unit.unitType() == UnitType.Rocket) {
                             p.rockets.addRocket(unit);
                         }else{
-                            sprint.addUnit(id);
+                            sprint.addUnit(unit);
                         }
                     }
                     p.rockets.clearRocketsIfNoUnits();
