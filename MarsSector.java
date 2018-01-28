@@ -1,23 +1,35 @@
 import bc.*;
 
+import java.util.ArrayList;
+
 public class MarsSector {
     GameController gc;
     Path p;
     public MarsAggressive mars;
+    public Workforce workforce;
     Team myTeam;
     private int sector;
+    private MapLocation baseLoc;
+    private short[][] hillToBase;
     MarsSector(GameController gc,Path p, Team myTeam, int sector){
         this.gc = gc;
         this.p = p;
         this.myTeam = myTeam;
         mars = new MarsAggressive(gc,p,sector);
+        workforce = new Workforce(gc,p);
         this.sector = sector;
+        for(MapLoc loc: p.rockets.destinationList){
+            if(p.rockets.disjointAreas[loc.x][loc.y] == sector){
+                baseLoc = new MapLocation(p.planet,loc.x,loc.y);
+                hillToBase = p.generateHill(baseLoc);
+            }
+        }
     }
     public void addUnit(Unit unit) throws Exception {
         Location loc = unit.location();
         int id = unit.id();
         if (unit.unitType() == UnitType.Worker) {
-            //workforce.addWorker(id);
+            workforce.addWorker(id);
         } else if (unit.unitType() == UnitType.Factory) {
 //                            if(unit.structureIsBuilt() == 1){
 //                                sprint.addFact(unit);
@@ -36,5 +48,6 @@ public class MarsSector {
     }
     public void conductTurn() throws Exception{
         mars.conductTurn();
+        workforce.conductTurn();
     }
 }
