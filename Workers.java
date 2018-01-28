@@ -91,6 +91,9 @@ public class Workers extends Group{
                 handleCutOff(id);
             }
         }
+        if(p.round >= 700){
+            state = WorkerStates.Standby;
+        }
         if(state == WorkerStates.Build) {
             //System.out.println("I'm in the build state, and I'm building:");
             contBuilding();

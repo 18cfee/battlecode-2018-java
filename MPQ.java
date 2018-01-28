@@ -25,7 +25,7 @@ public class MPQ {
     }
 
     public MapLoc pop(){
-        if(isEmpty()) throw new NoSuchElementException("Out of locations to harvest");
+        //if(isEmpty()) throw new NoSuchElementException("Out of locations to harvest");
         MapLoc min = pq[1];
         exchange(1, n--);
         sink(1);

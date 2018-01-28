@@ -49,9 +49,9 @@ public class MarsSector {
         }
     }
     public void addDeposit(MapLocation loc){
-        System.out.println(sector + " was added to");
+        //System.out.println(sector + " was added to");
         short disToBase = hillToBase[loc.getX()][loc.getY()];
-        System.out.println(disToBase + " distance to base");
+        //System.out.println(disToBase + " distance to base");
         MapLoc mapLoc = new MapLoc(Planet.Mars,loc,disToBase);
         priorityHarvesting.insert(mapLoc);
     }

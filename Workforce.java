@@ -72,12 +72,12 @@ public class Workforce {
         } else return 16;
     }
     public void conductTurn() throws Exception{
-        System.out.println(closestKarbLocs.getSize() + " size of closestKarbLocs");
+        //System.out.println(closestKarbLocs.getSize() + " size of closestKarbLocs");
         for(int id : freeAgents){
             addWorker(id);
         }
         if(p.planet == Planet.Mars){
-            System.out.println("conducting turn on mars");
+            //System.out.println("conducting turn on mars");
         }
         //System.out.println("There are " + numWorkers + " workers");
         //System.out.println("There are " + builders.size() + " builders");
@@ -217,7 +217,7 @@ public class Workforce {
     }
     private void gatherKarbonite(Workers group){
         if(p.planet == Planet.Mars){
-            System.out.println("the planet is mars and they are gathering");
+            //System.out.println("the planet is mars and they are gathering");
         }
         group.setState(WorkerStates.GatherKarbonite);
         if (group.harvestPoint == null || (gc.canSenseLocation(group.harvestPoint) && gc.karboniteAt(group.harvestPoint) == 0)) {
@@ -239,10 +239,10 @@ public class Workforce {
                     }
                 }
             }else if(p.planet == Planet.Mars) {
-                System.out.println("the priority q is empty");
+                //System.out.println("the priority q is empty");
             }
             if(p.planet == Planet.Mars) {
-                System.out.println("the priority q is empty");
+                //System.out.println("the priority q is empty");
             }
         } else {
             //System.out.println("continuing after same location");
@@ -316,9 +316,10 @@ public class Workforce {
             if (p.movesToBase(gc.unit(id).location().mapLocation()) == 0 && gc.unit(id).location().mapLocation() != baseLoc && p.planet != Planet.Mars) {
                 loners.add(id);
                 //System.out.println("Worker " + id + " added to loners");
+                return;
 
-            } else {return;
-
+            } else {
+                numWorkers++;
             }
         }else{
             numWorkers++;
