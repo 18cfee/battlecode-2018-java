@@ -341,7 +341,7 @@ public class Workforce {
 
         //System.out.println("Checking for old gatherers");
         if(oldGatherers.size() > 0  && (oldBuilders.size() >= numWantedBuilders || builders.size() >= numWantedBuilders)) {
-            System.out.println("Round " + p.round + " and worker added to gatherer");
+            //System.out.println("Round " + p.round + " and worker added to gatherer");
             for (int i = 0; i < oldGatherers.size(); i++) {
                 if (oldGatherers.get(i).contains(id)) {
                     gatherers.get(i).add(id);
@@ -365,7 +365,7 @@ public class Workforce {
 
         //System.out.println("Sorting remaining into gathering groups");
         for (int i = 0; i < gatherers.size(); i++) {
-            System.out.println("Round " + p.round + " and worker added to gatherers");
+            //System.out.println("Round " + p.round + " and worker added to gatherers");
             //System.out.println("gathering sort loop");
             if (gatherers.get(i).size() < 1) {
                 gatherers.get(i).add(id);
