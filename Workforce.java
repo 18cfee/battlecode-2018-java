@@ -72,7 +72,7 @@ public class Workforce {
         } else return 16;
     }
     public void conductTurn() throws Exception{
-
+        System.out.println(closestKarbLocs.getSize() + " size of closestKarbLocs");
         for(int id : freeAgents){
             addWorker(id);
         }
