@@ -222,24 +222,23 @@ public class Workforce {
         group.setState(WorkerStates.GatherKarbonite);
         if (group.harvestPoint == null || (gc.canSenseLocation(group.harvestPoint) && gc.karboniteAt(group.harvestPoint) == 0)) {
             //System.out.println("Picking a new location");
-            if(!p.closestKarbLocs.isEmpty()) {
+            if(!closestKarbLocs.isEmpty()) {
                 //System.out.println("The pq isn't empty yet");
                 for(int id : group.ids){
                     if (!group.personalPQ.isEmpty() &&
-                    gc.unit(id).location().mapLocation().distanceSquaredTo(group.personalPQ.peek().toMapLocation()) < gc.unit(id).location().mapLocation().distanceSquaredTo(p.closestKarbLocs.peek().toMapLocation())) {
+                    gc.unit(id).location().mapLocation().distanceSquaredTo(group.personalPQ.peek().toMapLocation()) < gc.unit(id).location().mapLocation().distanceSquaredTo(closestKarbLocs.peek().toMapLocation())) {
                         //System.out.println("Picking from personalPQ");
                         if(findASpot(group, group.personalPQ)){
                             break;
                         }
-                    }else if(!p.closestKarbLocs.isEmpty()){
+                    }else if(!closestKarbLocs.isEmpty()){
                         //System.out.println("Picking from main pq");
                         if(findASpot(group, closestKarbLocs)){
                             break;
                         }
                     }
                 }
-            }
-            if(p.planet == Planet.Mars) {
+            }else if(p.planet == Planet.Mars) {
                 System.out.println("the priority q is empty");
             }
         } else {
@@ -314,9 +313,9 @@ public class Workforce {
             if (p.movesToBase(gc.unit(id).location().mapLocation()) == 0 && gc.unit(id).location().mapLocation() != baseLoc && p.planet != Planet.Mars) {
                 loners.add(id);
                 //System.out.println("Worker " + id + " added to loners");
-
-            } else {return;
-
+                return;
+            } else {
+                numWorkers++;
             }
         }else{
             numWorkers++;
@@ -349,7 +348,7 @@ public class Workforce {
 
         //System.out.println("Checking for old gatherers");
         if(oldGatherers.size() > 0  && (oldBuilders.size() >= numWantedBuilders || builders.size() >= numWantedBuilders)) {
-            System.out.println("Round " + p.round + " and worker added to gatherer");
+            //System.out.println("Round " + p.round + " and worker added to gatherer");
             for (int i = 0; i < oldGatherers.size(); i++) {
                 if (oldGatherers.get(i).contains(id)) {
                     gatherers.get(i).add(id);
@@ -373,7 +372,7 @@ public class Workforce {
 
         //System.out.println("Sorting remaining into gathering groups");
         for (int i = 0; i < gatherers.size(); i++) {
-            System.out.println("Round " + p.round + " and worker added to gatherers");
+            //System.out.println("Round " + p.round + " and worker added to gatherers");
             //System.out.println("gathering sort loop");
             if (gatherers.get(i).size() < 1) {
                 gatherers.get(i).add(id);
