@@ -294,7 +294,7 @@ public class Army {
 
     private boolean weDoNotNeedRockets(){
         //System.out.println("making it into the we do not need rocket method");
-        if(numDefenders < 20) return true;
+        if(numDefenders < 20 && p.round < 675) return true;
         if(gc.karbonite() >= 190) return true;
         if(p.rockets.getTotalRockets() < p.NUM_ROCKETS_WANTED && p.round > REALLY_NEED_TO_SAVE_FOR_ROCKETS_ROUND){
             return false;

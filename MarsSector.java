@@ -11,13 +11,12 @@ public class MarsSector {
     private int sector;
     public MapLocation baseLoc;
     public short[][] hillToBase;
-    MPQ priorityHarvesting;
+    public MPQ priorityHarvesting;
     MarsSector(GameController gc,Path p, Team myTeam, int sector){
         this.gc = gc;
         this.p = p;
         this.myTeam = myTeam;
         mars = new MarsAggressive(gc,p,sector);
-        workforce = new Workforce(gc,p);
         this.sector = sector;
         for(MapLoc loc: p.rockets.destinationList){
             if(p.rockets.disjointAreas[loc.x][loc.y] == sector){
@@ -25,7 +24,8 @@ public class MarsSector {
                 hillToBase = p.generateHill(baseLoc);
             }
         }
-        priorityHarvesting = new MPQ(34,p);
+        priorityHarvesting = new MPQ(p.planetWidth*p.planetHeight+1000,p);
+        workforce = new Workforce(gc,p,this);
     }
     public void addUnit(Unit unit) throws Exception {
         Location loc = unit.location();
@@ -47,6 +47,13 @@ public class MarsSector {
         }else{
             mars.add(id);
         }
+    }
+    public void addDeposit(MapLocation loc){
+        //System.out.println(sector + " was added to");
+        short disToBase = hillToBase[loc.getX()][loc.getY()];
+        //System.out.println(disToBase + " distance to base");
+        MapLoc mapLoc = new MapLoc(Planet.Mars,loc,disToBase);
+        priorityHarvesting.insert(mapLoc);
     }
     public void conductTurn() throws Exception{
         mars.conductTurn();

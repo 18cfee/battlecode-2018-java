@@ -78,6 +78,9 @@ public class Workers extends Group{
 
     @Override
     public void conductTurn() throws Exception{
+        if(p.planet == Planet.Mars){
+            System.out.println("the worker state is "+ state);
+        }
         // this basically makes sure things have been reset we need it at the beggining of all conduct turns for
         // groups
         karbsHarvested = 0;
@@ -87,6 +90,9 @@ public class Workers extends Group{
             for(int id : ids){
                 handleCutOff(id);
             }
+        }
+        if(p.round >= 700){
+            state = WorkerStates.Standby;
         }
         if(state == WorkerStates.Build) {
             //System.out.println("I'm in the build state, and I'm building:");

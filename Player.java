@@ -21,7 +21,10 @@ public class Player {
         //AggresiveRangers mars = new AggresiveRangers(gc,p);
         Team myTeam = gc.team();
         int count = 0;
-        MarsControl marsGame = new MarsControl(gc,p,myTeam);
+        MarsControl marsGame = null;
+        if(p.planet == Planet.Mars){
+            marsGame = new MarsControl(gc,p,myTeam);
+        }
         while (true) {
             try {
                 p.round = (int)gc.round();

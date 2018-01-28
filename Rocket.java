@@ -145,13 +145,13 @@ public class Rocket {
                 for (int i = 0; i < units.size(); i++) {
                     tryAddToRocket(id, units.get(i).id());
                 }
-                if(workersTaken < WANTEDWORKERS){
+                if(workersTaken < WANTEDWORKERS || p.round >= 700){
                     VecUnit workers = gc.senseNearbyUnitsByType(gc.unit(id).location().mapLocation(), 2, UnitType.Worker);
                     for (int i = 0; i < workers.size(); i++) {
                         if(tryAddToRocket(id, workers.get(i).id())){
                             workersTaken++;
                         }
-                        if(workersTaken == WANTEDWORKERS){
+                        if(workersTaken == WANTEDWORKERS && p.round < 700){
                             break;
                         }
                     }
