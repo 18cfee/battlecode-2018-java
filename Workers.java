@@ -183,8 +183,7 @@ public class Workers extends Group{
 
         return totalKarbsHarvested;
     }
-
-
+    
     public WorkerStates getState(){
         return state;
     }
