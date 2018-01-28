@@ -20,7 +20,7 @@ public class Workforce {
     private int karboniteGathered = 0;
     private int replicationCosts = 0;
     private ArrayList<Integer> freeAgents;
-    MapLocation uniqueBaseLoc;
+    MapLocation baseLoc;
 
     public Workforce(GameController gc, Path p) {
         this.gc = gc;
@@ -40,7 +40,9 @@ public class Workforce {
         }
         numWantedGatherers = calcGathers();
         if(p.planet == Planet.Mars){
-            uniqueBaseLoc = p.baseLoc;
+            baseLoc = p.baseLoc;
+        }else{
+            baseLoc = p.baseLoc;
         }
     }
 
@@ -271,7 +273,7 @@ public class Workforce {
             }*/
             numWorkers = 0;
         }
-        if(p.movesToBase(gc.unit(id).location().mapLocation()) == 0 && gc.unit(id).location().mapLocation() != p.baseLoc){
+        if(p.movesToBase(gc.unit(id).location().mapLocation()) == 0 && gc.unit(id).location().mapLocation() != baseLoc){
             loners.add(id);
             //System.out.println("Worker " + id + " added to loners");
             return;
