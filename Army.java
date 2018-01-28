@@ -15,6 +15,7 @@ public class Army {
     ArrayList<HashSet<Integer>> troops;
     HashSet<Integer> tempOldFactories;
     AggresiveRangers killEm;
+    KnightGaurds knights;
     int size = 0;
     private final static int MAXUnits = 200;
     private int armyRound = 0;
@@ -24,6 +25,8 @@ public class Army {
     private final static int REALLY_NEED_TO_SAVE_FOR_ROCKETS_ROUND = 500;
     private final static int SHOULD_SAVE_FOR_FACTORY = 750;
     private ArrayList<Enemy> enemies;
+    private UnitType ranger = UnitType.Ranger;
+    private UnitType knight = UnitType.Knight;
     public Army(GameController gc, Path p){
         this.gc = gc;
         this.p = p;
@@ -35,6 +38,7 @@ public class Army {
         troops = new ArrayList<>();
         killEm = new AggresiveRangers(gc,p);
         enemies = new ArrayList<>();
+        knights = new KnightGaurds(gc,p);
     }
     public void conductTurn() throws Exception{
         long time = System.currentTimeMillis();
@@ -42,6 +46,7 @@ public class Army {
         carlsRangers.conductTurn();
         baseProtection.conductTurn();
         killEm.conductTurn();
+        knights.conductTurn();
 //        marsTroops.conductTurn();
         ArrayList<Integer> beastsToRemove = new ArrayList<>(4);
         for (int i = 0; i < rangers.size(); i++) {
@@ -66,6 +71,7 @@ public class Army {
     private int attackSize = 50;
     private HashSet<Integer> oldAttack;
     boolean haveIncreasedAttacketsThisRound = false;
+    private int numKnights = 0;
     public void addUnit(int id) throws Exception{
         //if(p.round%50 == 0){
         size++;
@@ -81,6 +87,7 @@ public class Army {
             numDefenders = baseProtection.ids.size();
             oldAttack = (HashSet<Integer>)killEm.ids.clone();
             haveIncreasedAttacketsThisRound = false;
+            numKnights = knights.ids.size();
             //System.out.println("thinks there are this many on d: " + numDefenders);
         }
         // assign all the rangers back to there groups
@@ -118,7 +125,12 @@ public class Army {
         } else if(shouldCreateRocketGroup == p.round && group.size() < 14){
             group.add(id);
         } else {
-            baseProtection.add(id);
+            Unit unit = gc.unit(id);
+            if(unit.unitType() == UnitType.Knight){
+                knights.add(id);
+            }else{
+                baseProtection.add(id);
+            }
         }
     }
     private boolean shouldBuildRocket(){
@@ -146,6 +158,7 @@ public class Army {
             carlsRangers.addEnemy(enemy);
             baseProtection.addEnemy(enemy);
             killEm.addEnemy(enemy);
+            knights.addEnemy(enemy);
             for(RocketBoarders group: rangers){
                 group.addEnemy(enemy);
             }
@@ -197,15 +210,23 @@ public class Army {
         } else {
             normalProduction();
         }
-
     }
+    private int numKnightsQueued = 0;
+    private int numRangerQ = 0;
     private void normalProduction() throws Exception{
-        UnitType production = UnitType.Ranger;
         for (Integer factId: p.currentBuiltFactories) {
             //System.out.println("Num in garrison: " + gc.unit(factId).structureGarrison().size());
-            if(p.sensableUnitNotInGarisonOrSpace(factId)){
-                if(gc.canProduceRobot(factId,production) && weDoNotNeedRockets() && !weSpoolingForFactory()){
-                    gc.produceRobot(factId,production);
+            if(p.sensableUnitNotInGarisonOrSpace(factId) && weDoNotNeedRockets() && !weSpoolingForFactory()){
+                if(numRangerQ < 2 || numKnightsQueued > 3){
+                    if(gc.canProduceRobot(factId,ranger) ){
+                        gc.produceRobot(factId,ranger);
+                        numRangerQ++;
+                    }
+                } else {
+                    if(gc.canProduceRobot(factId,knight)){
+                        gc.produceRobot(factId,knight);
+                        numKnightsQueued++;
+                    }
                 }
                 tryToUnloadInAlDirections(factId);
             }
