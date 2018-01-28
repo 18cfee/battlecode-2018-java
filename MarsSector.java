@@ -3,13 +3,15 @@ import bc.*;
 public class MarsSector {
     GameController gc;
     Path p;
-    public AggresiveRangers mars;
+    public MarsAggressive mars;
     Team myTeam;
-    MarsSector(GameController gc,Path p, Team myTeam){
+    private int sector;
+    MarsSector(GameController gc,Path p, Team myTeam, int sector){
         this.gc = gc;
         this.p = p;
         this.myTeam = myTeam;
-        mars = new AggresiveRangers(gc,p);
+        mars = new MarsAggressive(gc,p,sector);
+        this.sector = sector;
     }
     public void addUnit(Unit unit) throws Exception {
         Location loc = unit.location();

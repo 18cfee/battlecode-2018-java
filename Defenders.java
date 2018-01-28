@@ -10,12 +10,14 @@ public class Defenders extends Fighter {
     private MapLoc target = null;
     private boolean seesEnemy;
     private int groupTargetCooldown;
+    private int enemyID = -1;
     Defenders(GameController gc, Path p){
         super(gc,p);
         seesEnemy = false;
         groupTargetCooldown = 0;
         miniHill = new MiniHill(gc,p);
     }
+    int delay = 0;
     @Override
     public void conductTurn() throws Exception{
         if(noUnits()) return;
@@ -32,13 +34,17 @@ public class Defenders extends Fighter {
                     groupTargetCooldown += 3;
                     target = null;
                 } else {
-                    groupTargetCooldown+= 25;
+                    groupTargetCooldown+= 10;
                     seesEnemy = true;
                 }
             }
-        } else if (seesEnemy == true && enemies.size() == 0){
-            seesEnemy = false;
-            target = null;
+        } else if (seesEnemy == true && (enemies.size() == 0 || !p.sensableUnitNotInGarisonOrSpace(enemyID))){
+            delay++;
+            if(delay > 2){
+                seesEnemy = false;
+                target = null;
+                delay = 0;
+            }
         }
         if(target!= null){
             moveToMiniHill(miniHill);

@@ -16,14 +16,17 @@ public class MarsControl {
         this.myTeam = myTeam;
         armies = new ArrayList<>();
         enemies = new ArrayList<>();
-        for (int i = 0; i < p.rockets.numPerSection.size(); i++) {
-            armies.add(new MarsSector(gc,p,myTeam));
+        // just so the array index matches the groups Id
+        armies.add(new MarsSector(gc,p,myTeam,0));
+        for (int i = 1; i < p.rockets.numPerSection.size(); i++) {
+            armies.add(new MarsSector(gc,p,myTeam,i));
         }
     }
     public void conductTurn() throws Exception{
         distributeEnemies();
-        for (MarsSector sector: armies){
-            sector.conductTurn();
+        // starts at one cause 0 is the empty army
+        for (int i = 1; i < armies.size(); i++) {
+            armies.get(i).conductTurn();
         }
     }
     public void addUnit(Unit unit) throws Exception{
@@ -35,7 +38,7 @@ public class MarsControl {
             addToEnemies(new Enemy(unit));
         } else {
             MapLocation unitLoc = loc.mapLocation();
-            int groupId = p.rockets.disjointAreas[unitLoc.getX()][unitLoc.getY()] - 1;
+            int groupId = p.rockets.disjointAreas[unitLoc.getX()][unitLoc.getY()];
             armies.get(groupId).addUnit(unit);
         }
     }
