@@ -233,7 +233,7 @@ public class Army {
             //System.out.println("Num in garrison: " + gc.unit(factId).structureGarrison().size());
             if((p.sensableUnitNotInGarisonOrSpace(factId) && weDoNotNeedRockets()) || (gc.karbonite() > 240)){
                 if(numRangerQ*2 + 1 < numKnightsQueued || attackTurn < 900){
-                    if((p.round > 700 || (p.currentBuiltFactories.size() > 3 && numWorkersProduced < 2)) && gc.canProduceRobot(factId,UnitType.Worker)){
+                    if((p.round > 700 || (p.currentBuiltFactories.size() > 3 && numWorkersProduced < 3 && numDefenders > 15)) && gc.canProduceRobot(factId,UnitType.Worker)){
                         gc.produceRobot(factId,UnitType.Worker);
                         numWorkersProduced++;
                     }else if(gc.canProduceRobot(factId,ranger) ){
