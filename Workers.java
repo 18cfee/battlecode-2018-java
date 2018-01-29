@@ -23,7 +23,7 @@ public class Workers extends Group{
         this.gc = gc;
         this.p = p;
         hillToBase = baseHill;
-        personalPQ  = new MPQ(closestKarbLocs.getSize(), p);
+        personalPQ  = new MPQ(178, p);
     }
 
     public MapLocation setBlueprint(UnitType type)throws Exception{
@@ -70,6 +70,7 @@ public class Workers extends Group{
             if(gc.canReplicate(id,d)){
                 //System.out.println("did replicate");
                 gc.replicate(id,d);
+                p.producedWorkers++;
                 return true;
             }
         }

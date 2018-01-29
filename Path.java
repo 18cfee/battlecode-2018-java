@@ -8,6 +8,7 @@ public class Path {
     public final static int FACTORYSPOOL = 80;
     public boolean spoolingForFactory = false;
     public boolean spoolingForRocket = false;
+    public int producedWorkers = 2;
     public PlanetMap map;
     GameController gc;
     int planetHeight;

@@ -176,7 +176,7 @@ public class Workforce {
         if(p.rockets.getTotalNumFactories() < 2){
             //System.out.println("fact less than two");
             //System.out.println("num wanted builders/dfsdd " + (numWantedBuilders + (numWantedGatherers/2)));
-            if(numWorkers < (numWantedBuilders + (numWantedGatherers/2))){
+            if(p.producedWorkers < (numWantedBuilders + (numWantedGatherers/2))){
                 //System.out.println(" num workers " + numWorkers);
                 return true;
             }
@@ -186,7 +186,7 @@ public class Workforce {
             }
         }
         if(replicationCosts >= karboniteGathered*.75) return false;
-        if(numWorkers < numWantedGatherers + numWantedBuilders) return true;
+        if(p.producedWorkers < numWantedGatherers + numWantedBuilders) return true;
         return false;
     }
     private boolean findASpot(Workers group, MPQ pq){
