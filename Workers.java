@@ -24,7 +24,7 @@ public class Workers extends Group{
         this.gc = gc;
         this.p = p;
         hillToBase = baseHill;
-        personalPQ  = new MPQ(178, p);
+        personalPQ  = new MPQ(1000, p);
         this.karbMap = karbMap;
     }
 
