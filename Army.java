@@ -227,13 +227,15 @@ public class Army {
     }
     private int numKnightsQueued = 0;
     private int numRangerQ = 0;
+    private int numWorkersProduced = 0;
     private void normalProduction() throws Exception{
         for (Integer factId: p.currentBuiltFactories) {
             //System.out.println("Num in garrison: " + gc.unit(factId).structureGarrison().size());
             if((p.sensableUnitNotInGarisonOrSpace(factId) && weDoNotNeedRockets()) || (gc.karbonite() > 240)){
                 if(numRangerQ*2 + 1 < numKnightsQueued || attackTurn < 900){
-                    if(p.round > 700 && gc.canProduceRobot(factId,UnitType.Worker)){
+                    if((p.round > 700 || (p.currentBuiltFactories.size() > 3 && numWorkersProduced < 2)) && gc.canProduceRobot(factId,UnitType.Worker)){
                         gc.produceRobot(factId,UnitType.Worker);
+                        numWorkersProduced++;
                     }else if(gc.canProduceRobot(factId,ranger) ){
                         gc.produceRobot(factId,ranger);
                         numRangerQ++;
@@ -281,8 +283,10 @@ public class Army {
         int fact = p.rockets.getTotalNumFactories();
         //System.out.println("entering the method that has the factory spool control like a boss");
         if(fact == p.NUM_FACTORIES_WANTED && karb > p.FACTORYSPOOL && p.round < SHOULD_SAVE_FOR_FACTORY && p.spoolingForFactory == false){
-            p.spoolingForFactory = true;
-            p.NUM_FACTORIES_WANTED++;
+            if(p.NUM_FACTORIES_WANTED < 7){
+                p.spoolingForFactory = true;
+                p.NUM_FACTORIES_WANTED++;
+            }
             //System.out.println("the factory spool was just set to do some serious damage");
         } else if(p.spoolingForFactory == true && p.NUM_FACTORIES_WANTED == fact){
             p.spoolingForFactory = false;
