@@ -203,33 +203,22 @@ public class Workforce {
         return false;
     }
     private void gatherKarbonite(Workers group){
-        if(p.planet == Planet.Mars){
-            //System.out.println("the planet is mars and they are gathering");
-        }
         group.setState(WorkerStates.GatherKarbonite);
         if (group.harvestPoint == null || !karbMap[group.harvestPoint.getX()].get(group.harvestPoint.getY())) {
             //System.out.println("Picking a new location");
             if(!closestKarbLocs.isEmpty()) {
-                //System.out.println("The pq isn't empty yet");
                 for(int id : group.ids){
                     if (!group.personalPQ.isEmpty() &&
                     gc.unit(id).location().mapLocation().distanceSquaredTo(group.personalPQ.peek().toMapLocation()) < gc.unit(id).location().mapLocation().distanceSquaredTo(closestKarbLocs.peek().toMapLocation())) {
-                        //System.out.println("Picking from personalPQ");
                         if(findASpot(group, group.personalPQ)){
                             break;
                         }
                     }else if(!closestKarbLocs.isEmpty()){
-                        //System.out.println("Picking from main pq");
                         if(findASpot(group, closestKarbLocs)){
                             break;
                         }
                     }
                 }
-            }else if(p.planet == Planet.Mars) {
-                //System.out.println("the priority q is empty");
-            }
-            if(p.planet == Planet.Mars) {
-                //System.out.println("the priority q is empty");
             }
         }
         if(group.karbLocInSight && group.harvestPoint != null) {

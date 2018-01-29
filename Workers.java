@@ -80,9 +80,6 @@ public class Workers extends Group{
 
     @Override
     public void conductTurn() throws Exception{
-        if(p.planet == Planet.Mars){
-            System.out.println("the worker state is "+ state);
-        }
         // this basically makes sure things have been reset we need it at the beggining of all conduct turns for
         // groups
         karbsHarvested = 0;
@@ -153,6 +150,9 @@ public class Workers extends Group{
             karbsAtLoc = (int)gc.karboniteAt(harvestPoint);
         }else{
             karbsAtLoc = 0;
+        }
+        if(p.planet == Planet.Mars){
+            System.out.println("Starting to harvest on Mars");
         }
         int totalKarbsHarvested = 0;
         for(Integer id: ids){
