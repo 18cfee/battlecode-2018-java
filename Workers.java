@@ -16,14 +16,16 @@ public class Workers extends Group{
     int karbsHarvested = 0;
     MPQ personalPQ;
     short[][] hillToBase;
+    BitSet[] karbMap;
 
 
-    public Workers(GameController gc, Path p, MPQ closestKarbLocs, short[][] baseHill){
+    public Workers(GameController gc, Path p, MPQ closestKarbLocs, short[][] baseHill, BitSet[] karbMap){
         super(gc, p);
         this.gc = gc;
         this.p = p;
         hillToBase = baseHill;
         personalPQ  = new MPQ(178, p);
+        this.karbMap = karbMap;
     }
 
     public MapLocation setBlueprint(UnitType type)throws Exception{
@@ -170,6 +172,9 @@ public class Workers extends Group{
                 }
                 if (gc.canSenseLocation(harvestPoint)) {
                     totalKarbsHarvested = Math.abs(karbsAtLoc - (int)gc.karboniteAt(harvestPoint));
+                    if(gc.karboniteAt(harvestPoint) == 0){
+                        karbMap[harvestPoint.getX()].clear(harvestPoint.getY());
+                    }
                 } else {
                     totalKarbsHarvested = 0;
                 }
@@ -187,7 +192,6 @@ public class Workers extends Group{
 
         return totalKarbsHarvested;
     }
-
 
     public WorkerStates getState(){
         return state;
